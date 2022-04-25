@@ -4,13 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "node index.js",
-    "build": "npm run build:client && npm run build:server",
-    "build:client": "vite build index.js",
-    "build:server": "vite build index.js",
-    "generate": "vite build index.js",
-    "serve": "cross-env NODE_ENV=production node server",
-    "debug": "node --inspect-brk server"
+    "dev": "node index.js"
   },
   "author": "daniel gleason",
   "license": "ISC",
