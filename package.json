@@ -3,9 +3,10 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "dev": "node index.js",
-    "start": "npm install && node index.js"
+    "start": "node index.js"
   },
   "author": "daniel gleason",
   "license": "ISC",

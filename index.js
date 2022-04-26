@@ -1,21 +1,21 @@
-const nodemailer = require('nodemailer');
-const { google } = require('googleapis');
-const config = require('./config.js');
-const cors = require('cors')
-const express = require("express");
+import { createTransport } from 'nodemailer';
+import { google } from 'googleapis';
+import config from './config.js';
+import cors from 'cors';
+import express, { static, json } from "express";
 const app = express();
-const path = require('path');
-const axios = require('axios');
-const pg = require('pg')
+import path from 'path';
+import { get } from 'axios';
+import pg from 'pg';
 var id_queue = []
 var array = []
 
-let dotenv = require('dotenv');
+import { config as _config } from 'dotenv';
 
 // if .env file is located in root directory
-dotenv.config()
+_config()
 
-app.use(express.static('frontend'));
+app.use(static('frontend'));
 
 app.get('/', (req, res) =>{
   res.send('You and Yours API - root');
@@ -23,11 +23,11 @@ app.get('/', (req, res) =>{
 
 
 app.use(cors())
-app.use(express.json())
+app.use(json())
 
 const PORT = process.env.PORT || 3001;
 
-const bundle_model = require('./db_functions.js');
+import { getUniqueID, createBundle } from './db_functions.js';
 
 app.use(function (req, res, next) {
   res.setHeader('Access-Control-Allow-Origin', 'https://youandyours.heroku.com');
@@ -53,8 +53,7 @@ app.post('/message', async (req,res) =>{
 res.send('messsage');
 var id = req.body.message_id;
 
-axios
-.get(`https://gmail.googleapis.com/gmail/v1/users/admin@youandyours.io/messages/${id}`,{
+  get(`https://gmail.googleapis.com/gmail/v1/users/admin@youandyours.io/messages/${id}`,{
   headers: {
     authorization: `Bearer ${process.env.GMAIL_AUTH_BEARER_TOKEN}`
   }
@@ -77,8 +76,7 @@ app.post('/messages', async (req,res) =>{
 
   var unique_id = req.body.unique;
 
-axios
-.get(`https://gmail.googleapis.com/gmail/v1/users/admin@youandyours.io/messages?q=in:sent subject:${unique_id}`,{
+  get(`https://gmail.googleapis.com/gmail/v1/users/admin@youandyours.io/messages?q=in:sent subject:${unique_id}`,{
   headers: {
     authorization: `Bearer ${process.env.GMAIL_AUTH_BEARER_TOKEN}`
   }
@@ -101,7 +99,7 @@ app.get("/api", (req, res) => {
 
   app.get('/unique',  async (req, res) => {
   
-    array = await bundle_model.getUniqueID();
+    array = await getUniqueID();
 
     console.log("array ids" + array);
     res.send(array);
@@ -125,7 +123,7 @@ app.post('/email', (req, res) => {
 
     const accessToken = OAuth2_client.getAccessToken();
 
-    const transport = nodemailer.createTransport({
+    const transport = createTransport({
     service: 'gmail',
     auth: {
         type: 'OAuth2',
@@ -166,7 +164,7 @@ app.post('/bundle', (req, res) => {
   const objCreate = {
     values: [name, unique_id]
   }
-  bundle_model.createBundle(objCreate);
+  createBundle(objCreate);
 });
 
 
@@ -174,4 +172,4 @@ app.listen(PORT, () => {
   console.log(`Server listening on ${PORT}`);
 });
 
-module.exports = id_queue;
+export default id_queue;
