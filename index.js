@@ -2,7 +2,7 @@ import { createTransport } from 'nodemailer';
 import { google } from 'googleapis';
 import config from './config.js';
 import cors from 'cors';
-import express, { static, json } from "express";
+const express = require('express');
 const app = express();
 import path from 'path';
 import { get } from 'axios';
