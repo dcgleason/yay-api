@@ -42,6 +42,17 @@ app.use(function (req, res, next) {
 
 
 
+app.get('/secret', async (req, res) => {
+   console.log('Making requests!')
+   const intent = await stripe.paymentIntents.create({
+    amount: 19.99,
+    currency: 'usd',
+    // Verify your integration in this guide by including this parameter
+    metadata: {integration_check: 'accept_a_payment'}
+  });
+  res.json({client_secret: intent.client_secret});
+})
+
 // app.delete('/bundle/:id', (req, res) => {
 //   bundle_model.deleteBundle(req.params.id)
 //   .then(response => {
