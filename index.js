@@ -18,8 +18,6 @@ var array = []
 // if .env file is located in root directory
 
 
-app.use(express.static('frontend'));
-
 app.get('/', (req, res) =>{
   res.send('You and Yours API - root');
 })
