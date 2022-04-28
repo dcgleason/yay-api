@@ -31,7 +31,6 @@ const PORT = process.env.PORT || 3001;
 const bundle_model = require('./db_functions.js');
 
 app.use(function (req, res, next) {
- // res.setHeader('Access-Control-Allow-Origin', 'https://youandyours.io');
   res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
   res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Access-Control-Allow-Headers');
