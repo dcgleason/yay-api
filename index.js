@@ -44,10 +44,13 @@ app.get('/secret', async (req, res) => {
    const intent = await stripe.paymentIntents.create({
     amount: 19.99,
     currency: 'usd',
-    // Verify your integration in this guide by including this parameter
+    payment_method_types: ['card'],
     metadata: {integration_check: 'accept_a_payment'}
   });
-  res.json({client_secret: intent.client_secret});
+  let {client_secret}  = intent.client_secret
+  console.log(client_secret);
+  res.send(client_secret);
+ // res.json({client_secret: intent.client_secret});
 })
 
 // app.delete('/bundle/:id', (req, res) => {
