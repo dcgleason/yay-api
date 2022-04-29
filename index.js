@@ -42,7 +42,7 @@ app.use(function (req, res, next) {
 app.get('/secret', async (req, res) => {
    console.log('Making requests!')
    const intent = await stripe.paymentIntents.create({
-    amount: 1099,
+    amount: 1999,
     currency: 'usd',
     metadata: {integration_check: 'accept_a_payment'}
   });
