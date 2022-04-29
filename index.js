@@ -46,10 +46,7 @@ app.get('/secret', async (req, res) => {
     currency: 'usd',
     metadata: {integration_check: 'accept_a_payment'}
   });
-  const {client_secret}  = intent.client_secret
-  console.log(client_secret);
-  res.send(intent);
- // res.json({client_secret: intent.client_secret});
+  res.json({client_secret: intent.client_secret});
 })
 
 // app.delete('/bundle/:id', (req, res) => {
