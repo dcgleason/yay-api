@@ -18,15 +18,16 @@ const bundle_model = require('./db_functions.js');
 
 app.use(cors())
 app.use(express.json())
-
-const PORT = process.env.PORT || 3001;
-
 app.use(function (req, res, next) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', '*');
   next();
 });
+
+
+const PORT = process.env.PORT || 3001;
+
 
 app.get('/', (req, res) =>{
   res.send('You and Yours API - root');
