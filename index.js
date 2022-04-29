@@ -42,14 +42,13 @@ app.use(function (req, res, next) {
 app.get('/secret', async (req, res) => {
    console.log('Making requests!')
    const intent = await stripe.paymentIntents.create({
-    amount: 19.99,
+    amount: 20,
     currency: 'usd',
-    payment_method_types: ['card'],
     metadata: {integration_check: 'accept_a_payment'}
   });
-  let {client_secret}  = intent.client_secret
+  const {client_secret}  = intent.client_secret
   console.log(client_secret);
-  res.send(client_secret);
+  res.send(intent);
  // res.json({client_secret: intent.client_secret});
 })
 
