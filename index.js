@@ -12,23 +12,14 @@ dotenv.config()
 const stripe = require("stripe")(`${process.env.STRIPE_SECRET}`)
 var id_queue = []
 var array = []
+const bundle_model = require('./db_functions.js');
 
-
-
-// if .env file is located in root directory
-
-
-app.get('/', (req, res) =>{
-  res.send('You and Yours API - root');
-})
 
 
 app.use(cors())
 app.use(express.json())
 
 const PORT = process.env.PORT || 3001;
-
-const bundle_model = require('./db_functions.js');
 
 app.use(function (req, res, next) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -37,6 +28,9 @@ app.use(function (req, res, next) {
   next();
 });
 
+app.get('/', (req, res) =>{
+  res.send('You and Yours API - root');
+})
 
 
 app.get('/secret', async (req, res) => {
