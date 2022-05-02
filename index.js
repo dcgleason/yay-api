@@ -87,12 +87,12 @@ app.post('/submit', async (req,res) =>{
     if (error) {
       res.send({
         message: "There has been a payment error", 
-        error: error
+        status: error
       })
     } else if (paymentIntent && paymentIntent.status === 'succeeded') {
       res.send({
         message: "Your payment has succeeded", 
-        error: paymentIntent.status
+        status: paymentIntent.status
       })
     }
   })();
