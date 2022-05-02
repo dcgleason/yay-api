@@ -37,10 +37,16 @@ app.get('/', (req, res) =>{
 app.get('/secret', async (req, res) => {
    console.log('Making requests!')
    const intent = await stripe.paymentIntents.create({
-    amount: 2000,
-    currency: 'usd',
+    // amount: 2000,
+   currency: 'usd',
     metadata: {integration_check: 'accept_a_payment'}
   });
+
+  const customer = await stripe.customers.create({
+    description: 'My First Test Customer (created for API docs)',
+  });
+
+
   res.json(intent);
 })
 
@@ -58,6 +64,41 @@ app.get('/secret', async (req, res) => {
 //     res.status(500).send(error);
 //   })
 // })
+
+app.post('/submit', async (req,res) =>{
+
+  var ownerEmail = req.body.ownerEmail;
+  var ownerName = req.body.ownerName;
+  var clientSecret = req.body.clientSecret;
+
+  (async () => {
+    const {paymentIntent, error} = await stripe.confirmCardPayment(
+      clientSecret,
+      {
+        payment_method: {
+          card: cardElement,
+          billing_details: {
+            name: ownerName,
+            email: ownerEmail
+          },
+        },
+      },
+    );
+    if (error) {
+      res.send({
+        message: "There has been a payment error", 
+        error: error
+      })
+    } else if (paymentIntent && paymentIntent.status === 'succeeded') {
+      res.send({
+        message: "Your payment has succeeded", 
+        error: paymentIntent.status
+      })
+    }
+  })();
+
+  }
+  )
 
 app.post('/message', async (req,res) =>{
 
