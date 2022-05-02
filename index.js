@@ -65,40 +65,6 @@ app.get('/secret', async (req, res) => {
 //   })
 // })
 
-app.post('/submit', async (req,res) =>{
-
-  var ownerEmail = req.body.ownerEmail;
-  var ownerName = req.body.ownerName;
-  var clientSecret = req.body.clientSecret;
-
-  (async () => {
-    const {paymentIntent, error} = await stripe.confirmCardPayment(
-      clientSecret,
-      {
-        payment_method: {
-          card: cardElement,
-          billing_details: {
-            name: ownerName,
-            email: ownerEmail
-          },
-        },
-      },
-    );
-    if (error) {
-      res.send({
-        message: "There has been a payment error", 
-        status: error
-      })
-    } else if (paymentIntent && paymentIntent.status === 'succeeded') {
-      res.send({
-        message: "Your payment has succeeded", 
-        status: paymentIntent.status
-      })
-    }
-  })();
-
-  }
-  )
 
 app.post('/message', async (req,res) =>{
 
