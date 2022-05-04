@@ -6,7 +6,7 @@ const { Pool, Client } = require('pg')
 const pool = new Pool({
   host: 'localhost',
   user: 'euxdyohv',
-  max: 500,
+  max: 1000,
   idleTimeoutMillis: 40000,
   connectionTimeoutMillis: 3000,
 })
