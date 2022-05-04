@@ -14,8 +14,6 @@ var id_queue = []
 var array = []
 const bundle_model = require('./db_functions.js');
 
-
-
 app.use(cors())
 app.use(express.json())
 app.use(function (req, res, next) {
@@ -37,7 +35,7 @@ app.get('/', (req, res) =>{
 app.get('/secret', async (req, res) => {
    console.log('Making requests!')
    const intent = await stripe.paymentIntents.create({
-    amount: 2000,
+    amount: 5000,
     currency: 'usd',
     metadata: {integration_check: 'accept_a_payment'}
   });
