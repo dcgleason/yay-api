@@ -28,6 +28,7 @@
     "nodemailer": "^6.7.3",
     "nodemon": "^2.0.15",
     "npm-run-all": "4.1.1",
+    "pdfkit": "^0.13.0",
     "pg": "^8.7.3",
     "pg-format": "^1.0.4",
     "serialize-javascript": "1.4.0",

@@ -77,6 +77,7 @@ axios
 )
 
 app.post('/messages', async (req,res) =>{
+  // need to run this daily to push all emails into mongodb database 
 
   res.send('messsages');
 
