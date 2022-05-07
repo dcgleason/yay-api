@@ -1,8 +1,10 @@
-const orders = require('./index.js');
+//const orders = require('./index.js');
 const PDFDocument = require('pdfkit');
 const axios = require('axios');
 var cron = require('node-cron');
 const doc = new PDFDocument;
+let dotenv = require('dotenv');
+dotenv.config()
 
 // get email body - loop through all emails. 
 // create PDF 
@@ -19,37 +21,71 @@ const doc = new PDFDocument;
 
 
 
-const getOneEmailBody = () => {
-var message_ids = orders.todaysOrders.gift.emails
-var email_bodies_today = []
+const getTodayEmailBodies = () => {
 
-for (let i = 0; i < message_ids.length; i++) { 
+var today_email_bodies = []
+var today_email_ids = []
+var test_email_ids = ["8343751", "542491602", "41004288", "707993875"]
+
+// for (let i = 0; i < orders.todaysOrders.length; i++) { 
+//     today_email_ids.push(orders.todaysOrders[i].gift.emailID)
+// }
+
+
+for (let i = 0; i < test_email_ids.length; i++) { 
 
 axios
-.get(`https://gmail.googleapis.com/gmail/v1/users/admin@youandyours.io/messages/${message_ids[i]}`,{
+.get(`https://gmail.googleapis.com/gmail/v1/users/admin@youandyours.io/messages?q=in:inbox subject:${test_email_ids[i]}`,{
   headers: {
     authorization: `Bearer ${process.env.GMAIL_AUTH_BEARER_TOKEN}`
   }
 })
 .then(result => {
   console.log(`statusCode: ${result.status}`)
-  console.log("body (I hope): " + result.data.payload)
-  //email_bodies_today.push(result.data.payload)
+  console.log("messageID for email: " + result.messages.id)
+  //today_email_bodies.push(result.data.payload)
+
+  var message_id = []
+  message_id.push(result.messages.id)
 })
 .catch(error => {
   console.error(error)
 })
-}
+
+axios
+.get(`https://gmail.googleapis.com/gmail/v1/users/admin@youandyours.io/messages/${message_id[0]}`,{
+  headers: {
+    authorization: `Bearer ${process.env.GMAIL_AUTH_BEARER_TOKEN}`
+  }
+})
+.then(result => {
+  console.log(`statusCode: ${result.status}`)
+  console.log("base64 email body" + result.payload.parts.body.data)
+  //today_email_bodies.push(result.data.payload)
+
+  var message_id = []
+  message_id.push(result.messages.id)
+})
+.catch(error => {
+  console.error(error)
+})
+
+
+
 
 }
 
-cron.schedule('* * 15 * * 0-6', () => {
-    console.log('Running a job every day at 3:00 pm at America/New_York timezone');
-    mongoConnect();
-  }, {
-    scheduled: true,
-    timezone: "America/New_York"
-  });
+}
+
+getTodayEmailBodies()
+
+// cron.schedule('* * 15 * * 0-6', () => {
+//     console.log('Running a job every day at 3:00 pm at America/New_York timezone');
+//     getTodayEmailBodies()
+//   }, {
+//     scheduled: true,
+//     timezone: "America/New_York"
+//   });
 
 
 

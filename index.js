@@ -84,7 +84,7 @@ app.post('/messages', async (req,res) =>{
   var unique_id = req.body.unique;
   var messages = [];
 axios
-.get(`https://gmail.googleapis.com/gmail/v1/users/admin@youandyours.io/messages?q=in:inbox`,{
+.get(`https://gmail.googleapis.com/gmail/v1/users/admin@youandyours.io/messages?q=in:inbox subject:${unique_id}`,{
   headers: {
     authorization: `Bearer ${process.env.GMAIL_AUTH_BEARER_TOKEN}`
   }
@@ -186,7 +186,7 @@ app.post('/createdoc', (req, res) => {
   var phone = req.body.phone;
   var emailID = req.body.email_id
   var name = req.body.name
-  var message_id_array = req.body.message_id_array
+  var message_id_array = req.body.message_id_array // --> need to do a scheduled job to google inbox to get messages 
 
   var data = JSON.stringify({
       "datasource": "yay-cluster01",
