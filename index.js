@@ -80,29 +80,11 @@ app.post('/messages', async (req,res) =>{
   // need to run this daily to push all emails into mongodb database 
 
   res.send('messsages');
-
-  var unique_id = req.body.unique;
-  var messages = [];
-axios
-.get(`https://gmail.googleapis.com/gmail/v1/users/admin@youandyours.io/messages?q=in:inbox subject:${unique_id}`,{
-  headers: {
-    authorization: `Bearer ${process.env.GMAIL_AUTH_BEARER_TOKEN}`
-  }
-})
-.then(result => {
-  console.log(`statusCode: ${res.status}`)
-  console.log(result.data.messages)
-  res.send(result.data.messages)
-  // in input component post email ID to mongodb
-  // query all mongodb document daily and check date field to see if it's greater than 14 days, if it is, query messages by that email ID and then compile (put into local storage, make it into a pdf, post to google drive / dropbox, get link, post to lulu)
-  // loop through available email IDS
-  messages.push(result.data.messages)
-
-
-})
-.catch(error => {
-  console.error(error)
-})
+  var contributorName = req.body.contributorName;
+  var giftCode = req.body.giftCode;
+  var messages = req.body.messages;
+  
+  
 
 }
 )
@@ -111,7 +93,7 @@ app.get("/api", (req, res) => {
     res.json({ message: "Hello from server!" });
   });
 
-app.get('/unique',  async (req, res) => {
+app.get('/unique',  async (req, res) => { //convert to mongoDB
   
     array = await bundle_model.getUniqueID();
 
@@ -171,34 +153,33 @@ app.post('/email', (req, res) => {
 
 })
 
-app.post('/createdoc', (req, res) => {
+app.post('/order', (req, res) => {
   res.send('createdoc');
 
-  var id = req.body.message_id;
-  var ownerName = req.body.owner;
-  var ownerEmail = req.body.ownerEmail;
-  var address = req.body.address;
-  var apartment = req.body.apartment;
-  var city = req.body.city;
-  var state = req.body.state;
-  var zipCode = req.body.zipCode;
-  var country = req.body.country;
-  var phone = req.body.phone;
-  var emailID = req.body.email_id
-  var name = req.body.name
-  var message_id_array = req.body.message_id_array // --> need to do a scheduled job to google inbox to get messages 
+  var createdAt= req.body.createdAt
+  var ownerName = req.body.owner.ownerName;
+  var ownerEmail = req.body.owner.ownerEmail;
+  var address = req.body.owner.shipping.address;
+  var city = req.body.owner.shipping.city;
+  var state = req.body.owner.shipping.state;
+  var zipCode = req.body.owner.shipping.zipCode;
+  var country = req.body.owner.shipping.country;
+  var phone = req.body.owner.shipping.phone;
+  var giftCode = req.body.gift.giftCode
+  var name = req.body.gift.recipient
+  var messages = req.body.messages // --> need to do a scheduled job to google inbox to get messages 
 
   var data = JSON.stringify({
       "datasource": "yay-cluster01",
       "databae": "yay_gift_orders",
       "collection": "dev",
       "document": {
-          "createdAt": Date.now(),
+          "createdAt": createdAt,
           "owner": {
             "ownerName": ownerName,
             "ownerEmail": ownerEmail,
             "shipping": {
-              "address": address + apartment,
+              "address": address,
               "city": city,
               "state": state,
               "zip": zipCode,
@@ -207,8 +188,8 @@ app.post('/createdoc', (req, res) => {
             }
           },
           "gift": {
-              "emails" : message_id_array,
-              "emailID": emailID,
+              "messages" : [],
+              "giftCode": giftCode,
               "recipient": name,
               "collected": false,
               "sent": false
@@ -287,3 +268,5 @@ app.listen(PORT, () => {
 module.exports = {
   todaysOrders
 }
+
+//get messages from the input --> messages push to api (whenever contributors submit, match the giftCode then put them into the json object)
