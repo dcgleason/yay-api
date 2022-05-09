@@ -315,7 +315,6 @@ const mongoOrderCollect = async () => {
   }
 
   const mongoMessagesCollect = async () => {
-    var fortnightAgo = new Date(Date.now() - 12096e5).getTime();
     var todaysMessages = [];
   
     try {
