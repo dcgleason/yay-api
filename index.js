@@ -257,48 +257,26 @@ app.post('/insertMessageBundle', (req, res) => {
   res.send('createdoc');
 
   var createdAt= req.body.createdAt
-  var ownerName = req.body.owner.ownerName;
-  var ownerEmail = req.body.owner.ownerEmail;
-  var address = req.body.owner.shipping.address;
-  var city = req.body.owner.shipping.city;
-  var state = req.body.owner.shipping.state;
-  var zipCode = req.body.owner.shipping.zipCode;
-  var country = req.body.owner.shipping.country;
-  var phone = req.body.owner.shipping.phone;
-  var giftCode = req.body.gift.giftCode
-  var name = req.body.gift.recipient
+  var contributorName = req.body.contributorName
+  var giftCode = req.body.giftCode;
+  var messages = req.body.messages;
+
   // --> need to do a scheduled job to google inbox to get messages 
 
 
   // change to not be using the api - use the regular node driver instead to insert and order 
   var data = JSON.stringify({
           "createdAt": createdAt,
-          "owner": {
-            "ownerName": ownerName,
-            "ownerEmail": ownerEmail,
-            "shipping": {
-              "address": address,
-              "city": city,
-              "state": state,
-              "zip": zipCode,
-              "country": country,
-              "phone": phone,
-            }
-          },
-          "gift": {
-              "giftCode": giftCode,
-              "recipient": name,
-              "collected": false,
-              "sent": false
-          }
-  });
-              
+         "contributorName": contributorName,
+         "giftCode": giftCode,
+         "messages": messages
+  });     
  
   try {
     const client = new MongoClient(url);
     await client.connect();
    
-   const gifts = client.db("yay_gift_orders").collection("gift_orders");
+   const gifts = client.db("yay_gift_orders").collection("messages");
    const results = gifts.insertOne(data);
    console.log(`An order document was inserted with the _id: ${results.insertedId}`);
    } 
@@ -307,7 +285,7 @@ app.post('/insertMessageBundle', (req, res) => {
    }
 });
 
-const mongoConnect = async () => {
+const mongoOrderCollect = async () => {
   var fortnightAgo = new Date(Date.now() - 12096e5).getTime();
   var todaysOrders = [];
 
@@ -315,7 +293,7 @@ const mongoConnect = async () => {
    const client = new MongoClient(url);
   await client.connect();
   
-  const gifts = client.db("yay_gift_orders").collection("dev");
+  const gifts = client.db("yay_gift_orders").collection("gift_orders");
   const update = await gifts.updateMany(
     { 'createdAt': { $lte: fortnightAgo }},
     { $set: { "gift.collected": true}}
@@ -328,15 +306,45 @@ const mongoConnect = async () => {
   results.forEach((gift) => {
     todaysOrders.push(gift);
     })
+
+  return true;
   } 
   finally {
   await client.close();
   }
   }
+
+  const mongoMessagesCollect = async () => {
+    var fortnightAgo = new Date(Date.now() - 12096e5).getTime();
+    var todaysMessages = [];
+  
+    try {
+     const client = new MongoClient(url);
+    await client.connect();
+    const gifts = client.db("yay_gift_orders").collection("messages");
+
+    for(var i =0; i<todaysOrders.length; i++ ){
+    const results = gifts.find(
+      {"giftCode": todaysOrders[i].gift.giftCode}
+    );
+    
+    results.forEach((message) => {
+      todaysMessages.push(message);
+      })
+    }
+    } 
+    finally {
+    await client.close();
+    }
+    }
+    
   
 cron.schedule('* * 12 * * 0-6', () => {
-  console.log('Running a job every day at 12:00 pm at America/New_York timezone');
-  mongoConnect();
+  console.log('Running a job every day at 12:00 pm at America/New_York timezone. Searching for orders that were created more than 14 days ago');
+  const done = mongoOrderCollect();
+  if (done){
+    mongoMessagesCollect();
+  }
 }, {
   scheduled: true,
   timezone: "America/New_York"
@@ -347,7 +355,8 @@ app.listen(PORT, () => {
 });
 
 module.exports = {
-  todaysOrders
+  todaysOrders,
+  todaysMessages
 }
 
 //get messages from the input --> messages push to api (whenever contributors submit, match the giftCode then put them into the json object)
