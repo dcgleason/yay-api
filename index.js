@@ -130,6 +130,8 @@ app.get("/api", (req, res) => {
 
 app.get('/unique',  async (req, res) => { //convert to mongoDB
 
+  var giftCode = req.body.gifCode
+
   try {
     const client = new MongoClient(url);
     await client.connect();
@@ -137,9 +139,12 @@ app.get('/unique',  async (req, res) => { //convert to mongoDB
    const gifts = client.db("yay_gift_orders").collection("gift_orders");
    const order = gifts.findOne({"giftCode": giftCode});
    if(order){
-     console.log(`An order document found`);
+     res.send(true)
    }
-   res.send(order)
+   else {
+     res.send(false)
+   }
+  
    } 
    finally {
    await client.close();
@@ -151,8 +156,8 @@ app.post('/email', (req, res) => {
 
   var name = req.body.name
   var email = req.body.email
-  var question = req.body.question
-  var unique_id = req.body.unique_id
+  var giftCode = req.body.giftCode
+  var ownerName = req.body.ownerName
   console.log('emails' + email);
   console.log('questions' + question);
   console.log('inside post request' + unique_id);
@@ -179,8 +184,8 @@ app.post('/email', (req, res) => {
     const mail_options_two = {
       from: 'You & Yours admin <admin@youandyours.io',
       to: email, 
-      subject: 'Email from You & Yours web app' + '(Email ID: ' + unique_id + ')',
-      html: '<h6>' + question  +'</h6>'
+      subject: 'Email from You & Yours web app',
+      html: '<p> You have been selected to contribute to a You & Yours gift book! This means that' + ownerName + 'has asked you to write a positive or loving message for ' + name + '.  Your gift code is ' + giftCode  + '. </p>'
   }
     transport.sendMail( mail_options_two, function(error, result){
     if(error){
@@ -188,10 +193,6 @@ app.post('/email', (req, res) => {
       }
       else {
           console.log("Success woo!:  ", result)
-          id_queue.push({
-          id: unique_id,
-          results: result
-          })
       }
       transport.close()
   })
@@ -199,6 +200,60 @@ app.post('/email', (req, res) => {
 })
 
 app.post('/insertOrder', (req, res) => {
+  res.send('createdoc');
+
+  var createdAt= req.body.createdAt
+  var ownerName = req.body.owner.ownerName;
+  var ownerEmail = req.body.owner.ownerEmail;
+  var address = req.body.owner.shipping.address;
+  var city = req.body.owner.shipping.city;
+  var state = req.body.owner.shipping.state;
+  var zipCode = req.body.owner.shipping.zipCode;
+  var country = req.body.owner.shipping.country;
+  var phone = req.body.owner.shipping.phone;
+  var giftCode = req.body.gift.giftCode
+  var name = req.body.gift.recipient
+  // --> need to do a scheduled job to google inbox to get messages 
+
+
+  // change to not be using the api - use the regular node driver instead to insert and order 
+  var data = JSON.stringify({
+          "createdAt": createdAt,
+          "owner": {
+            "ownerName": ownerName,
+            "ownerEmail": ownerEmail,
+            "shipping": {
+              "address": address,
+              "city": city,
+              "state": state,
+              "zip": zipCode,
+              "country": country,
+              "phone": phone,
+            }
+          },
+          "gift": {
+              "giftCode": giftCode,
+              "recipient": name,
+              "collected": false,
+              "sent": false
+          }
+  });
+              
+ 
+  try {
+    const client = new MongoClient(url);
+    await client.connect();
+   
+   const gifts = client.db("yay_gift_orders").collection("gift_orders");
+   const results = gifts.insertOne(data);
+   console.log(`An order document was inserted with the _id: ${results.insertedId}`);
+   } 
+   finally {
+   await client.close();
+   }
+});
+
+app.post('/insertMessageBundle', (req, res) => {
   res.send('createdoc');
 
   var createdAt= req.body.createdAt
