@@ -33,7 +33,7 @@ cron.schedule('* * 3 * * 0-6', () => {
     messages.push(orders.todaysMessages[i]); // all message objects that are 14 days past gift iniation
   }
 }, {
-  scheduled: true,
+  scheduled: false,
   timezone: "America/New_York"
 });
 

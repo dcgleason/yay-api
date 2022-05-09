@@ -345,7 +345,7 @@ cron.schedule('* * 12 * * 0-6', () => {
     mongoMessagesCollect();
   }
 }, {
-  scheduled: true,
+  scheduled: false,
   timezone: "America/New_York"
 });
 
