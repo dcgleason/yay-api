@@ -76,6 +76,41 @@ axios
 }
 )
 
+var contributorName = req.body.contributorName;
+var giftCode = req.body.giftCode;
+var messages = req.body.messages;
+
+const checkGiftCodePostMessagesToMongoDB = async () => {
+
+ try {
+   const client = new MongoClient(url);
+  await client.connect();
+  
+  const gifts = client.db("yay_gift_orders").collection("messages");
+  const update = await gifts.updateMany(
+    { 'createdAt': { $lte: fortnightAgo }},
+    { $set: { "gift.collected": true}}
+  );
+  console.log(update);
+  const results = gifts.findOne({"gift.giftCode": giftCode})
+
+  
+  results.forEach((gift) => {
+    todaysOrders.push(gift);
+    })
+
+    gifts.findOneAndUpdate({giftCode: giftCode}, {$set: {messages: "http"}}, {upsert: true}, function(err,doc) {
+      if (err) { throw err; }
+      else { console.log("Updated"); }
+    });  
+
+    // insert a new object for each person and their messages!
+  } 
+  finally {
+  await client.close();
+  }
+}
+
 app.post('/messages', async (req,res) =>{
   // need to run this daily to push all emails into mongodb database 
 
@@ -94,11 +129,21 @@ app.get("/api", (req, res) => {
   });
 
 app.get('/unique',  async (req, res) => { //convert to mongoDB
-  
-    array = await bundle_model.getUniqueID();
 
-    console.log("array ids" + array);
-    res.send(array);
+  try {
+    const client = new MongoClient(url);
+    await client.connect();
+   
+   const gifts = client.db("yay_gift_orders").collection("gift_orders");
+   const order = gifts.findOne({"giftCode": giftCode});
+   if(order){
+     console.log(`An order document found`);
+   }
+   res.send(order)
+   } 
+   finally {
+   await client.close();
+   }
   })
 
 app.post('/email', (req, res) => {
@@ -153,7 +198,7 @@ app.post('/email', (req, res) => {
 
 })
 
-app.post('/order', (req, res) => {
+app.post('/insertOrder', (req, res) => {
   res.send('createdoc');
 
   var createdAt= req.body.createdAt
@@ -167,13 +212,11 @@ app.post('/order', (req, res) => {
   var phone = req.body.owner.shipping.phone;
   var giftCode = req.body.gift.giftCode
   var name = req.body.gift.recipient
-  var messages = req.body.messages // --> need to do a scheduled job to google inbox to get messages 
+  // --> need to do a scheduled job to google inbox to get messages 
 
+
+  // change to not be using the api - use the regular node driver instead to insert and order 
   var data = JSON.stringify({
-      "datasource": "yay-cluster01",
-      "databae": "yay_gift_orders",
-      "collection": "dev",
-      "document": {
           "createdAt": createdAt,
           "owner": {
             "ownerName": ownerName,
@@ -188,42 +231,25 @@ app.post('/order', (req, res) => {
             }
           },
           "gift": {
-              "messages" : [],
               "giftCode": giftCode,
               "recipient": name,
               "collected": false,
               "sent": false
           }
-
-      }
   });
               
-  var config = {
-      method: 'post',
-      url: 'https://data.mongodb-api.com/app/data-iwimv/endpoint/data/beta/action/insertOne',
-      headers: {
-          'Content-Type': 'application/json',
-          'Access-Control-Request-Headers': '*',
-          'api-key': 'ebphXFd0EAI2Z2jxhlMoPLV4JuDxdb07xiwPpGQGuojbFla0NlHu69fJC4BssNfd'
-      },
-      data : data
-  };
-              
-  axios(config)
-      .then(function (response) {
-          console.log(JSON.stringify(response.data));
-      })
-      .catch(function (error) {
-          console.log(error);
-      });
-
-
-  // var name = req.body.name
-  // var unique_id = req.body.unique_id
-  // const objCreate = {
-  //   values: [name, unique_id]
-  // }
-  // bundle_model.createBundle(objCreate);
+ 
+  try {
+    const client = new MongoClient(url);
+    await client.connect();
+   
+   const gifts = client.db("yay_gift_orders").collection("gift_orders");
+   const results = gifts.insertOne(data);
+   console.log(`An order document was inserted with the _id: ${results.insertedId}`);
+   } 
+   finally {
+   await client.close();
+   }
 });
 
 const mongoConnect = async () => {
