@@ -20,7 +20,7 @@ var todaysMessages = [];
 app.use(cors({
   origin: ['https://www.palancabooks.com', 'https://localhost:3000/', 'https://palancabooks.com'],
   methods: ['GET','POST','DELETE','UPDATE','PUT','PATCH'],
-  exposedHeaders: ['Content-Length', 'X-Foo', 'X-Bar']
+  exposedHeaders: '*'
 }))
 app.use(express.json())
 // app.use(function (req, res, next) {
