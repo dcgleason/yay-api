@@ -13,6 +13,9 @@ const stripe = require("stripe")(`${process.env.STRIPE_SECRET}`)
 var id_queue = []
 var array = []
 const bundle_model = require('./db_functions.js');
+var todaysOrders = [];
+var todaysMessages = [];
+
 
 app.use(cors())
 app.use(express.json())
@@ -207,7 +210,6 @@ app.post('/insertMessageBundle', async (req, res) => {
 
 const mongoOrderCollect = async () => {
   var fortnightAgo = new Date(Date.now() - 12096e5).getTime(); //two weeks ago in milliseconds
-  var todaysOrders = [];
 
   try {
    const client = new MongoClient(url);
@@ -235,7 +237,7 @@ const mongoOrderCollect = async () => {
   }
 
   const mongoMessagesCollect = async () => {
-    var todaysMessages = [];
+
   
     try {
      const client = new MongoClient(url);
