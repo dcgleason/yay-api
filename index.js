@@ -20,12 +20,7 @@ var todaysMessages = [];
 app.use(cors())
 app.use(express.json())
 app.use(function (req, res, next) {
-  var allowedDomains = ['http://localhost:3000','http://www.palancabooks.com','https://palancabooks.com', 'https://palancabooks.netlify.app/' ];
-  var origin = req.headers.origin;
-  if(allowedDomains.indexOf(origin) > -1){
-    res.setHeader('Access-Control-Allow-Origin', origin);
-  }
- // res.setHeader('Access-Control-Allow-Origin', origin);
+  res.setHeader('Access-Control-Allow-Origin', req.header('Origin'));
   res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', '*');
   next();
