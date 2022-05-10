@@ -319,16 +319,11 @@ const mongoOrderCollect = async () => {
     
     results.forEach((message) => {
       todaysMessages.push(message);
-      var nameNoSpace = message.contributorName.replace(/\s/g, '');
-      var arrMessages = message.messages;
       gifts.findOneAndUpdate(
         {'gift.giftCode': message.giftCode},
-        { $push: { 'messages': message}}
+        { $push: { 'messages': message}} // the message object with name, message (arr), and gift code are all push into the message array in the orders document
       )
       })
-
-   
-   
     }
     } 
     finally {
