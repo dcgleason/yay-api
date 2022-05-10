@@ -88,7 +88,7 @@ app.get("/api", (req, res) => {
     res.json({ message: "Hello from server!" });
   });
 
-app.get('/unique',  async (req, res) => { //convert to mongoDB
+app.get('/unique',  async (req, res) => { 
 
   var giftCode = req.body.gifCode
 
@@ -173,10 +173,7 @@ app.post('/insertOrder', (req, res) => {
   var phone = req.body.owner.shipping.phone;
   var giftCode = req.body.gift.giftCode
   var name = req.body.gift.recipient
-  // --> need to do a scheduled job to google inbox to get messages 
 
-
-  // change to not be using the api - use the regular node driver instead to insert and order 
   var data = JSON.stringify({
           "createdAt": createdAt,
           "owner": {
@@ -219,9 +216,6 @@ app.post('/insertMessageBundle', (req, res) => {
   var contributorName = req.body.contributorName
   var giftCode = req.body.giftCode;
   var messages = req.body.messages;
-
-
-  // change to not be using the api - use the regular node driver instead to insert and order 
   var data = JSON.stringify({
          "createdAt": createdAt,
          "contributorName": contributorName,
