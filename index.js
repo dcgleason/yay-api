@@ -129,7 +129,7 @@ app.post('/email', (req, res) => {
 
 })
 
-app.post('/insertOrder', (req, res) => {
+app.post('/insertOrder', async (req, res) => {
   console.log('createOrder');
 
   var createdAt= req.body.createdAt
@@ -179,7 +179,7 @@ app.post('/insertOrder', (req, res) => {
    }
 });
 
-app.post('/insertMessageBundle', (req, res) => {
+app.post('/insertMessageBundle', async (req, res) => {
   console.log('createMessages');
 
   var createdAt = req.body.createdAt
