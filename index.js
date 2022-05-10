@@ -111,19 +111,6 @@ const checkGiftCodePostMessagesToMongoDB = async () => {
   }
 }
 
-app.post('/messages', async (req,res) =>{
-  // need to run this daily to push all emails into mongodb database 
-
-  res.send('messsages');
-  var contributorName = req.body.contributorName;
-  var giftCode = req.body.giftCode;
-  var messages = req.body.messages;
-  
-  
-
-}
-)
-
 app.get("/api", (req, res) => {
     res.json({ message: "Hello from server!" });
   });
