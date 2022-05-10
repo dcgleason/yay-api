@@ -24,11 +24,11 @@ cron.schedule('* * 3 * * 0-6', () => {
   console.log('Running a job every day at 3:00 pm at America/New_York timezone. Searching for orders that were created more than 14 days ago');
   var gifts = []
   var messages = []
-  for(var i = 0; i<todays_gifts.todaysOrders.length; i++){
-    gifts.push(todays_gifts.todaysOrders[i]); // all order objects that are 14 days past gift initation
+  for(var i = 0; i<todays_gifts.today_orders.length; i++){
+    gifts.push(todays_gifts.today_orders[i]); // all order objects that are 14 days past gift initation
   }
-  for(var i = 0; i<todays_gifts.todaysMessages.length; i++){
-    messages.push(todays_gifts.todaysMessages[i]); // all message objects that are 14 days past gift iniation
+  for(var i = 0; i<todays_gifts.today_messages.length; i++){
+    messages.push(todays_gifts.today_messages[i]); // all message objects that are 14 days past gift iniation
   }
 
 }, {
