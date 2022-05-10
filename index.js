@@ -18,15 +18,17 @@ var todaysMessages = [];
 
 
 app.use(cors({
-  origin: ['https://www.palancabooks.com', 'https://localhost:3000/', 'https://palancabooks.com']
+  origin: ['https://www.palancabooks.com', 'https://localhost:3000/', 'https://palancabooks.com'],
+  methods: ['GET','POST','DELETE','UPDATE','PUT','PATCH'],
+  exposedHeaders: ['Content-Length', 'X-Foo', 'X-Bar']
 }))
 app.use(express.json())
-app.use(function (req, res, next) {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', '*');
-  next();
-});
+// app.use(function (req, res, next) {
+//   res.setHeader('Access-Control-Allow-Origin', '*');
+//   res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
+//   res.setHeader('Access-Control-Allow-Headers', '*');
+//   next();
+// });
 
 const { MongoClient } = require('mongodb');
 const { zip } = require('lodash');
