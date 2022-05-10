@@ -84,7 +84,7 @@ app.get('/unique',  async (req, res) => {
 app.post('/email', (req, res) => {
   res.send('email');
 
-  var name = req.body.name
+  var name = req.body.recipient
   var email = req.body.email
   var giftCode = req.body.giftCode
   var ownerName = req.body.ownerName
