@@ -279,9 +279,7 @@ app.listen(PORT, () => {
   console.log(`Server listening on ${PORT}`);
 });
 
-module.exports = {
-  todaysOrders: todaysOrders,
-  todaysMessages: todaysMessages
-}
+module.exports = todaysOrders
+module.exports = todaysMessages
 
 //get messages from the input --> messages push to api (whenever contributors submit, match the giftCode then put them into the json object)
