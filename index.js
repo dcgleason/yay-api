@@ -285,7 +285,10 @@ app.listen(PORT, () => {
   console.log(`Server listening on ${PORT}`);
 });
 
-//module.exports = todaysOrders --> was throwing an error, said that todaysOrders was not defined
-//module.exports = todaysMessages
+module.exports = {
+ today_orders: todaysOrders,
+ today_messages: todaysMessages
+} 
+
 
 //get messages from the input --> messages push to api (whenever contributors submit, match the giftCode then put them into the json object)
