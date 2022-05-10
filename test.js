@@ -51,7 +51,18 @@ await client.close();
 }
 }
 
-mongoConnect();
+//mongoConnect();
+
+messagesByGiftCode=[];
+
+var gift = [  {gift: {giftCode: 1235}},  {gift: {giftCode: 1254}},  {gift: {giftCode: 1134}},  {gift: {giftCode: 1634}},  {gift: {giftCode: 9853}}]
+  for(var i = 0; i<gift.length; i++){
+    messagesByGiftCode.push( 'giftcode'+ i + " is "+ gift[i].gift.giftCode)
+  }
+
+  console.log(messagesByGiftCode)
+
+  // if messageByGiftCode[i].includes(messages[i].giftCode)
 
 // var fortnightAgo = new Date(Date.now() - 12096e5).getTime();
 // console.log(fortnightAgo)

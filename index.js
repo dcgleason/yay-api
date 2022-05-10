@@ -234,7 +234,8 @@ app.post('/insertOrder', (req, res) => {
           "gift": {
               "giftCode": giftCode,
               "recipient": name,
-              "collected": false,
+              "messages": [],
+              "twoWeeks": false,
               "sent": false
           }
   });
@@ -296,11 +297,11 @@ const mongoOrderCollect = async () => {
   const gifts = client.db("yay_gift_orders").collection("gift_orders");
   const update = await gifts.updateMany(
     { 'createdAt': { $lte: fortnightAgo }},
-    { $set: { "gift.collected": true}}
+    { $set: { "gift.twoWeeks": true}}
   );
   console.log(update);
   const results = gifts.find(
-    { $and: [ {"gift.collected": true}, {'gift.sent': false}] }
+    { $and: [ {"gift.twoWeeks": true}, {'gift.sent': false}] }
   )
   
   results.forEach((gift) => {
@@ -320,16 +321,27 @@ const mongoOrderCollect = async () => {
     try {
      const client = new MongoClient(url);
     await client.connect();
-    const gifts = client.db("yay_gift_orders").collection("messages");
+    const messages = client.db("yay_gift_orders").collection("messages");
 
     for(var i =0; i<todaysOrders.length; i++ ){
-    const results = gifts.find(
+    const results = messages.find(
       {"giftCode": todaysOrders[i].gift.giftCode}
     );
+
+    const gifts = client.db("yay_gift_orders").collection("gift_orders");
     
     results.forEach((message) => {
       todaysMessages.push(message);
+      var nameNoSpace = message.contributorName.replace(/\s/g, '');
+      var arrMessages = message.messages;
+      gifts.findOneAndUpdate(
+        {'gift.giftCode': message.giftCode},
+        { $push: { messages: message}}
+      )
       })
+
+   
+   
     }
     } 
     finally {
