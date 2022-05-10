@@ -280,8 +280,8 @@ app.listen(PORT, () => {
 });
 
 module.exports = {
-  todaysOrders,
-  todaysMessages
+  todaysOrders: todaysOrders,
+  todaysMessages: todaysMessages
 }
 
 //get messages from the input --> messages push to api (whenever contributors submit, match the giftCode then put them into the json object)
