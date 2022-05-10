@@ -336,7 +336,7 @@ const mongoOrderCollect = async () => {
       var arrMessages = message.messages;
       gifts.findOneAndUpdate(
         {'gift.giftCode': message.giftCode},
-        { $push: { messages: message}}
+        { $push: { 'messages': message}}
       )
       })
 

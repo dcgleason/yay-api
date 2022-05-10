@@ -20,7 +20,6 @@ dotenv.config()
 
 // get enough storage in dropbox to hold all pdfs. 
 
-<<<<<<< HEAD
 cron.schedule('* * 3 * * 0-6', () => {
   console.log('Running a job every day at 3:00 pm at America/New_York timezone. Searching for orders that were created more than 14 days ago');
   var gifts = []
@@ -31,68 +30,6 @@ cron.schedule('* * 3 * * 0-6', () => {
   for(var i = 0; i<orders.todaysMessages.length; i++){
     messages.push(orders.todaysMessages[i]); // all message objects that are 14 days past gift iniation
   }
-=======
-
-
-
-const getTodayEmailBodies = () => {
-
-var today_email_bodies = []
-var today_email_ids = []
-var test_email_ids = ["8343751", "542491602", "41004288", "707993875"]
-
-// for (let i = 0; i < orders.todaysOrders.length; i++) { 
-//     today_email_ids.push(orders.todaysOrders[i].gift.emailID)
-// }
-
-
-for (let i = 0; i < test_email_ids.length; i++) { 
-
-axios
-.get(`https://gmail.googleapis.com/gmail/v1/users/admin@youandyours.io/messages?q=in:inbox subject:${test_email_ids[i]}`,{
-  headers: {
-    authorization: `Bearer ${process.env.GMAIL_AUTH_BEARER_TOKEN}`
-  }
-})
-.then(result => {
-  console.log(`statusCode: ${result.status}`)
-  console.log("messageID for email: " + result.messages.id)
-  //today_email_bodies.push(result.data.payload)
-
-  var message_id = []
-  message_id.push(result.messages.id)
-})
-.catch(error => {
-  console.error(error)
-})
-
-axios
-.get(`https://gmail.googleapis.com/gmail/v1/users/admin@youandyours.io/messages/${message_id[0]}`,{
-  headers: {
-    authorization: `Bearer ${process.env.GMAIL_AUTH_BEARER_TOKEN}`
-  }
-})
-.then(result => {
-  console.log(`statusCode: ${result.status}`)
-  console.log("base64 email body" + result.payload.parts.body.data)
-  //today_email_bodies.push(result.data.payload)
-
-  var message_id = []
-  message_id.push(result.messages.id)
-})
-.catch(error => {
-  console.error(error)
-})
-
-
-
-
-}
-
-}
-
-getTodayEmailBodies()
->>>>>>> parent of 91c7ff0 (decided to ditch gmail api)
 
   var messagesByGiftCode= [];
 
