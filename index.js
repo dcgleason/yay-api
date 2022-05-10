@@ -53,33 +53,6 @@ app.get('/secret', async (req, res) => {
   res.json(intent);
 })
 
-app.post('/message', async (req,res) =>{
-
-res.send('messsage');
-var id = req.body.message_id;
-
-axios
-.get(`https://gmail.googleapis.com/gmail/v1/users/admin@youandyours.io/messages/${id}`,{
-  headers: {
-    authorization: `Bearer ${process.env.GMAIL_AUTH_BEARER_TOKEN}`
-  }
-})
-.then(result => {
-  console.log(`statusCode: ${result.status}`)
-  console.log(result.data)
-  res.send(result.data)
-})
-.catch(error => {
-  console.error(error)
-})
-
-}
-)
-
-var contributorName = req.body.contributorName;
-var giftCode = req.body.giftCode;
-var messages = req.body.messages;
-
 const checkGiftCodePostMessagesToMongoDB = async () => {
 
  try {
@@ -187,7 +160,7 @@ app.post('/email', (req, res) => {
 })
 
 app.post('/insertOrder', (req, res) => {
-  res.send('createdoc');
+  console.log('createOrder');
 
   var createdAt= req.body.createdAt
   var ownerName = req.body.owner.ownerName;
@@ -226,8 +199,6 @@ app.post('/insertOrder', (req, res) => {
               "sent": false
           }
   });
-              
- 
   try {
     const client = new MongoClient(url);
     await client.connect();
@@ -242,19 +213,17 @@ app.post('/insertOrder', (req, res) => {
 });
 
 app.post('/insertMessageBundle', (req, res) => {
-  res.send('createdoc');
+  console.log('createMessages');
 
-  var createdAt= req.body.createdAt
+  var createdAt = req.body.createdAt
   var contributorName = req.body.contributorName
   var giftCode = req.body.giftCode;
   var messages = req.body.messages;
 
-  // --> need to do a scheduled job to google inbox to get messages 
-
 
   // change to not be using the api - use the regular node driver instead to insert and order 
   var data = JSON.stringify({
-          "createdAt": createdAt,
+         "createdAt": createdAt,
          "contributorName": contributorName,
          "giftCode": giftCode,
          "messages": messages
