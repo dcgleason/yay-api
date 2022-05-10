@@ -34,7 +34,6 @@ app.use(function (req, res, next) {
 const { MongoClient } = require('mongodb');
 const { zip } = require('lodash');
 const url = 'mongodb+srv://dcgleason:F1e2n3n4!!@yay-cluster01.lijs4.mongodb.net/test'
-const client = new MongoClient(url);
 const dbName = 'yay-cluster01';
 
 const PORT = process.env.PORT || 3001;
