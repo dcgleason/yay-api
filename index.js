@@ -53,36 +53,6 @@ app.get('/secret', async (req, res) => {
   res.json(intent);
 })
 
-const checkGiftCodePostMessagesToMongoDB = async () => {
-
- try {
-   const client = new MongoClient(url);
-  await client.connect();
-  
-  const gifts = client.db("yay_gift_orders").collection("messages");
-  const update = await gifts.updateMany(
-    { 'createdAt': { $lte: fortnightAgo }},
-    { $set: { "gift.collected": true}}
-  );
-  console.log(update);
-  const results = gifts.findOne({"gift.giftCode": giftCode})
-
-  
-  results.forEach((gift) => {
-    todaysOrders.push(gift);
-    })
-
-    gifts.findOneAndUpdate({giftCode: giftCode}, {$set: {messages: "http"}}, {upsert: true}, function(err,doc) {
-      if (err) { throw err; }
-      else { console.log("Updated"); }
-    });  
-
-    // insert a new object for each person and their messages!
-  } 
-  finally {
-  await client.close();
-  }
-}
 
 app.get("/api", (req, res) => {
     res.json({ message: "Hello from server!" });
@@ -237,7 +207,7 @@ app.post('/insertMessageBundle', (req, res) => {
 });
 
 const mongoOrderCollect = async () => {
-  var fortnightAgo = new Date(Date.now() - 12096e5).getTime();
+  var fortnightAgo = new Date(Date.now() - 12096e5).getTime(); //two weeks ago in milliseconds
   var todaysOrders = [];
 
   try {
@@ -246,7 +216,7 @@ const mongoOrderCollect = async () => {
   
   const gifts = client.db("yay_gift_orders").collection("gift_orders");
   const update = await gifts.updateMany(
-    { 'createdAt': { $lte: fortnightAgo }},
+    { 'createdAt': { $lte: fortnightAgo }}, // if the createdAt date is less than or equal to two weeks ago...
     { $set: { "gift.twoWeeks": true}}
   );
   console.log(update);
@@ -273,14 +243,14 @@ const mongoOrderCollect = async () => {
     await client.connect();
     const messages = client.db("yay_gift_orders").collection("messages");
 
-    for(var i =0; i<todaysOrders.length; i++ ){
+    for(var i =0; i<todaysOrders.length; i++ ){ //loop through orders and match all giftCodes to message objects
     const results = messages.find(
       {"giftCode": todaysOrders[i].gift.giftCode}
     );
 
     const gifts = client.db("yay_gift_orders").collection("gift_orders");
     
-    results.forEach((message) => {
+    results.forEach((message) => { //for each message object find the gift order and push the message object with a mathing giftCode into the message array inside the associated gift Order
       todaysMessages.push(message);
       gifts.findOneAndUpdate(
         {'gift.giftCode': message.giftCode},
