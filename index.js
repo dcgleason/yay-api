@@ -34,7 +34,7 @@ const PORT = process.env.PORT || 3001;
 
 
 app.get('/', (req, res) =>{
-  res.send('You and Yours API - root');
+  res.send('Palanca Books API - root');
 })
 
 app.get('/secret', async (req, res) => {
