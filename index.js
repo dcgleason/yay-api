@@ -17,7 +17,9 @@ var todaysOrders = [];
 var todaysMessages = [];
 
 
-//app.use(cors())
+app.use(cors({
+  origin: ['https://www.palancabooks.com', 'https://localhost:3000/', 'https://palancabooks.com']
+}))
 app.use(express.json())
 app.use(function (req, res, next) {
   res.setHeader('Access-Control-Allow-Origin', '*');
