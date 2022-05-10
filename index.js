@@ -60,7 +60,7 @@ app.get("/api", (req, res) => {
     res.json({ message: "Hello from server!" });
   });
 
-app.get('/unique',  async (req, res) => { 
+app.post('/unique',  async (req, res) => { 
 
   var giftCode = req.body.gifCode
 
