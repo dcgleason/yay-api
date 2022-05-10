@@ -1,6 +1,5 @@
 const nodemailer = require('nodemailer');
 const { google } = require('googleapis');
-const config = require('./config.js');
 const cors = require('cors')
 const express = require("express");
 const app = express();
