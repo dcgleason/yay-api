@@ -18,7 +18,7 @@ var todaysMessages = [];
 
 
 app.use(cors({
-  origin: ['https://www.palancabooks.com', 'https://localhost:3000/', 'https://palancabooks.com'],
+  origin: "*",
   methods: ['GET','POST','DELETE','UPDATE','PUT','PATCH'],
   exposedHeaders: '*'
 }))
