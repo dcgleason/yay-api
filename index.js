@@ -7,14 +7,20 @@ const path = require('path');
 const axios = require('axios');
 var cron = require('node-cron');
 const pg = require('pg')
+const mongoose= require('mongoose');
+const multer  = require('multer')
+const model = require('./model');
 let dotenv = require('dotenv');
 dotenv.config()
+
+
 const stripe = require("stripe")(`${process.env.STRIPE_SECRET}`)
 var id_queue = []
 var array = []
-const bundle_model = require('./db_functions.js');
 var todaysOrders = [];
 var todaysMessages = [];
+
+var upload = multer({ dest: 'uploads/' });
 
 
 app.use(cors({
@@ -31,7 +37,6 @@ app.use(express.json())
 // });
 
 const { MongoClient } = require('mongodb');
-const { zip } = require('lodash');
 const url = 'mongodb+srv://dcgleason:F1e2n3n4!!@yay-cluster01.lijs4.mongodb.net/test'
 const dbName = 'yay-cluster01';
 
@@ -39,7 +44,7 @@ const PORT = process.env.PORT || 3001;
 
 
 app.get('/', (req, res) =>{
-  res.send('Palanca Books API - root');
+  res.send('Amore Books API - root');
 })
 
 app.get('/secret', async (req, res) => {
@@ -184,6 +189,34 @@ app.post('/insertOrder', async (req, res) => {
    }
 });
 
+var storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'uploads')
+  },
+  filename: function (req, file, cb) {
+    cb(null, new Date().toISOString()+file.originalname)
+  }
+})
+ 
+var upload = multer({ storage: storage })
+app.post('/insertImage', upload.single('file-upload'), async(req, res, next) => {
+  const file = req.file
+  if (!file) {
+    const error = new Error('Please upload a file')
+    error.httpStatusCode = 400
+    return next("hey error")
+  }
+    
+    
+    const imagepost= new model({
+      image: file.path
+    })
+    const savedimage= await imagepost.save()
+    res.json(savedimage)
+  
+})
+
+
 app.post('/insertMessageBundle', async (req, res) => {
   console.log('createMessages');
 
@@ -191,11 +224,13 @@ app.post('/insertMessageBundle', async (req, res) => {
   var contributorName = req.body.contributorName
   var giftCode = req.body.giftCode;
   var messages = req.body.messages;
+  var image = req.file
   var data = JSON.stringify({
          "createdAt": createdAt,
          "contributorName": contributorName,
          "giftCode": giftCode,
-         "messages": messages
+         "messages": messages,
+         "image": image
   });     
  
   try {
