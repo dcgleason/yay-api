@@ -98,6 +98,8 @@ app.post('/email', (req, res) => {
   var email = req.body.email
   var giftCode = req.body.giftCode
   var ownerName = req.body.ownerName
+  var giftOwnerMessage = req.body.giftOwnerMessage;
+
   console.log('emails' + email);
   console.log('questions' + question);
   console.log('inside post request' + unique_id);
@@ -122,10 +124,10 @@ app.post('/email', (req, res) => {
   })
     
     const mail_options_two = {
-      from: 'You & Yours admin <admin@youandyours.io',
+      from: 'Amore Books <admin@youandyours.io', // change email address when we confirm name
       to: email, 
-      subject: 'Email from You & Yours web app',
-      html: '<p> You have been selected to contribute to a You & Yours gift book! This means that' + ownerName + 'has asked you to write a positive or loving message for ' + name + '.  Your gift code is ' + giftCode  + '. </p>'
+      subject: ownerName + 'selected you to contribute in a gift for ' + recipient + ' !',
+      html: '<p> You have been selected to contribute to a Amore Books gift book! This means that' + ownerName + 'has asked you to write a positive or loving message for ' + name + '.  Your gift code is ' + giftCode  + '.  This message is from ' + ownerName+ ': ' + giftOwnerMessage + '. To contribute, go to ' + '<a href="https://amorebooks.io/write">www.amorebooks.io/write</a></p>'
   }
     transport.sendMail( mail_options_two, function(error, result){
     if(error){
