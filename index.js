@@ -48,9 +48,9 @@ app.get('/', (req, res) =>{
 })
 
 app.get('/secret', async (req, res) => {
+
    console.log('Making requests!')
    const intent = await stripe.paymentIntents.create({
-    amount: 5000,
     currency: 'usd',
     metadata: {integration_check: 'accept_a_payment'}
   });
@@ -61,6 +61,20 @@ app.get('/secret', async (req, res) => {
 
 
   res.json(intent);
+})
+
+app.post('/updatePaymentIntent', async (req, res) => {
+
+var amount = req.body.price;
+var receipt_email = req.body.receipt_email;
+  console.log('Making update - for price!')
+  const intent = await stripe.paymentIntents.update({
+   amount: amount,
+   receipt_email: receipt_email,
+   metadata: {integration_check: 'accept_a_payment'}
+ });
+
+ res.json(intent);
 })
 
 
