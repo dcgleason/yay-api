@@ -201,7 +201,7 @@ var storage = multer.diskStorage({
 })
  
 var upload = multer({ storage: storage })
-app.post('/insertImage', upload.single('file-upload'), async(req, res, next) => {
+app.post('/imageUpload', upload.single('file-upload'), async(req, res, next) => {
   const file = req.file
   if (!file) {
     const error = new Error('Please upload a file')
