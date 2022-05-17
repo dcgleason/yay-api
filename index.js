@@ -84,10 +84,12 @@ app.post('/unique',  async (req, res) => {
   try {
     const client = new MongoClient(url);
     await client.connect();
+    console.log('unique - after mongo connect')
    
    const gifts = client.db("yay_gift_orders").collection("gift_orders");
    const order = gifts.findOne({"giftCode": giftCode});
    if(order){
+     console.log('in if statement')
      res.send(true)
    }
    else {
