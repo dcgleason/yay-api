@@ -68,11 +68,6 @@ app.post('/updatePaymentIntent', async (req, res) => {
 var amount = req.body.price;
 var receipt_email = req.body.receipt_email;
   console.log('Making update - for price!')
-  const intent = await stripe.paymentIntents.update({
-   amount: amount,
-   receipt_email: receipt_email,
-   metadata: {integration_check: 'accept_a_payment'}
- });
 
  res.json(intent);
 })
