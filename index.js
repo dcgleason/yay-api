@@ -88,6 +88,7 @@ app.post('/unique',  async (req, res) => {
    
    const gifts = client.db("yay_gift_orders").collection("gift_orders");
    const order = gifts.findOne({"giftCode": giftCode});
+   console.log('order results' + order);
    if(order){
      console.log('in if statement')
      res.send(true)
