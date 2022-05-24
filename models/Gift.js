@@ -5,7 +5,11 @@
         const giftSchema = new Schema({
             name: String,
             //gifts have one user
-            User: String,
+            user: String,
+            //contributers are an array of contributer ids
+            contributors:[String],
+            
+
           },
           { timestamps: true }
           );

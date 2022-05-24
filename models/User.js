@@ -4,7 +4,8 @@
         
         const userSchema = new Schema({
             name: String,
-            gifts: [Gift]
+            email: String,
+            gift: [String],
           },
           { timestamps: true }
           );
