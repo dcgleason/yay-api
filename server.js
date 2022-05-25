@@ -13,6 +13,7 @@ should live within the resepective file in the routes folder
 */
 const users = require('./routes/users')
 const gifts = require('./routes/gifts')
+const beta = require('./routes/beta')
 
 
 
@@ -46,6 +47,7 @@ connectDB()
 // app route controllers - app.use
 app.use("/users", users);
 app.use("/gifts", gifts)
+app.use("/beta", beta)
 
 
 
