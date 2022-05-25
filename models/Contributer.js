@@ -6,7 +6,8 @@
          * Contributers are added to a gift by a user
          * each contributer is associated with one gift
          * and are identified by their _id
-         * each contributers has an array of questions
+         * each contributer has an array of questionIDs that contain the contents of 
+         * each question along with images and responses
          * 
          */
 
@@ -14,14 +15,11 @@
             name: String,
             email: String,
             //contributers have one gift _id
-            gift: String,
+            giftID: String,
             //contributers will get questions from the question model
             //the questions property will be the _id of the Question model
             //every 
-            questions:String
-           
-            
-
+            questionIDs: [String]  
           },
           { timestamps: true }
           );

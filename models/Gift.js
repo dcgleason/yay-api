@@ -1,13 +1,17 @@
 
         const mongoose = require('mongoose')
         const Schema = mongoose.Schema
-        
+        /**
+         * each gift contains a title 
+         * the ID of the initiating user
+         * and the array of contributorIDs - each page will belong to one contributor
+         */
         const giftSchema = new Schema({
-            name: String,
+            title: String,
             //gifts have one user
-            user: String,
+            userID: String,
             //contributers are an array of contributer ids
-            contributors:[String],
+            contributorIDs:[String],
             
 
           },
