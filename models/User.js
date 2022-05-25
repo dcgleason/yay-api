@@ -4,10 +4,10 @@
         /**
          * each user can initiate a Gift
          */
-        const userSchema = new Schema({
+        const testerSchema = new Schema({
             name: String,
             email: String,
-            giftIDs: [String],
+            referalSource: String,
           },
           { timestamps: true }
           );
@@ -15,6 +15,6 @@
 
 
 
-const User = mongoose.model('User', userSchema);
+const Tester = mongoose.model('Tester', testerSchema);
 
-module.exports = User
+module.exports = Tester
