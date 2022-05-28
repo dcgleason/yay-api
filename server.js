@@ -21,6 +21,7 @@ const beta = require('./routes/beta')
 const port = process.env.PORT || 3001
 
 //middleware
+app.use(express.urlencoded({ extended: true }))
 //cors
 
 

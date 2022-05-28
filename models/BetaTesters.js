@@ -7,7 +7,7 @@
         const testerSchema = new Schema({
             name: String,
             email: String,
-            referalSource: String,
+            referralSource: String,
           },
           { timestamps: true }
           );
