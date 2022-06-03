@@ -4,7 +4,6 @@ const express = require('express')
 const app = express()
 const mongoose = require('mongoose')
 const axios = require('axios')
-const queryString = require('querystring')
 
 
 /*
@@ -16,6 +15,7 @@ should live within the resepective file in the routes folder
 const users = require('./routes/users')
 const gifts = require('./routes/gifts')
 const beta = require('./routes/beta')
+const lulu = require('./routes/lulu')
 
 
 
@@ -51,6 +51,7 @@ connectDB()
 app.use("/users", users);
 app.use("/gifts", gifts)
 app.use("/beta", beta)
+app.use("/lulu", lulu) // for all requests that go to the print api
 
 
 
@@ -63,40 +64,7 @@ app.get("/",(req,res)=>{
 })
 
 
-/**
- * /api/token route retrieves a jwt for access to the lulu print api
- * this access_token must be sent with all subsequent requests
- */
-app.get('/api/token', async (req,res)=>{
-    console.log("attempting lulu api authentication.........\n")
-    
 
-    const baseurl = "https://api.lulu.com/auth/realms/glasstree/protocol/openid-connect/token"
-    const data = new URLSearchParams()
-    data.append('client_key', process.env.CLIENT_KEY)
-    data.append('client_secret', process.env.CLIENT_SECRET)
-    data.append('grant_type', 'client_credentials')
-
-
-await axios({
-    method: 'post',
-    url: baseurl,
-    data: data,
-    headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'Authorization': process.env.AUTH,
-    },
-
-}).then((response)=>{
-    console.log(response.data)
-    console.log('this is the access token....... \n' + `access token: \n ${response.data.access_token}`)
-    res.send(response.data)
-})
-
-
-
-
-})
 
 
 

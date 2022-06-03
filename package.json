@@ -36,7 +36,6 @@
     "pdfkit": "^0.13.0",
     "pg": "^8.7.3",
     "pg-format": "^1.0.4",
-    "querystring": "^0.2.1",
     "serialize-javascript": "^6.0.0",
     "stripe": "^8.219.0",
     "uuid": "^8.3.2",
