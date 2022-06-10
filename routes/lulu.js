@@ -34,6 +34,7 @@ await axios({
     console.log(response.data)
     console.log('this is the access token....... \n' + `access token: \n ${response.data.access_token}`)
     res.send(response.data)
+    //gotta figure out what to do w this 
 })
 
 })
