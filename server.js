@@ -25,7 +25,13 @@ const port = process.env.PORT || 3001
 //middleware
 app.use(express.urlencoded({ extended: true }))
 //cors
+// dg - added what should work to resolve cors error
 
+app.use(cors({
+    origin: "*",
+    methods: ['GET','POST','DELETE','UPDATE','PUT','PATCH'],
+    exposedHeaders: '*'
+  }))
 
 // db connection - mongo atlas
 const connectDB = async ()=>{
