@@ -22,6 +22,18 @@ const corsOptions = {
     methods: ['GET','POST','DELETE','UPDATE','PUT','PATCH']
   }
 
+  /*
+IMPORT ROUTE CONTROLLERS: 
+Note: 
+All logic relating to sending or receiving data to or from the Database
+should live within the resepective file in the routes folder
+*/
+const users = require('./routes/users')
+const gifts = require('./routes/gifts')
+const beta = require('./routes/beta')
+const lulu = require('./routes/lulu')
+const payment = require('./routes/stripe')
+
 
 
 //initialization of variables 
@@ -66,17 +78,6 @@ app.get("/",(req,res)=>{
  
 })
 
-/*
-IMPORT ROUTE CONTROLLERS: 
-Note: 
-All logic relating to sending or receiving data to or from the Database
-should live within the resepective file in the routes folder
-*/
-const users = require('./routes/users')
-const gifts = require('./routes/gifts')
-const beta = require('./routes/beta')
-const lulu = require('./routes/lulu')
-const payment = require('./routes/stripe')
 
 
 //use cors middleware
