@@ -57,7 +57,7 @@ app.use("/users", users);
 app.use("/gifts", gifts)
 app.use("/beta", beta)
 app.use("/lulu", lulu) // for all requests that go to the print api
-app.use('/stripe', stripe);
+app.use('/stripe', payment);
 
 // app root route app.get
 app.get("/",(req,res)=>{
@@ -76,7 +76,7 @@ const users = require('./routes/users')
 const gifts = require('./routes/gifts')
 const beta = require('./routes/beta')
 const lulu = require('./routes/lulu')
-const stripe = require('./routes/stripe')
+const payment = require('./routes/stripe')
 
 
 //use cors middleware
