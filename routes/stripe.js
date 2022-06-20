@@ -1,16 +1,10 @@
 const express = require('express')
-const app = express();
 const router = express.Router()
 
 
-app.use(cors({
-    origin: "*",
-    methods: ['GET','POST','DELETE','UPDATE','PUT','PATCH'],
-    exposedHeaders: '*'
-  }))
 
 // app route to /secret for Stripe.JS to get the client secret 
-router.get('/stripe', async (req, res) => {
+router.get('/email', async (req, res) => {
 
     console.log('Making requests!')
     const intent = await stripe.paymentIntents.create({

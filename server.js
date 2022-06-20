@@ -21,7 +21,6 @@ const lulu = require('./routes/lulu')
 const stripe = require('./routes/stripe')
 
 
-
 //initialization of variables 
 const port = process.env.PORT || 3001
 
@@ -35,6 +34,7 @@ app.use(cors({
     methods: ['GET','POST','DELETE','UPDATE','PUT','PATCH'],
     exposedHeaders: '*'
   }))
+
 
 // db connection - mongo atlas
 const connectDB = async ()=>{
