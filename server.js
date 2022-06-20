@@ -70,19 +70,6 @@ app.get("/",(req,res)=>{
  
 })
 
-app.get('/secret', async (req, res) => {
-
-    console.log('Making requests!')
-    const intent = await stripe.paymentIntents.create({
-     currency: 'usd',
-     amount: 4500,
-     metadata: {integration_check: 'accept_a_payment'}
-   });
- 
- 
-   res.json(intent);
- })
-
 //server initialization
 app.listen(port, ()=>{
     console.log(`Example app listening on port ${port}`)
