@@ -18,6 +18,16 @@ const corsOptions = {
     methods: ['GET','POST','DELETE','UPDATE','PUT','PATCH']
   }
 
+  app.use((req, res, next) => {
+    res.setHeader("Access-Control-Allow-Origin", "https://yoursite.com");
+    res.header(
+      "Access-Control-Allow-Headers",
+      "Origin, X-Requested-With, Content-Type, Accept"
+    );
+    next();
+  });
+
+
 // app route to /secret for Stripe.JS to get the client secret 
 router.get('/secret', async (req, res) => {
 
@@ -32,6 +42,8 @@ router.get('/secret', async (req, res) => {
    res.json(intent);
  })
 
+ 
+
  // app route to /updatePaymentIntent 
 
  router.post('/updatePaymentIntent', async (req, res) => {
@@ -44,6 +56,5 @@ router.get('/secret', async (req, res) => {
     })
 
 
-app.use(cors(corsOptions))
 
 module.exports = router
