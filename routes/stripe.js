@@ -2,6 +2,7 @@ const express = require('express')
 const router = express.Router()
 const cors = require('cors')
 const app = express();
+const stripe = require('stripe')('sk_test_51KtCf1LVDYVdzLHCA31MSSlOKhe7VQtXqJJiPnJK90sRLsmYU3R5MlTljmTe5AGZTNaKzKF0Fr8BC2fNOsTBgDP100TiYqCU9k')
 
 //initialize cors options and white list
 const whitelist = ['http://localhost:3000', 'https://amorebooks.io']
