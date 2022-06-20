@@ -5,11 +5,19 @@ const Tester = require("../models/BetaTesters")
 const cors = require('cors')
 const app = express();
 
-app.use(cors({
-    origin: "*",
-    methods: ['GET','POST','DELETE','UPDATE','PUT','PATCH'],
-    exposedHeaders: '*'
-  }))
+//initialize cors options and white list
+const whitelist = ['http://localhost:3000', 'https://amorebooks.io']
+
+const corsOptions = {
+    origin: function (origin, callback) {
+      if (whitelist.indexOf(origin) !== -1) {
+        callback(null, true)
+      } else {
+        callback(new Error('Not allowed by CORS'))
+      }
+    },
+    methods: ['GET','POST','DELETE','UPDATE','PUT','PATCH']
+  }
 
 
 //beta sign up route - /beta/signup
@@ -34,6 +42,8 @@ router.post('/signup',async (req, res)=>{
         }
     })
 })
+
+app.use(cors(corsOptions))
 
 
 

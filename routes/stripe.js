@@ -3,6 +3,19 @@ const router = express.Router()
 const cors = require('cors')
 const app = express();
 
+//initialize cors options and white list
+const whitelist = ['http://localhost:3000', 'https://amorebooks.io']
+
+const corsOptions = {
+    origin: function (origin, callback) {
+      if (whitelist.indexOf(origin) !== -1) {
+        callback(null, true)
+      } else {
+        callback(new Error('Not allowed by CORS'))
+      }
+    },
+    methods: ['GET','POST','DELETE','UPDATE','PUT','PATCH']
+  }
 
 
 // app route to /secret for Stripe.JS to get the client secret 
@@ -30,5 +43,7 @@ router.get('/secret', async (req, res) => {
      res.json(intent);
     })
 
+
+app.use(cors(corsOptions))
 
 module.exports = router
