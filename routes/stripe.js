@@ -18,12 +18,6 @@ const corsOptions = {
     methods: ['GET','POST','DELETE','UPDATE','PUT','PATCH']
   }
 
-const corsOption ={
-    origin:'*', 
-    credentials:true,            //access-control-allow-credentials:true
-    optionSuccessStatus:200,
- }
-
 // app route to /secret for Stripe.JS to get the client secret 
 router.get('/secret', async (req, res) => {
 
@@ -50,6 +44,6 @@ router.get('/secret', async (req, res) => {
     })
 
 
-app.use(cors(corsOption))
+app.use(cors(corsOptions))
 
 module.exports = router

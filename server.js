@@ -22,11 +22,6 @@ const corsOptions = {
     methods: ['GET','POST','DELETE','UPDATE','PUT','PATCH']
   }
 
-  const corsOption ={
-    origin:'*', 
-    credentials:false,            //access-control-allow-credentials:true
-    optionSuccessStatus:200,
- }
 
   /*
 IMPORT ROUTE CONTROLLERS: 
@@ -88,7 +83,7 @@ app.get("/",(req,res)=>{
 
 //use cors middleware
 
-app.use(cors(corsOption))
+app.use(cors(corsOptions))
 
 
 //server initialization
