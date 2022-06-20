@@ -2,6 +2,7 @@ const express = require('express')
 const mongoose = require('mongoose')
 const router = express.Router()
 const Tester = require("../models/BetaTesters")
+const cors = require('cors')
 
 
 //beta sign up route - /beta/signup
