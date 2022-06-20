@@ -30,7 +30,7 @@ app.use(express.urlencoded({ extended: true }))
 //dg - added what should work to resolve cors error
 
 app.use(cors({
-    origin: "*",
+    origin: ["http://localhost:3000", 'https://amorebooks.io'],
     methods: ['GET','POST','DELETE','UPDATE','PUT','PATCH'],
     exposedHeaders: '*'
   }))
