@@ -5,6 +5,18 @@ const app = express();
 const stripe = require('stripe')('sk_test_51KtCf1LVDYVdzLHCA31MSSlOKhe7VQtXqJJiPnJK90sRLsmYU3R5MlTljmTe5AGZTNaKzKF0Fr8BC2fNOsTBgDP100TiYqCU9k')
 
 
+
+app.use((req, res, next) => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader('Content-Type', 'application/json');
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Accept"
+  );
+  next();
+});
+
+
 // app route to /secret for Stripe.JS to get the client secret 
 router.get('/secret', async (req, res) => {
 
