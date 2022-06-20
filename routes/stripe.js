@@ -4,7 +4,7 @@ const router = express.Router()
 
 
 // app route to /secret for Stripe.JS to get the client secret 
-router.get('/email', async (req, res) => {
+router.get('/secret', async (req, res) => {
 
     console.log('Making requests!')
     const intent = await stripe.paymentIntents.create({
