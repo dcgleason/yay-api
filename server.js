@@ -8,19 +8,6 @@ const axios = require('axios')
 const stripe = require('stripe')('sk_test_51KtCf1LVDYVdzLHCA31MSSlOKhe7VQtXqJJiPnJK90sRLsmYU3R5MlTljmTe5AGZTNaKzKF0Fr8BC2fNOsTBgDP100TiYqCU9k')
 
 
-//initialize cors options and white list
-const whitelist = ['http://localhost:3000', 'https://amorebooks.io']
-
-const corsOptions = {
-    origin: function (origin, callback) {
-      if (whitelist.indexOf(origin) !== -1) {
-        callback(null, true)
-      } else {
-        callback(new Error('Not allowed by CORS'))
-      }
-    },
-    methods: ['GET','POST','DELETE','UPDATE','PUT','PATCH']
-  }
 
   app.use((req, res, next) => {
     res.setHeader("Access-Control-Allow-Origin", "*");
