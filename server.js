@@ -18,7 +18,8 @@ const corsOptions = {
       } else {
         callback(new Error('Not allowed by CORS'))
       }
-    }
+    },
+    methods: ['GET','POST','DELETE','UPDATE','PUT','PATCH']
   }
 //use cors middleware
 
