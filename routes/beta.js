@@ -3,6 +3,13 @@ const mongoose = require('mongoose')
 const router = express.Router()
 const Tester = require("../models/BetaTesters")
 const cors = require('cors')
+const app = express();
+
+app.use(cors({
+    origin: "*",
+    methods: ['GET','POST','DELETE','UPDATE','PUT','PATCH'],
+    exposedHeaders: '*'
+  }))
 
 
 //beta sign up route - /beta/signup
