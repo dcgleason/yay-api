@@ -18,6 +18,7 @@ const users = require('./routes/users')
 const gifts = require('./routes/gifts')
 const beta = require('./routes/beta')
 const lulu = require('./routes/lulu')
+const stripe = require('./routes/stripe')
 
 
 
@@ -60,6 +61,7 @@ app.use("/users", users);
 app.use("/gifts", gifts)
 app.use("/beta", beta)
 app.use("/lulu", lulu) // for all requests that go to the print api
+app.use('/stripe', stripe);
 
 
 
@@ -71,30 +73,7 @@ app.get("/",(req,res)=>{
     
 })
 
-// app route to /secret for Stripe.JS to get the client secret 
-app.get('/secret', async (req, res) => {
 
-    console.log('Making requests!')
-    const intent = await stripe.paymentIntents.create({
-     currency: 'usd',
-     amount: 4500,
-     metadata: {integration_check: 'accept_a_payment'}
-   });
- 
- 
-   res.json(intent);
- })
-
- // app route to /updatePaymentIntent 
-
- app.post('/updatePaymentIntent', async (req, res) => {
-
-    var amount = req.body.price;
-    var receipt_email = req.body.receipt_email;
-      console.log('Making update - for price!')
-    
-     res.json(intent);
-    })
 
 //email send to gift contributors 
 
