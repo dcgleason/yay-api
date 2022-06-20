@@ -3,11 +3,7 @@ const router = express.Router()
 const cors = require('cors')
 const app = express();
 
-app.use(cors({
-    origin: "*",
-    methods: ['GET','POST','DELETE','UPDATE','PUT','PATCH'],
-    exposedHeaders: '*'
-  }))
+
 
 // app route to /secret for Stripe.JS to get the client secret 
 router.get('/secret', async (req, res) => {
