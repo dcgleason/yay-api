@@ -22,17 +22,5 @@ router.get('/secret', async (req, res) => {
 
  
 
- // app route to /updatePaymentIntent 
-
- router.post('/updatePaymentIntent', async (req, res) => {
-
-    var amount = req.body.price;
-    var receipt_email = req.body.receipt_email;
-      console.log('Making update - for price!')
-    // needs work
-     res.json(intent);
-    })
-
-
 
 module.exports = router
