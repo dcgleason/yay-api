@@ -10,7 +10,7 @@ router.post('/send', (req, res) => {
   
     var name = req.body.recipient
     var email = req.body.email
-    //var giftCode = req.body.giftCode
+    var giftCode = req.body.giftCode
     var ownerName = req.body.ownerName
     var giftOwnerMessage = req.body.giftOwnerMessage;
   
