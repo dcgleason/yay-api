@@ -15,7 +15,6 @@ router.post('/send', (req, res) => {
     var giftOwnerMessage = req.body.giftOwnerMessage;
   
     console.log('emails' + email);
-    console.log('questions' + question);
 
       const OAuth2 = google.auth.OAuth2
     
