@@ -4,7 +4,7 @@ const router = express.Router()
 
 //email send to gift contributors 
 
-router.post('/email', (req, res) => {
+router.post('/send', (req, res) => {
     res.send('email');
   
     var name = req.body.recipient
@@ -37,7 +37,7 @@ router.post('/email', (req, res) => {
     })
       
       const mail_options_two = {
-        from: 'Amore Books <admin@youandyours.io', // change email address when we confirm name
+        from: 'Amore Books <dan@amorebooks.io',
         to: email, 
         subject: ownerName + 'selected you to contribute in a gift for ' + recipient + ' !',
         html: '<p> You have been selected to contribute to a Amore Books gift book! This means that' + ownerName + 'has asked you to write a positive or loving message for ' + name + '.  Your gift code is ' + giftCode  + '.  This message is from ' + ownerName+ ': ' + giftOwnerMessage + '. To contribute, go to ' + '<a href="https://amorebooks.io/write">www.amorebooks.io/write</a></p>'
