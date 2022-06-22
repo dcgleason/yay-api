@@ -28,6 +28,7 @@ const gifts = require('./routes/gifts')
 const beta = require('./routes/beta')
 const lulu = require('./routes/lulu')
 const payment = require('./routes/stripe')
+const email = require('./routes/email')
 
 
 
@@ -65,6 +66,7 @@ app.use("/gifts", gifts)
 app.use("/beta", beta)
 app.use("/lulu", lulu) // for all requests that go to the print api
 app.use('/stripe', payment);
+app.use('/email', email);
 
 // app root route app.get
 app.get("/",(req,res)=>{
