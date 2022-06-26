@@ -48,13 +48,17 @@ router.post('/send', (req, res) => {
     }
       transport.sendMail( mail_options_two, function(error, result){
       if(error){
-            console.log('Error: ',  error)
+            console.log('Error!!!: ',  error)
+            res.sendStatus(500);
         }
         else {
             console.log("Success woo!:  ", result)
+            res.sendStatus(200);
         }
         transport.close()
     })
+
+    res.send()
   
   })
 
