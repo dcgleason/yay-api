@@ -41,10 +41,10 @@ router.post('/send', (req, res) => {
     })
       
       const mail_options_two = {
-        from: 'Amore Books <dan@amorebooks.io', 
+        from: 'Bundle <dan@amorebooks.io', 
         to: email, 
         subject: ownerName + 'selected you to contribute in a gift for ' + name + ' !',
-        html: '<p> You have been selected to contribute to a Amore Books gift book! This means that' + ownerName + 'has asked you to write a positive or loving message for ' + name + '.  Your gift code is ' + giftCode  + '.  This message is from ' + ownerName+ ': ' + giftOwnerMessage + '. To contribute, go to ' + '<a href="https://amorebooks.io/write">www.amorebooks.io/write</a></p>'
+        html: '<p> You have been selected to contribute to a Bundle for' + name + '! This means that' + ownerName + 'has asked you to write a positive or loving message for ' + name + '.  Your Bundle code is ' + giftCode  + '.  This message is from ' + ownerName+ ': ' + giftOwnerMessage + '. To contribute, go to ' + '<a href="https://bundle.love/write">www.bundle.love/write</a></p>'
     }
       transport.sendMail( mail_options_two, function(error, result){
       if(error){
