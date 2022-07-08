@@ -7,7 +7,7 @@
         const testerSchema = new Schema({
             name: String,
             email: String,
-            referralSource: String,
+            referralSource: String, //what is a referral souce? 
           },
           { timestamps: true }
           );

@@ -4,7 +4,7 @@
         /**
          * each gift contains a title 
          * the ID of the initiating user
-         * and the array of contributorIDs - each page will belong to one contributor
+         * and the array of contributorIDs - each page will belong to one contributor (dg - what do you mean by this?)
          */
         const giftSchema = new Schema({
             title: String,
@@ -18,7 +18,7 @@
           { timestamps: true }
           );
 
-
+// inputting data to mongoDB database
 
 
 const Gift = mongoose.model('Gift', giftSchema);
