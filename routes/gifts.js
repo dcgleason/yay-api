@@ -32,7 +32,7 @@ router.post('/insertOrder', async(req, res)=>{
         //contributers are an array of contributer ids -- starts as an empty array
         contributorIDs: [],
         recipient: req.body.gift.recipient,
-        twoWeeks: false,
+        fiveDays: false,
         sent: false
       }
 

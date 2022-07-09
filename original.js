@@ -36,9 +36,7 @@ app.use(express.json())
 //   next();
 // });
 
-const { MongoClient } = require('mongodb');
-const url = 'mongodb+srv://dcgleason:F1e2n3n4!!@yay-cluster01.lijs4.mongodb.net/test'
-const dbName = 'yay-cluster01';
+
 
 const PORT = process.env.PORT || 3001;
 

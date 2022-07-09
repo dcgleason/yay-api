@@ -30,7 +30,7 @@ const { string } = require('pg-format');
           messages: [String],
           //contributers are an array of contributer ids
           contributorIDs:[String],
-          twoWeeks: false,
+          fiveDays: false,
           sent: false
           
 
