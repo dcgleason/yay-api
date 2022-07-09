@@ -53,22 +53,9 @@ router.post('/insertOrder', async(req, res)=>{
 
 
 router.post('/insertmessages', async(req, res)=>{
-    res.send("GIFTS home page!!!")
+    res.send("insert Messages home page!!!")
 
-    const addressObj = {
-        address: req.body.owner.shipping.address,
-        city: req.body.owner.shipping.city,
-        state: req.body.owner.shipping.state,
-        zip: req.body.owner.shipping.zipCode,
-        country: req.body.owner.shipping.country,
-        phone: req.body.owner.shipping.phone
-      }
-
-      const ownerObj = {
-        ownerName: req.body.owner.ownerName,
-        ownerEmail: req.body.owner.ownerEmail,
-        shipping: addressObj
-      }
+    // instead of creating a gift - update it with the messages
 
       const gift = {
         owner: ownerObj,
@@ -84,7 +71,7 @@ router.post('/insertmessages', async(req, res)=>{
 
     // do we need to add a timestamp object here? or will it timestamp it automatically?
 
-    await Gift.create(gift, (err, createdItem)=>{
+    await Gift.create(gift, (err, createdItem)=>{ // update instead
         if(err){
             console.log(err)
             res.sendStatus(500)
