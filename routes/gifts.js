@@ -8,11 +8,31 @@ const app = express();
 router.get('/',(req, res)=>{
     res.send("GIFTS home page!!!")
 
-    const gift = {
-        title:req.body.title, 
-        userID:req.body.userID, 
-        contributorIDs: req.body.contributorArray
-    }
+    const addressObj = {
+        address: req.body.address,
+        city: req.body.city,
+        state: req.body.state,
+        zip: req.body.zip,
+        phone: req.body.phone
+      }
+
+      const ownerObj = {
+        ownerName: req.body.ownerName,
+        ownerEmail: req.body.ownerEmail,
+        shipping: addressObj
+      }
+
+      const gift = {
+        owner: ownerObj,
+        //gifts have one owner
+        uniqueId: req.body.uniqueId,
+         // uniqueId is unqiue to the user
+        messages: req.body.messages,
+        //contributers are an array of contributer ids
+        contributorIDs: req.body.contributorArray,
+        twoWeeks: false,
+        sent: false
+      }
 
     // do we need to add a timestamp object here? or will it timestamp it automatically?
 
