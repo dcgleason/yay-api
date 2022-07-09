@@ -30,11 +30,7 @@ const { string } = require('pg-format');
           messages: [{  // array of message objects, added after 5 days are up
             contributor: String,
             giftCode: Number,
-            question_one: String,
-            question_two: String,
-            question_three: String,
-            question_four: String,
-            question_five: String,
+            question_responses: [String]  // add and image?
           }],
           //contributers are an array of contributer ids
        //   contributorIDs:[String], <-- what is the thinking behind contributorsIDs? 
