@@ -14,7 +14,7 @@ router.get('/',(req, res)=>{
         contributorIDs: req.body.contributorArray
     }
 
-    
+    // do we need to add a timestamp object here? or will it timestamp it automatically?
 
     await Gift.create(gift, (err, createdItem)=>{
         if(err){
@@ -26,7 +26,7 @@ router.get('/',(req, res)=>{
             res.sendStatus(200)
 
         }
-    })
+    }) 
 })
 
 router.get('/about', (req,res)=>{

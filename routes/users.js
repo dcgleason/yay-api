@@ -17,6 +17,9 @@ router.get('/:id',(req, res)=>{
     // data or a completely seperate page layout based on the whether
     //the user is signed in or not
     res.send(`${req.params.id}`)
+
+
+    // implications of this is that a requester could select the questions he wants to ask, along with prompts. 
 })
 
 router.get('/about', (req,res)=>{

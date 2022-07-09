@@ -8,7 +8,7 @@ const app = express();
 //beta sign up route - /beta/signup
 router.post('/signup',async (req, res)=>{
     const tester = {
-        name:req.body.name, 
+        name:req.body.name,
         email:req.body.email, 
         referralSource: req.body.referralSource
     }
