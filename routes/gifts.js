@@ -9,27 +9,28 @@ router.post('/insertOrder', async(req, res)=>{
     res.send("GIFTS home page!!!")
 
     const addressObj = {
-        address: req.body.address,
-        city: req.body.city,
-        state: req.body.state,
-        zip: req.body.zip,
-        phone: req.body.phone
+        address: req.body.owner.shipping.address,
+        city: req.body.owner.shipping.city,
+        state: req.body.owner.shipping.state,
+        zip: req.body.owner.shipping.zipCode,
+        phone: req.body.owner.shipping.phone
       }
 
       const ownerObj = {
-        ownerName: req.body.ownerName,
-        ownerEmail: req.body.ownerEmail,
+        ownerName: req.body.owner.ownerName,
+        ownerEmail: req.body.owner.ownerEmail,
         shipping: addressObj
       }
 
       const gift = {
         owner: ownerObj,
         //gifts have one owner
-        uniqueId: req.body.uniqueId,
+        uniqueId: req.body.gift.giftCode,
          // uniqueId is unqiue to the user
         messages: req.body.messages,
-        //contributers are an array of contributer ids
-        contributorIDs: req.body.contributorArray,
+        //contributers are an array of contributer ids -- starts as an empty array
+        contributorIDs: [],
+        recipient: req.body.gift.recipient,
         twoWeeks: false,
         sent: false
       }
