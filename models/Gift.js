@@ -12,6 +12,7 @@ const { string } = require('pg-format');
           city: String,
           state: String,
           zip: String,
+          country: String,
           phone: String
         })
 

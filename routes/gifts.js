@@ -13,6 +13,7 @@ router.post('/insertOrder', async(req, res)=>{
         city: req.body.owner.shipping.city,
         state: req.body.owner.shipping.state,
         zip: req.body.owner.shipping.zipCode,
+        country: req.body.owner.shipping.country,
         phone: req.body.owner.shipping.phone
       }
 
