@@ -25,11 +25,19 @@ const { string } = require('pg-format');
         const giftSchema = new Schema({
           owner: ownerSchema,
           //gifts have one owner
-          uniqueId: String,
+          giftCode: Number,
            // uniqueId is unqiue to the user
-          messages: [String],
+          messages: [{  // array of message objects, added after 5 days are up
+            contributor: String,
+            giftCode: Number,
+            question_one: String,
+            question_two: String,
+            question_three: String,
+            question_four: String,
+            question_five: String,
+          }],
           //contributers are an array of contributer ids
-          contributorIDs:[String],
+       //   contributorIDs:[String], <-- what is the thinking behind contributorsIDs? 
           fiveDays: false,
           sent: false
           
