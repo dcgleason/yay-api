@@ -18,7 +18,7 @@ dotenv.config()
 const mongoOrderCollect = async () => {
 
     var fiveDays = 432000 * 1000 
-    var fortnightAgo = new Date(Date.now() - fiveDays).getTime(); //5 days ago in milliseconds
+    var fiveDaysAgo = new Date(Date.now() - fiveDays).getTime(); //5 days ago in milliseconds
   
     try {
      const client = new MongoClient(url);
@@ -26,12 +26,12 @@ const mongoOrderCollect = async () => {
     
     const gifts = client.db("yay_gift_orders").collection("gift_orders");
     const update = await gifts.updateMany(
-      { 'createdAt': { $lte: fortnightAgo }}, // if the createdAt date is less than or equal to two weeks ago...
-      { $set: { "gift.twoWeeks": true}} // set fiveDays field to true, to mark that it's been fiveDays 
+      { 'createdAt': { $lte: fiveDaysAgo }}, // if the createdAt date is less than or equal to 5 days ago...
+      { $set: { "gift.fiveDays": true}} // set fiveDays field to true, to mark that it's been five days 
     );
     console.log(update);
     const results = gifts.find(
-      { $and: [ {"gift.twoWeeks": true}, {'gift.sent': false}] }
+      { $and: [ {"gift.fiveDays": true}, {'gift.sent': false}] }
     )
     
     results.forEach((gift) => {
@@ -44,6 +44,35 @@ const mongoOrderCollect = async () => {
     await client.close();
     }
     }
+
+    const mongoMessagesCollect = async () => {
+
+  
+        try {
+         const client = new MongoClient(url);
+        await client.connect();
+        const messages = client.db("yay_gift_orders").collection("messages");
+    
+        for(var i =0; i<todaysOrders.length; i++ ){ //loop through orders and match all giftCodes to message objects
+        const results = messages.find(
+          {"giftCode": todaysOrders[i].gift.giftCode}
+        );
+    
+        const gifts = client.db("yay_gift_orders").collection("gift_orders");
+        
+        results.forEach((message) => { //for each message object find the gift order and push the message object with a mathing giftCode into the message array inside the associated gift Order
+          todaysMessages.push(message);
+          gifts.findOneAndUpdate(
+            {'gift.giftCode': message.giftCode},
+            { $push: { 'messages': message}} // the message object with name, message (arr), and gift code are all push into the message array in the orders document
+          )
+          })
+        }
+        } 
+        finally {
+        await client.close();
+        }
+        }
 
 
     cron.schedule('* * 12 * * 0-6', () => {
