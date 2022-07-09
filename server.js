@@ -43,8 +43,6 @@ const port = process.env.PORT || 3001
 
 //middleware
 app.use(express.urlencoded({ extended: true }))
-//cors
-//dg - added what should work to resolve cors error
 
 // db connection - mongo atlas
 const connectDB = async ()=>{
@@ -73,6 +71,7 @@ app.use("/beta", beta)
 app.use("/lulu", lulu) // for all requests that go to the print api
 app.use('/stripe', payment);
 app.use('/email', email);
+app.use('/unique', userID);
 
 // app root route app.get
 app.get("/",(req,res)=>{
