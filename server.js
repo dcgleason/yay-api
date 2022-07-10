@@ -5,13 +5,13 @@ const app = express()
 const cors = require('cors')
 const mongoose = require('mongoose')
 const axios = require('axios')
-const stripe = require('stripe')('sk_test_51KtCf1LVDYVdzLHCA31MSSlOKhe7VQtXqJJiPnJK90sRLsmYU3R5MlTljmTe5AGZTNaKzKF0Fr8BC2fNOsTBgDP100TiYqCU9k')
+const stripe = require('stripe')('sk_test_51KtCf1LVDYVdzLHCA31MSSlOKhe7VQtXqJJiPnJK90sRLsmYU3R5MlTljmTe5AGZTNaKzKF0Fr8BC2fNOsTBgDP100TiYqCU9k') //  secret key for test environment, to be replaced when we start taking orders
 
 
 
   app.use((req, res, next) => {
     res.setHeader("Access-Control-Allow-Origin", "");
-    const allowedOrigins = ['http://localhost:3000', 'https://amorebooks.io'];
+    const allowedOrigins = ['http://localhost:3000', 'https://bundle.love'];
     const origin = req.headers.origin;
     if (allowedOrigins.includes(origin)) {
        res.setHeader('Access-Control-Allow-Origin', origin);

@@ -7,7 +7,7 @@ dotenv.config()
 var readyToSend = []
 var associatedMessages = []
 
-const mongoOrderCollect = async () => {
+const mongoOrderCollect = async () => { // transition to mongoose
 
     var fiveDays = 432000 * 1000 
     var fiveDaysAgo = new Date(Date.now() - fiveDays) //5 days ago in ISODate - which is the format of the MongoDB timestamp
