@@ -140,7 +140,7 @@ const thirdReminderEmail = async () => {
             var fourDaysAgo = new Date(Date.now() - fourDays) // 4 days ago in ISODate - which is the format of the MongoDB timestamp
           
         // query db for gifts created between 3 and 4 days ago and fiveDays is false
-                const thirdArr = await Gift.find({ createdAt: { $gte: threeDays, $lte: fourDays } }, { fiveDays: true});
+                const thirdArr = await Gift.find({ createdAt: { $gte: threeDaysAgo, $lte: fourDaysAgo } }, { fiveDays: true});
                 console.log('results from gift.find on created between 3-4 days ago ' + thirdArr);
             }
        // send email 
