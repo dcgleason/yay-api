@@ -56,10 +56,13 @@ router.post('/insertmessages', async(req, res)=>{
     if(req.body.messages && req.body.giftCode){   // instead of creating a gift - update it with the messages
     var query = { 'giftCode': req.body.giftCode }
     var update = { $push: { messages : req.body.messages}}
-    const result = await Gift.findOneAndUpdate(query, update, function(){
-    });
-    }
+    const result = await Gift.findOneAndUpdate(query, update);
     res.send(result)
+    }
+   
+    else{
+        res.send("Messages and/or giftCode not present in the api call")
+    }
     })
 
     router.get('/about', (req,res)=>{
