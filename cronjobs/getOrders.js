@@ -1,15 +1,5 @@
-const nodemailer = require('nodemailer');
-const { google } = require('googleapis');
-const cors = require('cors')
-const express = require("express");
-const app = express();
-const path = require('path');
-const axios = require('axios');
+
 var cron = require('node-cron');
-const pg = require('pg')
-const mongoose= require('mongoose');
-const multer  = require('multer')
-const model = require('./model');
 let dotenv = require('dotenv');
 dotenv.config()
 
@@ -47,43 +37,43 @@ const mongoOrderCollect = async () => {
     }
     }
 
-    const mongoMessagesCollect = async () => {
+    const mongoMessagesCollect = async () => { // using the mongo node client instead of mongoose here - should ideally be using mongoose!
 
   
         try {
-         const client = new MongoClient(url);
-        await client.connect();
-        const messages = client.db("yay_gift_orders").collection("messages");
-    
-        for(var i =0; i<todaysOrders.length; i++ ){ //loop through orders and match all giftCodes to message objects
-        const results = messages.find(
-          {"giftCode": readyToSend[i].gift.giftCode}
-        );
-    
-        const gifts = client.db("yay_gift_orders").collection("gift_orders");
-        
-        results.forEach((message) => { //for each message object find the gift order and push the message object with a mathing giftCode into the message array inside the associated gift Order
-          associatedMessages.push(message);
-          gifts.findOneAndUpdate(
-            {'gift.giftCode': message.giftCode},
-            { $push: { 'messages': message}} // the message object with name, message (arr), and gift code are all push into the message array in the orders document
-          )
-          })
-        }
+                const client = new MongoClient(url);
+                await client.connect();
+                const messages = client.db("yay_gift_orders").collection("messages");
+
+                for(var i =0; i<todaysOrders.length; i++ ){ //loop through orders and match all giftCodes to message objects
+                const results = messages.find(
+                {"giftCode": readyToSend[i].gift.giftCode}
+                );
+
+                const gifts = client.db("yay_gift_orders").collection("gift_orders");
+                
+                results.forEach((message) => { //for each message object find the gift order and push the message object with a mathing giftCode into the message array inside the associated gift Order
+                associatedMessages.push(message);
+                gifts.findOneAndUpdate(
+                    {'gift.giftCode': message.giftCode},
+                    { $push: { 'messages': message}} // the message object with name, message (arr), and gift code are all push into the message array in the orders document
+                )
+                })
+                }
         } 
         finally {
-        await client.close();
+                await client.close();
         }
         }
 
 
     cron.schedule('* * 12 * * 0-6', () => {
-        console.log('Running a job every day at 12:00 pm at America/New_York timezone. Searching for orders that were created more than 5 days ago');
-        const done = mongoOrderCollect();
-        if (done){
-          mongoMessagesCollect();
-        }
+                console.log('Running a job every day at 12:00 pm at America/New_York timezone. Searching for orders that were created more than 5 days ago');
+                const done = mongoOrderCollect();
+                if (done){
+                mongoMessagesCollect();
+                }
       }, {
-        scheduled: false,
-        timezone: "America/New_York"
+                scheduled: false,
+                timezone: "America/New_York"
       });
