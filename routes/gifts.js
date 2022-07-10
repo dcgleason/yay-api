@@ -59,7 +59,6 @@ router.post('/insertmessages', async(req, res)=>{
     const result = await Gift.findOneAndUpdate(query, update);
     res.send(result)
     }
-   
     else{
         res.send("Messages and/or giftCode not present in the api call")
     }
