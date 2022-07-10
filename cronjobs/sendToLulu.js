@@ -14,7 +14,7 @@ const sendToLulu = () => {
  data.append('grant_type', 'client_credentials')
 
 
-await axios({
+await axios({ 
     method: 'post',
     url: baseurl,
     data: data,
@@ -67,10 +67,10 @@ await axios({
                 'Content-Type': 'application/json'
             }
             };
-            
+
         axios.post(url, print_data, options)
-        .then(function (response) {
-            console.log(response);
+        .then(function (resp) {
+            console.log(resp);
         })
         .catch(function (error) {
             console.log(error);
@@ -78,10 +78,6 @@ await axios({
 
 
 })
-
-
-
-
 }
 
 
