@@ -12,48 +12,48 @@ const getOrdersToSendToLulu = () => {
 // query db for gifts created between 5 and 6 days ago and fiveDays in the gift object is true 
     const toLuluArray = await Gift.find({ createdAt: { $gte: fiveDaysAgo, $lte: sixDaysAgo } }, { fiveDays: true});
 
-}
+    if(toLuluArray.length != 0){ // if there are gifts... (need to verify that this is an array)
 
-for(var i = 0; i<toLuluArray.length; i++){
+    for(var i = 0; i<toLuluArray.length; i++){
 
-// Create a document
-const doc = new PDFDocument();
+        if(toLuluArray[i].messages.length != 0) { // if there are messages in the gift object
 
-// Pipe its output somewhere, like to a file or HTTP response
-// See below for browser usage
-doc.pipe(fs.createWriteStream('created_pdfs/test.pdf'));
+        // Create a document
+        const doc = new PDFDocument();
+        
+        // Pipe its output somewhere, like to a file or HTTP response
+        doc.pipe(fs.createWriteStream('created_pdfs/test.pdf')); // 
 
-for(var j = 0; j<toLuluArray[i].messages.length; j++){ // loop through the messages and add them to the document
-doc
-  .font('fonts/PalatinoBold.ttf')
-  .fontSize(14)
-  .text("From" + toLuluArray[i].messages[j].question_responses[i]+ "." + // need to validate that there is a message before creating it - or else it's a blank answer
-  "Question 1: " +
-  toLuluArray[i].messages[j].question_responses[1] +
-  "Question 2: " +
-  toLuluArray[i].messages[j].question_responses[2] +
-  "Question 3: " +
-  toLuluArray[i].messages[j].question_responses[3] +
-  "Question 4: " +
-  toLuluArray[i].messages[j].question_responses[4] +
-  "Question 5: " +
-  toLuluArray[i].messages[j].question_responses[4] +
-  "Extra words: " +
-  toLuluArray[i].messages[j].question_responses[6], 100, 100); // need to figure out what happens when the text goes to the next page
-// can add some final words
-doc
-  .addPage()
-  .text('Here is a link!', 100, 100)
-  .underline(100, 100, 160, 27, { color: '#0000FF' })
-  .link(100, 100, 160, 27, 'http://google.com/'); // what does this do?
-
-// Finalize PDF file
-doc.end();
-
-}
-
-
-}
+        for(var j = 0; j<toLuluArray[i].messages.length; j++){ // loop through the messages and add them to the document
+        doc
+          .font('fonts/PalatinoBold.ttf')
+          .fontSize(14)
+          .text("The community of people around you have something to say to you...")
+          .text("From" + toLuluArray[i].messages[j].question_responses[i]+ ". \n " + // need to validate that there is a message before creating it - or else it's a blank answer
+          "Question 1: " +
+          toLuluArray[i].messages[j].question_responses[1] + "/n"+
+          "Question 2: " +
+          toLuluArray[i].messages[j].question_responses[2] + "/n"+
+          "Question 3: " +
+          toLuluArray[i].messages[j].question_responses[3] + "/n"+
+          "Question 4: " +
+          toLuluArray[i].messages[j].question_responses[4] + "/n"+
+          "Question 5: " +
+          toLuluArray[i].messages[j].question_responses[4] + "/n"+
+          "Extra words: " +
+          toLuluArray[i].messages[j].question_responses[6], 100, 100); // need to figure out what happens when the text goes to the next page
+    
+        
+        }
+        // could add some final words on a final page... 
+    
+        // Finalize PDF file
+        doc.end();
+        
+        }
+        }
+    }
+    }
 
 
 
