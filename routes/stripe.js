@@ -1,7 +1,5 @@
 const express = require('express')
 const router = express.Router()
-const cors = require('cors')
-const app = express();
 const stripe = require('stripe')('sk_test_51KtCf1LVDYVdzLHCA31MSSlOKhe7VQtXqJJiPnJK90sRLsmYU3R5MlTljmTe5AGZTNaKzKF0Fr8BC2fNOsTBgDP100TiYqCU9k')
 
 
@@ -21,6 +19,4 @@ router.get('/secret', async (req, res) => {
  })
 
  
-
-
 module.exports = router

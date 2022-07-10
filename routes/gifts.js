@@ -1,8 +1,6 @@
 const express = require('express')
-const mongoose = require('mongoose')
 const router = express.Router()
 const Gift = require("../models/Gift")
-const app = express();
 
 //gifts Home page
 router.post('/insertOrder', async(req, res)=>{
