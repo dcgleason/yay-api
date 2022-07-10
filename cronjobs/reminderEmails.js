@@ -35,7 +35,7 @@ const firstReminderEmail = async () => {
 
             OAuth2_client.setCredentials( { refresh_token: process.env.GMAIL_REFRESH_TOKEN } );
 
-            let acToken = OAuth2_client.getAccessToken();
+            let accessToken = OAuth2_client.getAccessToken();
 
             let transport = nodemailer.createTransport({
             service: 'gmail',
