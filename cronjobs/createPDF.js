@@ -24,7 +24,7 @@ const getOrdersToSendToLulu = () => {
         // Pipe its output somewhere, like to a file or HTTP response
         doc.pipe(fs.createWriteStream('created_pdfs/test.pdf')); // 
 
-        for(var j = 0; j<toLuluArray[i].messages.length; j++){ // loop through the messages and add them to the document
+        for(var j = 0; j<toLuluArray[i].messages.length; j++){ // loop through the messages and add them to the document - not sure this works this way.... : / 
         doc
           .font('fonts/PalatinoBold.ttf')
           .fontSize(14)
@@ -42,8 +42,6 @@ const getOrdersToSendToLulu = () => {
           toLuluArray[i].messages[j].question_responses[4] + "/n"+
           "Extra words: " +
           toLuluArray[i].messages[j].question_responses[6], 100, 100); // need to figure out what happens when the text goes to the next page
-    
-        
         }
         // could add some final words on a final page... 
     
