@@ -5,10 +5,6 @@ dotenv.config()
 
 
 
-
-
-
-
 const sendToLulu = () => {
 
  const baseurl = "https://api.lulu.com/auth/realms/glasstree/protocol/openid-connect/token"
@@ -33,7 +29,7 @@ await axios({
     var lulu_access_token = response.data.access_token;
 
             var url =  'https://api.lulu.com/print-jobs/'
-            var data = {
+            var print_data = {
                 "contact_email": "test@test.com",
                 "external_id": "demo-time",
                 "line_items": [
@@ -71,7 +67,8 @@ await axios({
                 'Content-Type': 'application/json'
             }
             };
-        axios.post(url, data, options)
+            
+        axios.post(url, print_data, options)
         .then(function (response) {
             console.log(response);
         })
