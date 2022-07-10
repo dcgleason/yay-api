@@ -13,27 +13,27 @@ const mongoOrderCollect = async () => {
     var fiveDaysAgo = new Date(Date.now() - fiveDays) //5 days ago in ISODate - which is the format of the MongoDB timestamp
   
     try {
-    const client = new MongoClient(url);
-    await client.connect();
-    
-    const gifts = client.db("yay_gift_orders").collection("gift_orders");
-    const update = await gifts.updateMany(
-      { 'createdAt': { $lte: ISODate(fiveDaysAgo) }}, // if the createdAt date is less than or equal to 5 days ago...
-      { $set: { "gift.fiveDays": true}} // set fiveDays field to true, to mark that it's been five days 
-    );
-    console.log(update);
-    const results = gifts.find(
-      { $and: [ {"gift.fiveDays": true}, {'gift.sent': false}] }
-    )
-    
-    results.forEach((gift) => {
-      readyToSend.push(gift);
-      })
-  
-    return true;
+            const client = new MongoClient(url);
+            await client.connect();
+            
+            const gifts = client.db("yay_gift_orders").collection("gift_orders");
+            const update = await gifts.updateMany(
+            { 'createdAt': { $lte: ISODate(fiveDaysAgo) }}, // if the createdAt date is less than or equal to 5 days ago...
+            { $set: { "gift.fiveDays": true}} // set fiveDays field to true, to mark that it's been five days 
+            );
+            console.log(update);
+            const results = gifts.find(
+            { $and: [ {"gift.fiveDays": true}, {'gift.sent': false}] }
+            )
+            
+            results.forEach((gift) => {
+            readyToSend.push(gift);
+            })
+        
+            return true;
     } 
     finally {
-    await client.close();
+             await client.close();
     }
     }
 

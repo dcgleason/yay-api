@@ -4,7 +4,7 @@ const nodemailer = require('nodemailer');
 const { google } = require('googleapis');
 
 
-//email send to gift contributors 
+//email send to gift contributors  
 
 router.post('/send', (req, res) => {
 
