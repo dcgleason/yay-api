@@ -12,9 +12,6 @@
           { timestamps: true }
           );
 
-
-
-
 const Tester = mongoose.model('Tester', testerSchema);
 
 module.exports = Tester

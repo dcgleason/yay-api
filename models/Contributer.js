@@ -24,8 +24,6 @@
           { timestamps: true }
           );
 
-
-
 const Contributer = mongoose.model('Contributer', giftSchema);
 
 module.exports = Contributer
