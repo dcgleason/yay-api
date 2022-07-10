@@ -1,7 +1,10 @@
 const express = require('express')
 const router = express.Router()
 const { MongoClient } = require('mongodb');
-const url = 'mongodb+srv://dcgleason:F1e2n3n4!!@yay-cluster01.lijs4.mongodb.net/test'
+
+const url = process.env.DB_URI
+
+//const url = 'mongodb+srv://dcgleason:F1e2n3n4!!@yay-cluster01.lijs4.mongodb.net/test'
 
 // do I need to reconnected to MongoDB here? ^^ 
 
