@@ -21,15 +21,15 @@ router.post('/send', (req, res) => {
     console.log('recipient email is ' + email);
     console.log('gift Code is ' + giftCode);
 
-      let OAuth2 = google.auth.OAuth2
+      const OAuth2 = google.auth.OAuth2
  
-      let OAuth2_client = new OAuth2(process.env.GMAIL_CLIENT_ID, process.env.GMAIL_CLIENT_SECRET);
+      const OAuth2_client = new OAuth2(process.env.GMAIL_CLIENT_ID, process.env.GMAIL_CLIENT_SECRET);
    
       OAuth2_client.setCredentials( { refresh_token: process.env.GMAIL_REFRESH_TOKEN } );
   
-      let accessToken = OAuth2_client.getAccessToken();
+      const accessToken = OAuth2_client.getAccessToken();
   
-      let transport = nodemailer.createTransport({
+      const transport = nodemailer.createTransport({
       service: 'gmail',
       auth: {
           type: 'OAuth2',

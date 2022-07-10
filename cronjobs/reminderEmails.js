@@ -25,15 +25,19 @@ const firstReminderEmail = async () => {
 
 // send email - need to send to through each contributor in gift - loop through gift and contributors inside the gift
 
-            const OAuth2Variable = google.auth.OAuth2
+
+        for(var i = 0; i< firstArr.length; i++){
+
+
+            const OAuth2 = google.auth.OAuth2
             
-            const OAuth2_client_reminder = new OAuth2Variable(process.env.GMAIL_CLIENT_ID, process.env.GMAIL_CLIENT_SECRET);
+            const OAuth2_client = new OAuth2Variable(process.env.GMAIL_CLIENT_ID, process.env.GMAIL_CLIENT_SECRET);
 
-            OAuth2_client_reminder.setCredentials( { refresh_token: process.env.GMAIL_REFRESH_TOKEN } );
+            OAuth2_client.setCredentials( { refresh_token: process.env.GMAIL_REFRESH_TOKEN } );
 
-            let acToken = OAuth2_client_reminder.getAccessToken();
+            let acToken = OAuth2_client.getAccessToken();
 
-            let tport = nodemailer.createTransport({
+            let transport = nodemailer.createTransport({
             service: 'gmail',
             auth: {
                 type: 'OAuth2',
@@ -46,12 +50,12 @@ const firstReminderEmail = async () => {
             })
 
             const mail_options_reminder_one = {
-            from: 'Bundle <dan@amorebooks.io', 
-            to: firstArr[i]., 
-            subject: ownerName + 'selected you to contribute in a gift for ' + name + ' !',
-            html: '<p> You have been selected to contribute to a Bundle for' + name + '! This means that' + ownerName + 'has asked you to write a positive or loving message for ' + name + '.  Your Bundle code is ' + giftCode  + '.  This message is from ' + ownerName+ ': ' + giftOwnerMessage + '. To contribute, go to ' + '<a href="https://bundle.love/write">www.bundle.love/write</a></p>'
+            from: 'Bundle <admin@bundle.love',
+            to: firstArr[i].messages.contributorEmail, 
+            subject: "Reminder: Contribute to" + firstArr[i].recipient + "'s Bundle initiated by "+firstArr[i].owner.ownerName + "!",
+            html: '<p> You have 3 more days to write your responses for' + firstArr[i].recipient + '! Contribute here: <a href="https://bundle.love/write">www.bundle.love/write</a></p>'
             }
-            tport.sendMail( mail_options_reminder_one, function(error, result){
+            transport.sendMail( mail_options_reminder_one, function(error, result){
             if(error){
                 console.log('Error!!!: ',  error)
                 res.sendStatus(500);
@@ -64,6 +68,7 @@ const firstReminderEmail = async () => {
             })
 
             res.send()
+        }
 
 
 const secondReminderEmail = async () => {
@@ -80,6 +85,10 @@ const secondReminderEmail = async () => {
 
 
     // send emails
+
+            
+            
+        for(var i = 0; i< secondArr.length; i++){
 
             const OAuth2 = google.auth.OAuth2
             
@@ -100,14 +109,14 @@ const secondReminderEmail = async () => {
                 accessToken: accessToken
             }
         })
-            
-            const mail_options_two = {
-            from: 'Bundle <dan@amorebooks.io', 
-            to: email, 
-            subject: ownerName + 'selected you to contribute in a gift for ' + name + ' !',
-            html: '<p> You have been selected to contribute to a Bundle for' + name + '! This means that' + ownerName + 'has asked you to write a positive or loving message for ' + name + '.  Your Bundle code is ' + giftCode  + '.  This message is from ' + ownerName+ ': ' + giftOwnerMessage + '. To contribute, go to ' + '<a href="https://bundle.love/write">www.bundle.love/write</a></p>'
-        }
-            transport.sendMail( mail_options_two, function(error, result){
+
+            const mail_options_reminder_two = {
+            from: 'Bundle <admin@bundle.love',
+            to: secondArr[i].messages.contributorEmail, 
+            subject: "Reminder: Contribute to" + secondArr[i].recipient + "'s Bundle initiated by "+secondArr[i].owner.ownerName + "!",
+            html: '<p> You have 2 more days to write your responses for' + secondArr[i].recipient + '! Contribute here: <a href="https://bundle.love/write">www.bundle.love/write</a></p>'
+            }
+            transport.sendMail( mail_options_reminder_two, function(error, result){
             if(error){
                 console.log('Error!!!: ',  error)
                 res.sendStatus(500);
@@ -117,9 +126,10 @@ const secondReminderEmail = async () => {
                 res.sendStatus(200);
             }
             transport.close()
-        })
+            })
 
-        res.send()
+            res.send()
+        }
 
 
 const thirdReminderEmail = async () => {
@@ -134,6 +144,8 @@ const thirdReminderEmail = async () => {
                 console.log('results from gift.find on created between 8-9 days ago ' + arr);
             }
        // send email 
+       
+     for(var i = 0; i< thirdArr.length; i++){
 
        const OAuth2 = google.auth.OAuth2
     
@@ -154,27 +166,26 @@ const thirdReminderEmail = async () => {
            accessToken: accessToken
        }
      })
-       
-       const mail_options_two = {
-         from: 'Bundle <dan@amorebooks.io', 
-         to: email, 
-         subject: ownerName + 'selected you to contribute in a gift for ' + name + ' !',
-         html: '<p> You have been selected to contribute to a Bundle for' + name + '! This means that' + ownerName + 'has asked you to write a positive or loving message for ' + name + '.  Your Bundle code is ' + giftCode  + '.  This message is from ' + ownerName+ ': ' + giftOwnerMessage + '. To contribute, go to ' + '<a href="https://bundle.love/write">www.bundle.love/write</a></p>'
-     }
-       transport.sendMail( mail_options_two, function(error, result){
-       if(error){
-             console.log('Error!!!: ',  error)
-             res.sendStatus(500);
-         }
-         else {
-             console.log("Success woo!:  ", result)
-             res.sendStatus(200);
-         }
-         transport.close()
-     })
- 
-     res.send()
-   
+        const mail_options_reminder_three = {
+        from: 'Bundle <admin@bundle.love',
+        to: thirdArr[i].messages.contributorEmail, 
+        subject: "Reminder: Contribute to" + thirdArr[i].recipient + "'s Bundle initiated by "+thirdArr[i].owner.ownerName + "!",
+        html: '<p> You have 1 more days to write your responses for' + thirdArr[i].recipient + '! Contribute here: <a href="https://bundle.love/write">www.bundle.love/write</a>. This is your last reminder! : ) </p>'
+        }
+        transport.sendMail( mail_options_reminder_three, function(error, result){
+        if(error){
+            console.log('Error!!!: ',  error)
+            res.sendStatus(500);
+        }
+        else {
+            console.log("Success woo!:  ", result)
+            res.sendStatus(200);
+        }
+        transport.close()
+        })
+
+        res.send()
+    }
 
 // should be getting the same emails as the days go on
 
@@ -183,7 +194,7 @@ cron.schedule('* * 12 * * 0-6', () => {
     console.log('Checking for emails to send every day 12:00 pm at America/New_York timezone. Searches for orders that were created 2 days ago - first email reminder');
     // email code
     // query db for gifts where sent = true, and timestamp is between 6-7 days away (1-2 days after start time)
-    await Gift.where(createdAt).
+    firstReminderEmail();
     }
     , {
     scheduled: false,
@@ -195,6 +206,7 @@ cron.schedule('* * 12 * * 0-6', () => {
     console.log('Checking for emails to send every day 12:00 pm at America/New_York timezone. Searches for orders that were created 3 days ago - second email reminder');
     // email code
     // query db for gifts where sent = true, and timestamp is between 7-8 days away (2-3 days after start time)
+    secondReminderEmail();
     }
     , {
     scheduled: false,
@@ -205,6 +217,7 @@ cron.schedule('* * 12 * * 0-6', () => {
     console.log('Checking for emails to send every day 12:00 pm at America/New_York timezone. Searches for orders that were created 4 days ago - final email reminder');
     // email code
     // query db for gifts where sent = true, and timestamp is between 8-9 days away (3-4 days after start time)
+    thirdReminderEmail()
     }
     , {
     scheduled: false,

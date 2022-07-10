@@ -26,9 +26,11 @@ const { string } = require('pg-format');
           owner: ownerSchema,
           //gifts have one owner
           giftCode: Number,
+          recipient: String,
            // uniqueId is unqiue to the user
           messages: [{  // array of message objects, added after 5 days are up
-            contributor: String,
+            contributor: String, // full name of contributor
+            contributorEmail: String,
             giftCode: Number,
             question_responses: [String]  // add and image?
           }],
