@@ -8,7 +8,7 @@ const axios = require('axios')
 /**
  * /api/token route retrieves a jwt for access to the lulu print api
  * this access_token must be sent with all subsequent requests
- * THIS WAS HARD... DONT TOUCH ANYTHING OR RISK BEING BITTEN
+ * THIS WAS HARD... DONT TOUCH ANYTHING OR RISK BEING BITTEN  <-- just copying it for use elsewhere!
  */
  router.get('/token', async (req,res)=>{
     console.log("attempting lulu api authentication.........\n")
