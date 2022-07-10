@@ -55,17 +55,17 @@ router.post('/insertOrder', async(req, res)=>{
 router.post('/insertmessages', async(req, res)=>{
     res.send("insert Messages home page!!!")
 
-    // instead of creating a gift - update it with the messages
+    if(req.body.messages && req.body.giftCode){   // instead of creating a gift - update it with the messages
+    var query = { 'giftCode': req.body.giftCode }
+    var update = { $push: { messages : req.body.messages}}
+    const result = await Gift.findOneAndUpdate(query, update, function(){
+    });
+    }
+    res.send(result)
+    })
 
-if(req.body.messages && req.body.giftCode){
-   var query = { 'giftCode': req.body.giftCode }
-   var update = { $push: { messages : req.body.messages}}
-   await Gift.findOneAndUpdate(query, update);
-}
-})
-
-router.get('/about', (req,res)=>{
-    res.send("About GIFTS page")
+    router.get('/about', (req,res)=>{
+        res.send("About GIFTS page")
 })
 
 
