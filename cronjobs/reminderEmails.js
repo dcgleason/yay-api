@@ -4,7 +4,7 @@ dotenv.config()
 
 
 cron.schedule('* * 12 * * 0-6', () => {
-    console.log('Checking for emails to send every day 12:00 pm at America/New_York timezone. Searche for orders that were created 2 days ago - first email reminder');
+    console.log('Checking for emails to send every day 12:00 pm at America/New_York timezone. Searches for orders that were created 2 days ago - first email reminder');
     // email code
     }
     , {
@@ -14,7 +14,7 @@ cron.schedule('* * 12 * * 0-6', () => {
 
 
 cron.schedule('* * 12 * * 0-6', () => {
-    console.log('Checking for emails to send every day 12:00 pm at America/New_York timezone. Searche for orders that were created 3 days ago - second email reminder');
+    console.log('Checking for emails to send every day 12:00 pm at America/New_York timezone. Searches for orders that were created 3 days ago - second email reminder');
     // email code
     }
     , {
@@ -23,7 +23,7 @@ cron.schedule('* * 12 * * 0-6', () => {
 });
 
 cron.schedule('* * 12 * * 0-6', () => {
-    console.log('Checking for emails to send every day 12:00 pm at America/New_York timezone. Searche for orders that were created 4 days ago - final email reminder');
+    console.log('Checking for emails to send every day 12:00 pm at America/New_York timezone. Searches for orders that were created 4 days ago - final email reminder');
     // email code
     }
     , {
