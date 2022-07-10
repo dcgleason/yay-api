@@ -13,14 +13,14 @@ dotenv.config()
 
 const firstReminderEmail = async () => {
 
-    var sevenDays = 604800 * 1000 
-    var sixDays = 518400 * 1000
-    var sixDaysAgo = new Date(Date.now() - sixDays) // 6 days ago in ISOdate format
-    var sevenDaysAgo = new Date(Date.now() - sevenDays) //7 days ago in ISODate - which is the format of the MongoDB timestamp
+    var twoDays = 172800 * 1000 
+    var oneDay = 86400 * 1000
+    var oneDayAgo = new Date(Date.now() - oneDay) // 1 days ago in ISOdate format
+    var twoDaysAgo = new Date(Date.now() - twoDays) // 2 days ago in ISODate - which is the format of the MongoDB timestamp
   
-// query db for gifts created between 6 and 7 days ago
-        const firstArr = await Gift.find({ createdAt: { $gte: sixDaysAgo, $lte: sevenDaysAgo } });
-        console.log('results from gift.find on created between 6-7 days ago ' + arr);
+// query db for gifts created between 1 and 2 days ago and fiveDays in the gift object is false 
+        const firstArr = await Gift.find({ createdAt: { $gte: oneDayAgo, $lte: twoDaysAgo } }, { fiveDays: false});
+        console.log('results from gift.find on created between 1-2 days after owner purchased bundle and initial email was sent out ' + firstArr);
     }
 
 // send email - need to send to through each contributor in gift - loop through gift and contributors inside the gift
@@ -73,14 +73,14 @@ const firstReminderEmail = async () => {
 
 const secondReminderEmail = async () => {
 
-        var eightDays = 691200 * 1000 
-        var sevenDays = 604800 * 1000
-        var sevenDaysAgo = new Date(Date.now() - sevenDays) // 7 days ago in ISOdate format
-        var eightDaysAgo = new Date(Date.now() - eightDays) // 8 days ago in ISODate - which is the format of the MongoDB timestamp
+        var threeDays = 259200 * 1000 
+        var twoDays = 172800 * 1000
+        var twoDaysAgo = new Date(Date.now() - twoDays) // 2 days ago in ISOdate format
+        var threeDaysAgo = new Date(Date.now() - threeDays) // 3 days ago in ISODate - which is the format of the MongoDB timestamp
       
-    // query db for gifts created between 7 and 8 days ago
-            const secondArr = await Gift.find({ createdAt: { $gte: sevenDaysAgo, $lte: eightDaysAgo } });
-            console.log('results from gift.find on created between 7-8 days ago ' + arr);
+    // query db for gifts created between 2 and 3 days ago and fiveDays is false in the gift object
+            const secondArr = await Gift.find({ createdAt: { $gte: twoDaysAgo, $lte: threeDaysAgo }}, { fiveDays: true});
+            console.log('results from gift.find on created between 2-3 days ago ' + secondArr);
         }
 
 
@@ -88,7 +88,7 @@ const secondReminderEmail = async () => {
 
             
             
-        for(var i = 0; i< secondArr.length; i++){
+        for(var j = 0; j< secondArr.length; j++){
 
             const OAuth2 = google.auth.OAuth2
             
@@ -112,9 +112,9 @@ const secondReminderEmail = async () => {
 
             const mail_options_reminder_two = {
             from: 'Bundle <admin@bundle.love',
-            to: secondArr[i].messages.contributorEmail, 
-            subject: "Reminder: Contribute to" + secondArr[i].recipient + "'s Bundle initiated by "+secondArr[i].owner.ownerName + "!",
-            html: '<p> You have 2 more days to write your responses for' + secondArr[i].recipient + '! Contribute here: <a href="https://bundle.love/write">www.bundle.love/write</a></p>'
+            to: secondArr[j].messages.contributorEmail, 
+            subject: "Reminder: Contribute to" + secondArr[j].recipient + "'s Bundle initiated by "+secondArr[j].owner.ownerName + "!",
+            html: '<p> You have 2 more days to write your responses for' + secondArr[j].recipient + '! Contribute here: <a href="https://bundle.love/write">www.bundle.love/write</a></p>'
             }
             transport.sendMail( mail_options_reminder_two, function(error, result){
             if(error){
@@ -134,18 +134,18 @@ const secondReminderEmail = async () => {
 
 const thirdReminderEmail = async () => {
 
-            var nineDays = 777600 * 1000 
-            var eightDays = 691200 * 1000
-            var eightDaysAgo = new Date(Date.now() - eightDays) // 8 days ago in ISOdate format
-            var nineDaysAgo = new Date(Date.now() - nineDays) // 9 days ago in ISODate - which is the format of the MongoDB timestamp
+            var threeDays = 259200 * 1000 
+            var fourDays = 345600 * 1000
+            var threeDaysAgo = new Date(Date.now() - threeDays) // 3 days ago in ISOdate format
+            var fourDaysAgo = new Date(Date.now() - fourDays) // 4 days ago in ISODate - which is the format of the MongoDB timestamp
           
-        // query db for gifts created between 8 and 9 days ago
-                const thirdArr = await Gift.find({ createdAt: { $gte: eightDaysAgo, $lte: nineDaysAgo } });
-                console.log('results from gift.find on created between 8-9 days ago ' + arr);
+        // query db for gifts created between 3 and 4 days ago and fiveDays is false
+                const thirdArr = await Gift.find({ createdAt: { $gte: threeDays, $lte: fourDays } }, { fiveDays: true});
+                console.log('results from gift.find on created between 3-4 days ago ' + thirdArr);
             }
        // send email 
        
-     for(var i = 0; i< thirdArr.length; i++){
+     for(var k = 0; k< thirdArr.length; k++){
 
        const OAuth2 = google.auth.OAuth2
     
@@ -168,9 +168,9 @@ const thirdReminderEmail = async () => {
      })
         const mail_options_reminder_three = {
         from: 'Bundle <admin@bundle.love',
-        to: thirdArr[i].messages.contributorEmail, 
-        subject: "Reminder: Contribute to" + thirdArr[i].recipient + "'s Bundle initiated by "+thirdArr[i].owner.ownerName + "!",
-        html: '<p> You have 1 more days to write your responses for' + thirdArr[i].recipient + '! Contribute here: <a href="https://bundle.love/write">www.bundle.love/write</a>. This is your last reminder! : ) </p>'
+        to: thirdArr[k].messages.contributorEmail, 
+        subject: "Reminder: Contribute to" + thirdArr[k].recipient + "'s Bundle initiated by "+thirdArr[k].owner.ownerName + "!",
+        html: '<p> You have 1 more days to write your responses for' + thirdArr[k].recipient + '! Contribute here: <a href="https://bundle.love/write">www.bundle.love/write</a>. This is your last reminder! : ) </p>'
         }
         transport.sendMail( mail_options_reminder_three, function(error, result){
         if(error){

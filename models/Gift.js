@@ -36,8 +36,8 @@ const { string } = require('pg-format');
           }],
           //contributers are an array of contributer ids
        //   contributorIDs:[String], <-- what is the thinking behind contributorsIDs? 
-          fiveDays: false,
-          sent: false
+          fiveDays: false, // for determining if it's been 5 days or not
+          sent: false // for determining if it was shipped to end user / recipient
           
 
         },
