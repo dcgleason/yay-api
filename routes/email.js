@@ -4,6 +4,7 @@ const nodemailer = require('nodemailer');
 const { google } = require('googleapis');
 
 
+
 //email send to gift contributors  
 
 router.post('/send', (req, res) => {
@@ -20,15 +21,15 @@ router.post('/send', (req, res) => {
     console.log('recipient email is ' + email);
     console.log('gift Code is ' + giftCode);
 
-      const OAuth2 = google.auth.OAuth2
-    
-      const OAuth2_client = new OAuth2(process.env.GMAIL_CLIENT_ID, process.env.GMAIL_CLIENT_SECRET);
-  
+      let OAuth2 = google.auth.OAuth2
+ 
+      let OAuth2_client = new OAuth2(process.env.GMAIL_CLIENT_ID, process.env.GMAIL_CLIENT_SECRET);
+   
       OAuth2_client.setCredentials( { refresh_token: process.env.GMAIL_REFRESH_TOKEN } );
   
-      const accessToken = OAuth2_client.getAccessToken();
+      let accessToken = OAuth2_client.getAccessToken();
   
-      const transport = nodemailer.createTransport({
+      let transport = nodemailer.createTransport({
       service: 'gmail',
       auth: {
           type: 'OAuth2',
