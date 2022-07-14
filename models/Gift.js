@@ -33,6 +33,7 @@ const { string } = require('pg-format');
             contributorEmail: String,
             giftCode: Number,
             question_responses: [String]  // add and image?
+            //TODO: add a string array for question objects
           }],
           //contributers are an array of contributer ids
        //   contributorIDs:[String], <-- what is the thinking behind contributorsIDs? 

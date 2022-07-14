@@ -10,6 +10,10 @@ const getOrdersToSendToLulu = () => {
     var sixDaysAgo = new Date(Date.now() - sixDays) // 6 days ago in ISODate - which is the format of the MongoDB timestamp
   
 // query db for gifts created between 5 and 6 days ago and fiveDays in the gift object is true 
+//MANNY: 
+// gifts are going to return an array of objects 
+// the query should be based on the gift id since all questions and responses will be connected to one gift Danny: --> but we're pulling the gift based on time since the initation
+//each gift has an array of question obects , youll have to get those question id's and pull out the associated questions and responses
     const toLuluArray = await Gift.find({ createdAt: { $gte: fiveDaysAgo, $lte: sixDaysAgo } }, { fiveDays: true});
 
     if(toLuluArray.length != 0){ // if there are gifts... (need to verify that this is an array)
