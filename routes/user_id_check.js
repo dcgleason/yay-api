@@ -13,9 +13,10 @@ const url = process.env.DB_URI
 router.post('/check', async (req, res) => { 
 
     var giftCode = req.body.giftCode
+    const client = new MongoClient(url);
   
     try {
-          const client = new MongoClient(url);
+          
           await client.connect();
           console.log('unique - after mongo connect')
         
