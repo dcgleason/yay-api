@@ -10,12 +10,12 @@ const stripe = require('stripe')('sk_test_51KtCf1LVDYVdzLHCA31MSSlOKhe7VQtXqJJiP
 
 
   app.use((req, res, next) => {
-   // const allowedOrigins = ['http://localhost:3000', 'https://bundle.love'];
+    const allowedOrigins = ['http://localhost:3000', 'https://bundle.love'];
     const origin = req.headers.origin;
     console.log('origin' + origin);
-   // if (allowedOrigins.includes(origin)) {
+   if (allowedOrigins.includes(origin)) {
     res.setHeader('Access-Control-Allow-Origin', origin);
-  //  }
+   }
     res.setHeader( 'Access-Control-Allow-Methods', '*')
     res.setHeader("Access-Control-Allow-Headers", "*");
     next();
