@@ -12,29 +12,30 @@ const url = process.env.DB_URI
 // gifts Home page
 router.post('/check', async (req, res) => { 
 
-    var giftCode = req.body.giftCode
-    const client = new MongoClient(url);
+    // var giftCode = req.body.giftCode
+    // const client = new MongoClient(url);
   
-    try {
+    // try {
           
-          await client.connect();
-          console.log('unique - after mongo connect')
+    //       await client.connect();
+    //       console.log('unique - after mongo connect')
         
-        const gifts = client.db("yay_gift_orders").collection("gift_orders");
-        const order = gifts.findOne({"gift.giftCode": giftCode});
-        console.log('order results' + order);
-        if(order){
-          console.log('in if statement')
-          res.send(true)
-        }
-        else {
-          res.send(false)
-        }
+    //     const gifts = client.db("yay_gift_orders").collection("gift_orders");
+    //     const order = gifts.findOne({"gift.giftCode": giftCode});
+    //     console.log('order results' + order);
+    //     if(order){
+    //       console.log('in if statement')
+    //       res.send(true)
+    //     }
+    //     else {
+    //       res.send(false)
+    //     }
         
-     } 
-     finally {
-        await client.close();
-     }
+    //  } 
+    //  finally {
+    //     await client.close();
+    //  }
+    res.send(false);
     })
   
 
