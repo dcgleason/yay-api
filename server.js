@@ -34,7 +34,7 @@ const beta = require('./routes/beta')
 const lulu = require('./routes/lulu')
 const payment = require('./routes/stripe')
 const email = require('./routes/email')
-const userID = require('./routes/user_id_check')
+const userID = require('./routes/check')
 
 
 
