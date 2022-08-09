@@ -10,9 +10,9 @@ router.post('/check', async (req, res) => {
   
     try {
           
-        const result = await Gift.findOne({ giftCode: giftCode }).exec();
+        const result = await Gift.findOne({ giftID: giftCode }).exec();
         if(result){
-          console.log('gift code already exists')
+          console.log('gift ID already exists')
           res.send(true)
         }
         else {
