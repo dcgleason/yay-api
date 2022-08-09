@@ -3,11 +3,12 @@ var cron = require('node-cron');
 let dotenv = require('dotenv');
 const router = express.Router()
 const Gift = require("../models/Gift")
+const Response = require("../models/Response");
 dotenv.config()
 
 
-var readyToSend = []
-var associatedMessages = []
+var readyGifts = []
+var messagesReadyForPDF = []
 
 const mongoOrderCollect = async () => { // transition to mongoose
 
@@ -26,13 +27,13 @@ const mongoOrderCollect = async () => { // transition to mongoose
             )
             
             results.forEach((gift) => {
-            readyToSend.push(gift);
+                readyGifts.push(gift);
             })
         
             return true;
     } 
-    finally {
-             await client.close();
+    catch {
+             console.log('error while collecting Gift Orders')
     }
     }
 
@@ -40,28 +41,21 @@ const mongoOrderCollect = async () => { // transition to mongoose
 
   
         try {
-                const client = new MongoClient(url);
-                await client.connect();
-                const messages = client.db("yay_gift_orders").collection("messages");
-
-                for(var i =0; i<todaysOrders.length; i++ ){ //loop through orders and match all giftCodes to message objects
-                const results = messages.find(
-                {"giftCode": readyToSend[i].gift.giftCode}
-                );
-
-                const gifts = client.db("yay_gift_orders").collection("gift_orders");
                 
-                results.forEach((message) => { //for each message object find the gift order and push the message object with a mathing giftCode into the message array inside the associated gift Order
-                associatedMessages.push(message);
-                gifts.findOneAndUpdate(
-                    {'gift.giftCode': message.giftCode},
-                    { $push: { 'messages': message}} // the message object with name, message (arr), and gift code are all push into the message array in the orders document
-                )
-                })
+
+                for(var i =0; i<readyGifts.length; i++ ){ //loop through orders and match all giftID to message objects
+                        const messages = await Response.find(
+                        {"giftCode": readyGifts[i].giftID})
+                        
+                        messages.forEach((message) => { //for each message object  associated to a gift find the gift order and push the message object with a mathing giftCode into the message array inside the associated gift Order
+                                messagesReadyForPDF.push({'answer': message.answer, 'person': message.contributor, 'giftID': message.giftID });
+                        });
                 }
+
+                // create PDF here with messagesReadyForPDF - loop through and giftID is the same, put it in the same PDF template and send each one separately (or batched?) to Lulu
         } 
-        finally {
-                await client.close();
+        catch {
+                console.log('error when collecting messages for PDF');
         }
         }
 
@@ -70,7 +64,7 @@ const mongoOrderCollect = async () => { // transition to mongoose
                 console.log('Running a job every day at 12:00 pm at America/New_York timezone. Searching for orders that were created more than 5 days ago');
                 const done = mongoOrderCollect();
                 if (done){
-                mongoMessagesCollect();
+                        mongoMessagesCollect();
                 }
       }, {
                 scheduled: false,

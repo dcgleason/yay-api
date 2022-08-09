@@ -12,6 +12,7 @@ const mongoose = require('mongoose')
             question: String,
             answer: String,
             img: String,
+            contributor: String,
           },
           { timestamps: true }
           );
