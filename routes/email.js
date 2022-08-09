@@ -9,7 +9,9 @@ const { google } = require('googleapis');
 
 router.post('/send', (req, res) => {
 
-  
+  /*
+   Need to re apply to google cloud console for new client secret 
+
     var name = req.body.recipient
     var email = req.body.email
     var giftCode = req.body.giftCode
@@ -60,6 +62,7 @@ router.post('/send', (req, res) => {
     })
 
     res.send()
+    */
   
   })
 
