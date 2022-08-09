@@ -7,7 +7,7 @@ const mongoose = require('mongoose')
          * each question document may contain an image (img) represented as a string
          */
         const questionSchema = new Schema({
-            giftID: String,
+            giftID: Number,
             contributorID: String,
             question: String,
             answer: String,
