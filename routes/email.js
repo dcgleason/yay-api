@@ -9,9 +9,6 @@ const { google } = require('googleapis');
 
 router.post('/send', (req, res) => {
 
-  /*
-   Need to re apply to google cloud console for new client secret 
-
     var name = req.body.recipient
     var email = req.body.email
     var giftCode = req.body.giftCode
@@ -44,7 +41,7 @@ router.post('/send', (req, res) => {
     })
       
       const mail_options_two = {
-        from: 'Bundle <dan@amorebooks.io', 
+        from: 'Bundle <dan@usebundle.co', 
         to: email, 
         subject: ownerName + 'selected you to contribute in a gift for ' + name + ' !',
         html: '<p> You have been selected to contribute to a Bundle for' + name + '! This means that' + ownerName + 'has asked you to write a positive or loving message for ' + name + '.  Your Bundle code is ' + giftCode  + '.  This message is from ' + ownerName+ ': ' + giftOwnerMessage + '. To contribute, go to ' + '<a href="https://bundle.love/write">www.bundle.love/write</a></p>'
@@ -62,7 +59,7 @@ router.post('/send', (req, res) => {
     })
 
     res.send()
-    */
+    
   
   })
 
