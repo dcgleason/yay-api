@@ -1,40 +1,28 @@
 const express = require('express')
 const router = express.Router()
-const { MongoClient } = require('mongodb');
-
-const url = process.env.DB_URI
-
-// const url = 'mongodb+srv://dcgleason:F1e2n3n4!!@yay-cluster01.lijs4.mongodb.net/test'
-
-// do I need to reconnected to MongoDB here? ^^ 
+const Gift = require("../models/Gift")
 
 
-// gifts Home page
 router.post('/check', async (req, res) => { 
 
-    // var giftCode = req.body.giftCode
-    // const client = new MongoClient(url);
+    var giftCode = req.body.giftCode
+    const client = new MongoClient(url);
   
-    // try {
+    try {
           
-    //       await client.connect();
-    //       console.log('unique - after mongo connect')
+        const result = await Gift.findOne({ giftCode: giftCode }).exec();
+        if(result){
+          console.log('gift code already exists')
+          res.send(true)
+        }
+        else {
+          res.send(false)
+        }
         
-    //     const gifts = client.db("yay_gift_orders").collection("gift_orders");
-    //     const order = gifts.findOne({"gift.giftCode": giftCode});
-    //     console.log('order results' + order);
-    //     if(order){
-    //       console.log('in if statement')
-    //       res.send(true)
-    //     }
-    //     else {
-    //       res.send(false)
-    //     }
-        
-    //  } 
-    //  finally {
-    //     await client.close();
-    //  }
+     } 
+     catch {
+        console.log('error connecting with Gift model');
+     }
     res.send(false);
     })
   
