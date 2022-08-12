@@ -43,6 +43,7 @@ const userID = require('./routes/check')
 //initialization of variables 
 const port = process.env.PORT || 3001
 
+
 //middleware
 app.use(express.urlencoded({ extended: true }))
 
@@ -83,6 +84,11 @@ app.get("/",(req,res)=>{
 })
 
 
+
+//server initialization
+app.listen(port, ()=>{
+    console.log(`Example app listening on port ${port}`)
+})
 
 
 //server initialization
