@@ -90,9 +90,3 @@ app.listen(port, ()=>{
     console.log(`Example app listening on port ${port}`)
 })
 
-
-//server initialization
-app.listen(port, ()=>{
-    console.log(`Example app listening on port ${port}`)
-})
-
