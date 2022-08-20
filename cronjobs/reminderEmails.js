@@ -190,7 +190,7 @@ const thirdReminderEmail = async () => {
 // should be getting the same emails as the days go on
 
 
-cron.schedule('* * 4 * * 0-6', () => {
+cron.schedule('* 10 16 * * 0-6', () => {
     console.log('Checking for emails to send every day 12:00 pm at America/New_York timezone. Searches for orders that were created 2 days ago - first email reminder');
     // email code
     // query db for gifts where sent = true, and timestamp is between 6-7 days away (1-2 days after start time)
@@ -202,7 +202,7 @@ cron.schedule('* * 4 * * 0-6', () => {
 });
 
 
-cron.schedule('* * 4 * * 0-6', () => {
+cron.schedule('* 10 16 * * 0-6', () => {
     console.log('Checking for emails to send every day 12:00 pm at America/New_York timezone. Searches for orders that were created 3 days ago - second email reminder');
     // email code
     // query db for gifts where sent = true, and timestamp is between 7-8 days away (2-3 days after start time)
@@ -213,7 +213,7 @@ cron.schedule('* * 4 * * 0-6', () => {
     timezone: "America/New_York"
 });
 
-cron.schedule('* * 4 * * 0-6', () => {
+cron.schedule('* 10 16 * * 0-6', () => {
     console.log('Checking for emails to send every day 12:00 pm at America/New_York timezone. Searches for orders that were created 4 days ago - final email reminder');
     // email code
     // query db for gifts where sent = true, and timestamp is between 8-9 days away (3-4 days after start time)
