@@ -8,7 +8,7 @@ dotenv.config()
 
 
 // callback functions 
-// remember...that when comparing data future is 'greater' than the past
+// remember...that when comparing dates future is 'greater' than the past
 // may need to use the ISODate() contructor function when comparing data to MongoDB timestamp
 
 const firstReminderEmail = async () => {
@@ -190,26 +190,26 @@ const thirdReminderEmail = async () => {
 // should be getting the same emails as the days go on
 
 
-cron.schedule('* 10 16 * * 0-6', () => {
+cron.schedule('* * * * * *', () => {
     console.log('Checking for emails to send every day 16:10 pm at America/New_York timezone. Searches for orders that were created 2 days ago - first email reminder');
     // email code
     // query db for gifts where sent = true, and timestamp is between 6-7 days away (1-2 days after start time)
-    firstReminderEmail();
+   // firstReminderEmail();
     }
     , {
-    scheduled: true,
+    scheduled: false,
     timezone: "America/New_York"
 });
 
 
-cron.schedule('* 10 16 * * 0-6', () => {
+cron.schedule('* * * * * *', () => {
     console.log('Checking for emails to send every day 16:10 pm at America/New_York timezone. Searches for orders that were created 3 days ago - second email reminder');
     // email code
     // query db for gifts where sent = true, and timestamp is between 7-8 days away (2-3 days after start time)
-    secondReminderEmail();
+   // secondReminderEmail();
     }
     , {
-    scheduled: true,
+    scheduled: false,
     timezone: "America/New_York"
 });
 
@@ -220,6 +220,6 @@ cron.schedule('* 10 16 * * 0-6', () => {
     thirdReminderEmail()
     }
     , {
-    scheduled: true,
+    scheduled: false,
     timezone: "America/New_York"
 });
