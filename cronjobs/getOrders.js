@@ -1,7 +1,6 @@
 
 var cron = require('node-cron');
 let dotenv = require('dotenv');
-const router = express.Router()
 const Gift = require("../models/Gift")
 const Response = require("../models/Response");
 dotenv.config()
