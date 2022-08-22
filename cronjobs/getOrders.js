@@ -29,8 +29,9 @@ const mongoOrderCollect = async () => { // transition to mongoose
             results.forEach((gift) => {
                 readyGifts.push(gift);
             })
-        
+        if(results){
             return true;
+        }
     } 
     catch {
              console.log('error while collecting Gift Orders')
