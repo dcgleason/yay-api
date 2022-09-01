@@ -1,6 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const Gift = require("../models/Gift")
+const Response = require("../models/Response")
 
 //gifts Home page
 router.post('/insertOrder', async(req, res)=>{
@@ -51,13 +52,35 @@ router.post('/insertOrder', async(req, res)=>{
 
 
 router.post('/insertmessages', async(req, res)=>{
+
+
+    const response = {
+        giftID: req.body.giftID,
+        questionOne: req.body.questionOne,
+        questionTwo: req.body.questionTwo,
+        questionThree: req.body.questionThree,
+        additionalComments: req.body.additionalComments,
+        contributor: req.body.contributorName,
+        recipientName: req.body.recipientName,
+        recipientStreet: req.body.recipientStreet,
+        recipientCity: req.body.recipientCity,
+        recipientZip: req.body.recipientZip, 
+        recipientCountry: req.body.recipientCountry
+    } 
     res.send("insert Messages home page!!!")
 
-    if(req.body.messages && req.body.giftCode){   // instead of creating a gift - update it with the messages
-    var query = { 'giftCode': req.body.giftCode }
-    var update = { $push: { messages : req.body.messages}}
-    const result = await Gift.findOneAndUpdate(query, update);
-    res.send(result)
+    if(req.body.contributorName){   // instead of creating a gift - update it with the messages
+        await Response.create(response, (err, createdItem)=>{
+            if(err){
+                console.log(err)
+                res.sendStatus(500)
+            }
+            else {
+                console.log(createdItem)
+                res.sendStatus(200)
+    
+            }
+        }) 
     }
     else{
         res.send("Messages and/or giftCode not present in the api call")

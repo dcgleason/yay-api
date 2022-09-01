@@ -6,11 +6,13 @@ const mongoose = require('mongoose')
          * and a question will be associated with on Contributor via contributorID
          * each question document may contain an image (img) represented as a string
          */
-        const questionSchema = new Schema({
+        const responseSchema = new Schema({
             giftID: Number,
             contributorID: String,
-            question: String,
-            answer: String,
+            questionOne: String,
+            questionTwo: String,
+            questionThree: String,
+            additionalComments: String,
             img: String,
             contributor: String,
           },
@@ -19,6 +21,6 @@ const mongoose = require('mongoose')
 
 
 
-const Question = mongoose.model('Question', questionSchema);
+const Response = mongoose.model('Response', responseSchema);
 
-module.exports = Question
+module.exports = Response
