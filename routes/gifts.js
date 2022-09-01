@@ -54,20 +54,53 @@ router.post('/insertOrder', async(req, res)=>{
 router.post('/insertmessages', async(req, res)=>{
 
 
+    var data = JSON.stringify({
+        "image_template": 6,
+        "handwriting_style": 4,
+        "message": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+        "recipients": [
+          {
+            "name": "Current Resident",
+            "address": "123 Main Street",
+            "city": "Fake City",
+            "province": "NY",
+            "postal_code": "55555",
+            "country": "US"
+          }
+        ]
+      });
+      
+      var config = {
+        method: 'post',
+        url: 'https://api.thanks.io/api/v2/send/postcard',
+        headers: { 
+          'Content-Type': 'application/json'
+        },
+        data : data
+      };
+      
+      axios(config)
+      .then(function (response) {
+        console.log(JSON.stringify(response.data));
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+
+
     const response = {
         giftID: req.body.giftID,
         questionOne: req.body.questionOne,
-        questionTwo: req.body.questionTwo,
-        questionThree: req.body.questionThree,
-        additionalComments: req.body.additionalComments,
         contributor: req.body.contributorName,
         recipientName: req.body.recipientName,
         recipientStreet: req.body.recipientStreet,
         recipientCity: req.body.recipientCity,
         recipientZip: req.body.recipientZip, 
-        recipientCountry: req.body.recipientCountry
+        recipientCountry: req.body.recipientCountry,
+        published: false
     } 
     res.send("insert Messages home page!!!")
+
 
     if(req.body.contributorName){   // instead of creating a gift - update it with the messages
         await Response.create(response, (err, createdItem)=>{

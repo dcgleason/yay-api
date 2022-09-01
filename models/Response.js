@@ -10,11 +10,15 @@ const mongoose = require('mongoose')
             giftID: Number,
             contributorID: String,
             questionOne: String,
-            questionTwo: String,
-            questionThree: String,
-            additionalComments: String,
-            img: String,
+            // img: String,
             contributor: String,
+            recipientName: String,
+            recipientStreet: String,
+            recipientCity: String,
+            recipientZip: Number, 
+            recipientCountry: String,
+            published: Boolean
+            
           },
           { timestamps: true }
           );
