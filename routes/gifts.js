@@ -87,7 +87,7 @@ router.post('/messages', async(req, res)=>{
       
       axios(config)
       .then(function (response) {
-        console.log("response data " + JSON.stringify(response.data));
+        res.send("response data " + JSON.stringify(response.data));
       })
       .catch(function (error) {
         console.log("error is " + error);
