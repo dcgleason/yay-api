@@ -55,6 +55,7 @@ router.get('/messages', async(req, res)=>{
 })
 
 router.post('/messages', async(req, res)=>{
+    res.sendStatus(200);
     console.log("Messages console.log!!!")
 
 
