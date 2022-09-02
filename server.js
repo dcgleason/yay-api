@@ -18,7 +18,7 @@ const stripe = require('stripe')('sk_test_51KtCf1LVDYVdzLHCA31MSSlOKhe7VQtXqJJiP
 //    }
    
 //     console.log('origin' + origin);
-    res.setHeader('Access-Control-Allow-Origin', 'https://www.usebundle.co');
+    res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader( 'Access-Control-Allow-Methods', '*')
     res.setHeader("Access-Control-Allow-Headers", "*");
     next();
