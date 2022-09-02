@@ -53,7 +53,8 @@ router.post('/insertOrder', async(req, res)=>{
 
 router.post('/insertmessages', async(req, res)=>{
 
-    res.send(200);
+    res.send('200');
+    res.sendStatus(200);
 
 
     var data = JSON.stringify({
@@ -102,7 +103,6 @@ router.post('/insertmessages', async(req, res)=>{
         recipientCountry: req.body.recipientCountry,
         published: false
     } 
-    res.send("insert Messages home page!!!")
 
 
     if(req.body.contributorName){   // instead of creating a gift - update it with the messages
