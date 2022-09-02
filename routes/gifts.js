@@ -75,7 +75,7 @@ router.post('/insertmessages', async(req, res)=>{
       
       var config = {
         method: 'post',
-        url: 'https://api.thanks.io/api/v2/send/postcard',
+        url: 'https://api.thanks.io/api/v2/send/notecard',
         headers: { 
           'Content-Type': 'application/json',
           'Authorization': 'Bearer '+process.env.THANKS_BUNDLE_TOKEN
