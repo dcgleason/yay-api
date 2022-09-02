@@ -53,7 +53,7 @@ router.post('/insertOrder', async(req, res)=>{
 
 router.post('/insertmessages', async(req, res)=>{
 
-    res.sendStatus(200);
+    res.send(200);
 
 
     var data = JSON.stringify({
