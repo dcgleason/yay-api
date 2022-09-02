@@ -81,7 +81,7 @@ router.post('/messages', async(req, res)=>{
         url: 'https://api.thanks.io/api/v2/send/notecard',
         headers: { 
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer '+process.env.THANKS_BUNDLE_TOKEN
+          'Authorization': 'Bearer ' + process.env.THANKS_BUNDLE_TOKEN
         },
         data : data
       };
