@@ -55,7 +55,7 @@ router.post('/insertmessages', async(req, res)=>{
 
 
     var data = JSON.stringify({
-        "image_template": 6,
+        "image_template": 49934,
         "handwriting_style": 4,
         "message": req.body.questionOne,
         "recipients": [
@@ -74,17 +74,18 @@ router.post('/insertmessages', async(req, res)=>{
         method: 'post',
         url: 'https://api.thanks.io/api/v2/send/postcard',
         headers: { 
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer '+process.env.THANKS_BUNDLE_TOKEN
         },
         data : data
       };
       
       axios(config)
       .then(function (response) {
-        console.log(JSON.stringify(response.data));
+        console.log("response data " + JSON.stringify(response.data));
       })
       .catch(function (error) {
-        console.log(error);
+        console.log("error is " + error);
       });
 
 
