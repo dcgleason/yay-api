@@ -51,7 +51,7 @@ router.post('/insertOrder', async(req, res)=>{
 })
 
 
-router.post('/insertmessages', async(req, res)=>{
+router.post('/messages', async(req, res)=>{
 
     res.send('200');
     res.sendStatus(200);
