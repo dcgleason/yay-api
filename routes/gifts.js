@@ -53,6 +53,8 @@ router.post('/insertOrder', async(req, res)=>{
 
 router.post('/insertmessages', async(req, res)=>{
 
+    res.send("MESSAGES ROOT")
+
 
     var data = JSON.stringify({
         "image_template": 49934,
