@@ -57,15 +57,15 @@ router.post('/insertmessages', async(req, res)=>{
     var data = JSON.stringify({
         "image_template": 6,
         "handwriting_style": 4,
-        "message": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+        "message": req.body.questionOne,
         "recipients": [
           {
-            "name": "Current Resident",
-            "address": "123 Main Street",
-            "city": "Fake City",
-            "province": "NY",
-            "postal_code": "55555",
-            "country": "US"
+            "name": req.body.recipientName,
+            "address": req.body.recipientStreet,
+            "city": req.body.recipientCity,
+            "province": req.body.recipientState,
+            "postal_code": req.body.recipientZip,
+            "country": req.body.recipientCountry
           }
         ]
       });
