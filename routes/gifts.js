@@ -62,15 +62,15 @@ router.post('/messages', async(req, res)=>{
     var data = JSON.stringify({
         "image_template": 49934,
         "handwriting_style": 4,
-        "message": req.body.questionOne,
+        "message": 'Dear Dan,/n/nMessage from Bundle message page (via api)./n/n/n-Dan',
         "recipients": [
           {
-            "name": req.body.recipientName,
-            "address": req.body.recipientStreet,
-            "city": req.body.recipientCity,
-            "province": req.body.recipientState,
-            "postal_code": req.body.recipientZip,
-            "country": req.body.recipientCountry
+            "name": "Daniel Gleason",
+            "address": "888 Pathways Drive",
+            "city": 'Panama City Beach',
+            "province": "FL",
+            "postal_code": '32413',
+            "country": "USA"
           }
         ]
       });
