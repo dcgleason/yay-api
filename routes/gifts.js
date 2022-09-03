@@ -1,6 +1,5 @@
 const express = require('express')
 const router = express.Router()
-var axios = require('axios');
 const Gift = require("../models/Gift")
 const Response = require("../models/Response")
 require('dotenv').config({ path: require('find-config')('.env') })
