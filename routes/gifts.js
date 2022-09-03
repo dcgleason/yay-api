@@ -61,41 +61,6 @@ router.post('/messages', async(req, res)=>{
     console.log("Messages console.log!!!")
 
 
-    var data = JSON.stringify({
-        "image_template": 49934,
-        "handwriting_style": 4,
-        "message": 'Dear Dan,/n/nMessage from Bundle message page (via api)./n/n/n-Dan',
-        "recipients": [
-          {
-            "name": "Daniel Gleason",
-            "address": "888 Pathways Drive",
-            "city": 'Panama City Beach',
-            "province": "FL",
-            "postal_code": '32413',
-            "country": "USA"
-          }
-        ]
-      });
-      
-      var config = {
-        method: 'post',
-        url: 'https://api.thanks.io/api/v2/send/notecard',
-        headers: { 
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + process.env.THANKS_BUNDLE_TOKEN
-        },
-        data : data
-      };
-      
-      axios(config)
-      .then(function (response) {
-        res.send("response data " + JSON.stringify(response.data));
-      })
-      .catch(function (error) {
-        console.log("error is " + error);
-      });
-
-
     // const response = {
     //     giftID: req.body.giftID,
     //     questionOne: req.body.questionOne,
