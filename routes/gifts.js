@@ -56,39 +56,33 @@ router.get('/messages', async(req, res)=>{
 })
 
 router.post('/messages', async(req, res)=>{
-    res.sendStatus(200);
     console.log("Messages console.log!!!")
 
 
-    // const response = {
-    //     giftID: req.body.giftID,
-    //     questionOne: req.body.questionOne,
-    //     contributor: req.body.contributorName,
-    //     recipientName: req.body.recipientName,
-    //     recipientStreet: req.body.recipientStreet,
-    //     recipientCity: req.body.recipientCity,
-    //     recipientZip: req.body.recipientZip, 
-    //     recipientCountry: req.body.recipientCountry,
-    //     published: false
-    // } 
+    const response = {
+        giftID: req.body.giftID,
+        questionOne: req.body.questionOne,
+        contributor: req.body.contributorName,
+        recipientName: req.body.recipientName,
+        recipientStreet: req.body.recipientStreet,
+        recipientCity: req.body.recipientCity,
+        recipientZip: req.body.recipientZip, 
+        recipientCountry: req.body.recipientCountry,
+        published: false
+    } 
 
+    await Response.create(response, (err, createdItem)=>{
+        if(err){
+            console.log(err)
+            res.sendStatus(500)
+        }
+        else {
+            console.log(createdItem)
+            res.sendStatus(200)
 
-    // if(req.body.contributorName){   // instead of creating a gift - update it with the messages
-    //     await Response.create(response, (err, createdItem)=>{
-    //         if(err){
-    //             console.log(err)
-    //             res.sendStatus(500)
-    //         }
-    //         else {
-    //             console.log(createdItem)
-    //             res.sendStatus(200)
-    
-    //         }
-    //     }) 
-    // }
-    // else{
-    //     res.send("Messages and/or giftCode not present in the api call")
-    // }
+        }
+    }) 
+
  })
 
 
