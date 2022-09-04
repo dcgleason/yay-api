@@ -60,14 +60,14 @@ router.post('/messages', async(req, res)=>{
 
 
     const response = {
-        giftID: req.body.giftID,
-        questionOne: req.body.questionOne,
-        contributor: req.body.contributorName,
-        recipientName: req.body.recipientName,
-        recipientStreet: req.body.recipientStreet,
-        recipientCity: req.body.recipientCity,
-        recipientZip: req.body.recipientZip, 
-        recipientCountry: req.body.recipientCountry,
+        giftID: 12345,
+        questionOne: "test message",
+        contributor: "dan gleason",
+        recipientName: "dan gleason",
+        recipientStreet: "123 steinmann ave",
+        recipientCity: 'Middlebury',
+        recipientZip: 06762, 
+        recipientCountry: "USA",
         published: false
     } 
 
