@@ -3,11 +3,13 @@ require('dotenv').config({ path: require('find-config')('.env') })
 const express = require('express')
 const app = express()
 const mongoose = require('mongoose')
+var bodyParser = require('body-parser');
+
 const axios = require('axios')
 const stripe = require('stripe')('sk_test_51KtCf1LVDYVdzLHCA31MSSlOKhe7VQtXqJJiPnJK90sRLsmYU3R5MlTljmTe5AGZTNaKzKF0Fr8BC2fNOsTBgDP100TiYqCU9k') //  secret key for test environment, to be replaced when we start taking orders
 
 
-
+app.use(bodyParser.json()); // for parsing application/json
 
   app.use((req, res, next) => {
    
