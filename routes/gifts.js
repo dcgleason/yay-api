@@ -58,7 +58,7 @@ router.get('/messages', async(req, res)=>{
 })
 
 router.post('/messages', async(req, res)=>{
-    console.log("Messages console.log!!!")
+    console.log("Messages console.log!!! and req.body" + JSON.stringify(req.body));
 
 
     const response = {
