@@ -2,10 +2,9 @@ const express = require('express')
 const router = express.Router()
 const Gift = require("../models/Gift")
 const Response = require("../models/Response")
-var bodyParser = require('body-parser');
+
 require('dotenv').config({ path: require('find-config')('.env') })
 
-app.use(bodyParser.json()); // for parsing application/json
 
 //gifts Home page
 router.post('/insertOrder', async(req, res)=>{

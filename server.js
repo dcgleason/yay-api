@@ -22,7 +22,7 @@ app.use(bodyParser.json()); // for parsing application/json
 //     console.log('origin' + origin);
     res.setHeader('Access-Control-Allow-Origin', 'https://www.usebundle.co');
     res.setHeader( 'Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE')
-    res.setHeader("Access-Control-Allow-Headers", "Accept, Content-Type, x-requested-with");
+    res.setHeader("Access-Control-Allow-Headers", "Accept, Content-Type, applicaton/json, x-requested-with");
     next();
   });
 
