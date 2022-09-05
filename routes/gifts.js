@@ -66,7 +66,7 @@ app.post('/', upload.single('image'), (req, res, next) => {
 
 router.post('/messages', upload.single('image'), async(req, res)=>{
     console.log("Messages console.log!!! and req.body" + JSON.stringify(req.body));
-    console.log('selectedImage' + selectedImage);
+    console.log('selectedImage' + req.body.image);
 
 
     const response = {
