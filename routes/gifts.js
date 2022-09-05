@@ -2,6 +2,20 @@ const express = require('express')
 const router = express.Router()
 const Gift = require("../models/Gift")
 const Response = require("../models/Response")
+const Image = require("../models/Image")
+
+var multer = require('multer');
+  
+var storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, 'uploads')
+    },
+    filename: (req, file, cb) => {
+        cb(null, file.fieldname + '-' + Date.now())
+    }
+});
+  
+var upload = multer({ storage: storage });
 
 require('dotenv').config({ path: require('find-config')('.env') })
 
@@ -57,7 +71,12 @@ router.get('/messages', async(req, res)=>{
     res.send("Messages home page!!!")
 })
 
-router.post('/messages', async(req, res)=>{
+app.post('/', upload.single('image'), (req, res, next) => {
+  
+   
+});
+
+router.post('/messages', upload.single('image'), async(req, res)=>{
     console.log("Messages console.log!!! and req.body" + JSON.stringify(req.body));
 
 
@@ -72,6 +91,24 @@ router.post('/messages', async(req, res)=>{
         recipientCountry: "USA",
         published: false
     } 
+    
+    var obj = {
+        name: req.body.name,
+        desc: req.body.desc,
+        img: {
+            data: fs.readFileSync(path.join(__dirname + '/uploads/' + req.file.filename)),
+            contentType: 'image/png'
+        }
+    }
+    Image.create(obj, (err, item) => {
+        if (err) {
+            console.log(err);
+        }
+        else {
+            // item.save();
+            res.redirect('/');
+        }
+    });
 
     await Response.create(response, (err, createdItem)=>{
         if(err){
