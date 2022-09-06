@@ -65,9 +65,6 @@ app.post('/', upload.single('image'), (req, res, next) => {
 });
 
 router.post('/messages', upload.single('image'), async(req, res)=>{
-    console.log("Messages console.log!!! and req.body" + JSON.stringify(req.body));
-    console.log('selectedImage' + req.body.image);
-
 
     const response = {
         giftID: 12345,
@@ -82,7 +79,6 @@ router.post('/messages', upload.single('image'), async(req, res)=>{
     } 
     
     var obj = {
-        name: req.body.name,
         img: {
             data: req.body.image,
             contentType: 'image/png'
