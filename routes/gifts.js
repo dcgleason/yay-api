@@ -1,6 +1,12 @@
 const express = require('express')
 const router = express.Router()
 const Gift = require("../models/Gift")
+const Response = require("../models/Response")
+const Image = require("../models/Image")
+var multer = require('multer');
+  
+require('dotenv').config({ path: require('find-config')('.env') })
+
 
 //gifts Home page
 router.post('/insertOrder', async(req, res)=>{
@@ -49,24 +55,63 @@ router.post('/insertOrder', async(req, res)=>{
     }) 
 })
 
-
-router.post('/insertmessages', async(req, res)=>{
-    res.send("insert Messages home page!!!")
-
-    if(req.body.messages && req.body.giftCode){   // instead of creating a gift - update it with the messages
-    var query = { 'giftCode': req.body.giftCode }
-    var update = { $push: { messages : req.body.messages}}
-    const result = await Gift.findOneAndUpdate(query, update);
-    res.send(result)
-    }
-    else{
-        res.send("Messages and/or giftCode not present in the api call")
-    }
-    })
-
-    router.get('/about', (req,res)=>{
-        res.send("About GIFTS page")
+router.get('/messages', async(req, res)=>{
+    res.send("Messages home page!!!")
 })
 
+app.post('/', upload.single('image'), (req, res, next) => {
+  
+   
+});
+
+router.post('/messages', upload.single('image'), async(req, res)=>{
+
+    const response = {
+        giftID: 12345,
+        questionOne: req.body.questionOne,
+        contributor: req.body.contributorName,
+        recipientName: req.body.recipientName,
+        recipientStreet: req.body.recipientStreet,
+        recipientCity: req.body.recipientCity,
+        recipientZip: req.body.recipientZip, 
+        recipientCountry: "USA",
+        published: false
+    } 
+    
+    var obj = {
+        img: {
+            data: req.body.image,
+            contentType: 'image/png'
+        }
+    }
+    Image.create(obj, (err, item) => {
+        if (err) {
+            console.log(err);
+        }
+        else {
+            // item.save();
+            res.redirect('/');
+        }
+    });
+
+    await Response.create(response, (err, createdItem)=>{
+        if(err){
+            console.log(err)
+            res.sendStatus(500)
+        }
+        else {
+            console.log(createdItem)
+            res.sendStatus(200)
+
+        }
+    }) 
+
+ })
+
+
+
+router.get('/about', (req,res)=>{
+    res.send("About GIFTS page")
+})
 
 module.exports = router

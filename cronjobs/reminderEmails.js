@@ -8,7 +8,7 @@ dotenv.config()
 
 
 // callback functions 
-// remember...that when comparing data future is 'greater' than the past
+// remember...that when comparing dates future is 'greater' than the past
 // may need to use the ISODate() contructor function when comparing data to MongoDB timestamp
 
 const firstReminderEmail = async () => {
@@ -50,10 +50,10 @@ const firstReminderEmail = async () => {
             })
 
             const mail_options_reminder_one = {
-            from: 'Bundle <admin@bundle.love',
-            to: firstArr[i].messages.contributorEmail, 
-            subject: "Reminder: Contribute to" + firstArr[i].recipient + "'s Bundle initiated by "+firstArr[i].owner.ownerName + "!",
-            html: '<p> You have 3 more days to write your responses for' + firstArr[i].recipient + '! Contribute here: <a href="https://bundle.love/write">www.bundle.love/write</a></p>'
+            from: 'Bundle <dan@usebundle.co',
+            to: 'danny.c.gleason@gmail.com', //firstArr[i].messages.contributorEmail
+            subject: "Reminder: Contribute to" + 'recipient' + "'s Bundle initiated by "+ 'owner name' + "!", //firstArr[i].recipient firstArr[i].owner.ownerName 
+            html: '<p> You have 3 more days to write your responses for' + 'recipient' + '! Contribute here: <a href="https://bundle.love/write">www.bundle.love/write</a></p>'
             }
             transport.sendMail( mail_options_reminder_one, function(error, result){
             if(error){
@@ -111,10 +111,10 @@ const secondReminderEmail = async () => {
         })
 
             const mail_options_reminder_two = {
-            from: 'Bundle <admin@bundle.love',
-            to: secondArr[j].messages.contributorEmail, 
-            subject: "Reminder: Contribute to" + secondArr[j].recipient + "'s Bundle initiated by "+secondArr[j].owner.ownerName + "!",
-            html: '<p> You have 2 more days to write your responses for' + secondArr[j].recipient + '! Contribute here: <a href="https://bundle.love/write">www.bundle.love/write</a></p>'
+            from: 'Bundle <dan@usebundle.co',
+            to: 'danny.c.glesaon@gmail.com', 
+            subject: "Reminder: Contribute to" + 'recipient' + "'s Bundle initiated by "+ 'recipient' + "!",
+            html: '<p> You have 2 more days to write your responses for' + 'recipient' + '! Contribute here: <a href="https://usebundle.co/messages">www.usebnudle.co/messages</a></p>'
             }
             transport.sendMail( mail_options_reminder_two, function(error, result){
             if(error){
@@ -167,10 +167,10 @@ const thirdReminderEmail = async () => {
        }
      })
         const mail_options_reminder_three = {
-        from: 'Bundle <admin@bundle.love',
-        to: thirdArr[k].messages.contributorEmail, 
-        subject: "Reminder: Contribute to" + thirdArr[k].recipient + "'s Bundle initiated by "+thirdArr[k].owner.ownerName + "!",
-        html: '<p> You have 1 more days to write your responses for' + thirdArr[k].recipient + '! Contribute here: <a href="https://bundle.love/write">www.bundle.love/write</a>. This is your last reminder! : ) </p>'
+        from: 'Bundle <dan@usebundle.co>',
+        to: 'danny.c.gleason@gmail.com', 
+        subject: "Reminder: Contribute to" + 'recipient ' + "'s Bundle initiated by "+ ' owner' + "!",
+        html: '<p> You have 1 more days to write your responses for' + 'recipeint' + '! Contribute here: <a href="https://bundle.love/write">www.bundle.love/write</a>. This is your last reminder! : ) </p>'
         }
         transport.sendMail( mail_options_reminder_three, function(error, result){
         if(error){
@@ -190,11 +190,11 @@ const thirdReminderEmail = async () => {
 // should be getting the same emails as the days go on
 
 
-cron.schedule('* * 12 * * 0-6', () => {
-    console.log('Checking for emails to send every day 12:00 pm at America/New_York timezone. Searches for orders that were created 2 days ago - first email reminder');
+cron.schedule('* * * * * *', () => {
+    console.log('Checking for emails to send every day 16:10 pm at America/New_York timezone. Searches for orders that were created 2 days ago - first email reminder');
     // email code
     // query db for gifts where sent = true, and timestamp is between 6-7 days away (1-2 days after start time)
-    firstReminderEmail();
+   // firstReminderEmail();
     }
     , {
     scheduled: false,
@@ -202,19 +202,19 @@ cron.schedule('* * 12 * * 0-6', () => {
 });
 
 
-cron.schedule('* * 12 * * 0-6', () => {
-    console.log('Checking for emails to send every day 12:00 pm at America/New_York timezone. Searches for orders that were created 3 days ago - second email reminder');
+cron.schedule('* * * * * *', () => {
+    console.log('Checking for emails to send every day 16:10 pm at America/New_York timezone. Searches for orders that were created 3 days ago - second email reminder');
     // email code
     // query db for gifts where sent = true, and timestamp is between 7-8 days away (2-3 days after start time)
-    secondReminderEmail();
+   // secondReminderEmail();
     }
     , {
     scheduled: false,
     timezone: "America/New_York"
 });
 
-cron.schedule('* * 12 * * 0-6', () => {
-    console.log('Checking for emails to send every day 12:00 pm at America/New_York timezone. Searches for orders that were created 4 days ago - final email reminder');
+cron.schedule('* 10 16 * * 0-6', () => {
+    console.log('Checking for emails to send every day 16:10 pm at America/New_York timezone. Searches for orders that were created 4 days ago - final email reminder');
     // email code
     // query db for gifts where sent = true, and timestamp is between 8-9 days away (3-4 days after start time)
     thirdReminderEmail()

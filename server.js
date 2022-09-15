@@ -2,22 +2,31 @@
 require('dotenv').config({ path: require('find-config')('.env') })
 const express = require('express')
 const app = express()
-const cors = require('cors')
 const mongoose = require('mongoose')
+var bodyParser = require('body-parser');
+
 const axios = require('axios')
 const stripe = require('stripe')('sk_test_51KtCf1LVDYVdzLHCA31MSSlOKhe7VQtXqJJiPnJK90sRLsmYU3R5MlTljmTe5AGZTNaKzKF0Fr8BC2fNOsTBgDP100TiYqCU9k') //  secret key for test environment, to be replaced when we start taking orders
 
 
+app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.json())
+  
+// Set EJS as templating engine 
+app.set("view engine", "ejs");
 
   app.use((req, res, next) => {
-    res.setHeader("Access-Control-Allow-Origin", "");
-    const allowedOrigins = ['http://localhost:3000', 'https://bundle.love'];
-    const origin = req.headers.origin;
-    if (allowedOrigins.includes(origin)) {
-       res.setHeader('Access-Control-Allow-Origin', origin);
-    }
-    res.setHeader( 'Access-Control-Allow-Methods', '*')
-    res.setHeader("Access-Control-Allow-Headers", "*");
+   
+//    const allowedOrigins = ['http://localhost:3000', 'https://bundle.love', 'https://www.bundle.love', 'https://www.usebundle.co', 'https://usebunde.co', 'https://usebundle.co/messages', 'https://www.usebundle.co/messages', 'https://www.usebundle.co/'];
+//    const origin = req.headers.origin.toString();
+//    if (allowedOrigins.includes(origin)) {
+   
+//    }
+   
+//     console.log('origin' + origin);
+    res.setHeader('Access-Control-Allow-Origin', 'https://www.usebundle.co');
+    res.setHeader( 'Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE')
+    res.setHeader("Access-Control-Allow-Headers", "Accept, Content-Type, x-requested-with");
     next();
   });
 
@@ -34,12 +43,13 @@ const beta = require('./routes/beta')
 const lulu = require('./routes/lulu')
 const payment = require('./routes/stripe')
 const email = require('./routes/email')
-const userID = require('./routes/userIDCheck')
+const userID = require('./routes/check')
 
 
 
 //initialization of variables 
 const port = process.env.PORT || 3001
+
 
 //middleware
 app.use(express.urlencoded({ extended: true }))
@@ -79,7 +89,6 @@ app.get("/",(req,res)=>{
     res.send("APP ROOT")
  
 })
-
 
 
 

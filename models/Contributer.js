@@ -19,7 +19,8 @@
             //contributers will get questions from the question model
             //the questions property will be the _id of the Question model
             //every 
-            questionIDs: [String]  
+            question: String, // using will be able to select from a drop down what question to ask
+            questionIDs: [String]   // question for manny - how does this work?
           },
           { timestamps: true }
           );
