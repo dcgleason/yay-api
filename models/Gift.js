@@ -11,6 +11,7 @@ const giftSchema = new Schema(
     shippingAddress: String,
     city: String,
     state: String,
+    zip: String,
     luluOrderString: String,
     returnAddress: String,
     contributerEmails: [String], //emails provided by the user for contributers to this gift.
