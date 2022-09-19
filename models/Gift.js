@@ -12,6 +12,7 @@ const giftSchema = new Schema(
     city: String,
     state: String,
     zip: String,
+    country: String,
     luluOrderString: String,
     returnAddress: String,
     contributerEmails: [String], //emails provided by the user for contributers to this gift.
