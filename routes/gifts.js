@@ -58,44 +58,44 @@ router.get("/messages", async (req, res) => {
 
 //router.post("/", upload.single("image"), (req, res, next) => {});
 
-router.post("/messages", upload.single("image"), async (req, res) => {
-  const response = {
-    giftID: 12345,
-    questionOne: req.body.questionOne,
-    contributor: req.body.contributorName,
-    recipientName: req.body.recipientName,
-    recipientStreet: req.body.recipientStreet,
-    recipientCity: req.body.recipientCity,
-    recipientZip: req.body.recipientZip,
-    recipientCountry: "USA",
-    published: false,
-  };
+// router.post("/messages", upload.single("image"), async (req, res) => {
+//   const response = {
+//     giftID: 12345,
+//     questionOne: req.body.questionOne,
+//     contributor: req.body.contributorName,
+//     recipientName: req.body.recipientName,
+//     recipientStreet: req.body.recipientStreet,
+//     recipientCity: req.body.recipientCity,
+//     recipientZip: req.body.recipientZip,
+//     recipientCountry: "USA",
+//     published: false,
+//   };
 
-  var obj = {
-    img: {
-      data: req.body.image,
-      contentType: "image/png",
-    },
-  };
-  Image.create(obj, (err, item) => {
-    if (err) {
-      console.log(err);
-    } else {
-      // item.save();
-      res.redirect("/");
-    }
-  });
+//   var obj = {
+//     img: {
+//       data: req.body.image,
+//       contentType: "image/png",
+//     },
+//   };
+//   Image.create(obj, (err, item) => {
+//     if (err) {
+//       console.log(err);
+//     } else {
+//       // item.save();
+//       res.redirect("/");
+//     }
+//   });
 
-  await Response.create(response, (err, createdItem) => {
-    if (err) {
-      console.log(err);
-      res.sendStatus(500);
-    } else {
-      console.log(createdItem);
-      res.sendStatus(200);
-    }
-  });
-});
+//   await Response.create(response, (err, createdItem) => {
+//     if (err) {
+//       console.log(err);
+//       res.sendStatus(500);
+//     } else {
+//       console.log(createdItem);
+//       res.sendStatus(200);
+//     }
+//   });
+// });
 
 router.get("/about", (req, res) => {
   res.send("About GIFTS page");
