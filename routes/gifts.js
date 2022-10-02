@@ -1,8 +1,8 @@
 const express = require('express')
 const router = express.Router()
 const Gift = require("../models/Gift")
+const User = require("../models/User")
 const Response = require("../models/Response")
-const Image = require("../models/Image")
 var multer = require('multer');
   
 require('dotenv').config({ path: require('find-config')('.env') })
@@ -13,11 +13,13 @@ router.post('/insertOrder', async(req, res)=>{
     res.send("GIFTS home page!!!")
 
 
-      const ownerObj = {
+      const giftObj = {
         ownerName: req.body.owner.ownerName,
         ownerEmail: req.body.owner.ownerEmail,
-        recipientName: req.body.recipient
+        recipientName: req.body.gift.recipient
       }
+
+    
 
     //   const gift = {
     //     owner: ownerObj,
@@ -34,7 +36,7 @@ router.post('/insertOrder', async(req, res)=>{
 
     // do we need to add a timestamp object here? or will it timestamp it automatically?
 
-    await Gift.create(ownerObj, (err, createdItem)=>{
+   const insertedGift = await Gift.create(giftObj, (err, createdItem)=>{
         if(err){
             console.log(err)
             res.sendStatus(500)
@@ -44,7 +46,36 @@ router.post('/insertOrder', async(req, res)=>{
             res.sendStatus(200)
 
         }
-    }) 
+    })
+    // create User collection
+    const userObj = {
+        ownerName: req.body.owner.ownerName,
+        ownerEmail: req.body.owner.ownerEmail,
+        giftReference: insertedGift._id
+      }
+
+   const insertedUser =  await User.create(userObj, (err, createdItem)=>{
+        if(err){
+            console.log(err)
+            res.sendStatus(500)
+        }
+        else {
+            console.log(createdItem)
+            res.sendStatus(200)
+
+        }
+    })
+    // .then(
+    //     user => {
+    //       console.log("User marked", user);
+    //       const result = User.findById(user._id)
+    //         .populate("giftReference");
+    //     },
+    //     err => next(err)
+    //   )
+    //   .catch(err => next(err));  
+      
+      console.log('insertedUser' + insertedUser);
 })
 
 router.get('/messages', async(req, res)=>{
