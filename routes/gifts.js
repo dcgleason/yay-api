@@ -12,37 +12,29 @@ require('dotenv').config({ path: require('find-config')('.env') })
 router.post('/insertOrder', async(req, res)=>{
     res.send("GIFTS home page!!!")
 
-    const addressObj = {
-        address: req.body.owner.shipping.address,
-        city: req.body.owner.shipping.city,
-        state: req.body.owner.shipping.state,
-        zip: req.body.owner.shipping.zipCode,
-        country: req.body.owner.shipping.country,
-        phone: req.body.owner.shipping.phone
-      }
 
       const ownerObj = {
         ownerName: req.body.owner.ownerName,
         ownerEmail: req.body.owner.ownerEmail,
-        shipping: addressObj
+        recipientName: req.body.recipient
       }
 
-      const gift = {
-        owner: ownerObj,
-        //gifts have one owner
-        uniqueId: req.body.gift.giftCode,
-         // uniqueId is unqiue to the user
-        messages: req.body.messages,
-        //contributers are an array of contributer ids -- starts as an empty array
-        contributorIDs: [],
-        recipient: req.body.gift.recipient,
-        fiveDays: false,
-        sent: false
-      }
+    //   const gift = {
+    //     owner: ownerObj,
+    //     //gifts have one owner
+    //     uniqueId: req.body.gift.giftCode,
+    //      // uniqueId is unqiue to the user
+    //     messages: req.body.messages,
+    //     //contributers are an array of contributer ids -- starts as an empty array
+    //     contributorIDs: [],
+    //     recipient: req.body.gift.recipient,
+    //     fiveDays: false,
+    //     sent: false
+    //   }
 
     // do we need to add a timestamp object here? or will it timestamp it automatically?
 
-    await Gift.create(gift, (err, createdItem)=>{
+    await Gift.create(ownerObj, (err, createdItem)=>{
         if(err){
             console.log(err)
             res.sendStatus(500)
@@ -78,21 +70,6 @@ router.post('/messages', upload.single('image'), async(req, res)=>{
         published: false
     } 
     
-    var obj = {
-        img: {
-            data: req.body.image,
-            contentType: 'image/png'
-        }
-    }
-    Image.create(obj, (err, item) => {
-        if (err) {
-            console.log(err);
-        }
-        else {
-            // item.save();
-            res.redirect('/');
-        }
-    });
 
     await Response.create(response, (err, createdItem)=>{
         if(err){
