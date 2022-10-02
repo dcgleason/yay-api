@@ -18,9 +18,9 @@ app.use((req, res, next) => {
     //    }
        
     //     console.log('origin' + origin);
-        res.setHeader('Access-Control-Allow-Origin', 'https://www.usebundle.co');
-        res.setHeader( 'Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE')
-        res.setHeader("Access-Control-Allow-Headers", "Accept, Content-Type, x-requested-with");
+        res.header('Access-Control-Allow-Origin', 'https://www.usebundle.co');
+        res.header( 'Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE')
+        res.header("Access-Control-Allow-Headers", "Accept, Content-Type, x-requested-with");
         next();
       });
     
