@@ -9,26 +9,28 @@ const axios = require('axios')
 const stripe = require('stripe')('pk_test_51KtCf1LVDYVdzLHCzEQuGuw08kKelgXO7AgN6VDN874gIPxfr7dl7PvcNgUZUSnypEOxqJcMCu4G119l0MQixCkj00Rr1fOuls') //  secret key for test environment, to be replaced when we start taking orders
 const oldStripeTestKey = 'sk_test_51KtCf1LVDYVdzLHCA31MSSlOKhe7VQtXqJJiPnJK90sRLsmYU3R5MlTljmTe5AGZTNaKzKF0Fr8BC2fNOsTBgDP100TiYqCU9k'
 
+app.use((req, res, next) => {
+   
+    //    const allowedOrigins = ['http://localhost:3000', 'https://bundle.love', 'https://www.bundle.love', 'https://www.usebundle.co', 'https://usebunde.co', 'https://usebundle.co/messages', 'https://www.usebundle.co/messages', 'https://www.usebundle.co/'];
+    //    const origin = req.headers.origin.toString();
+    //    if (allowedOrigins.includes(origin)) {
+       
+    //    }
+       
+    //     console.log('origin' + origin);
+        res.setHeader('Access-Control-Allow-Origin', 'https://www.usebundle.co');
+        res.setHeader( 'Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE')
+        res.setHeader("Access-Control-Allow-Headers", "Accept, Content-Type, x-requested-with");
+        next();
+      });
+    
+
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
   
 // Set EJS as templating engine 
 app.set("view engine", "ejs");
 
-  app.use((req, res, next) => {
-   
-//    const allowedOrigins = ['http://localhost:3000', 'https://bundle.love', 'https://www.bundle.love', 'https://www.usebundle.co', 'https://usebunde.co', 'https://usebundle.co/messages', 'https://www.usebundle.co/messages', 'https://www.usebundle.co/'];
-//    const origin = req.headers.origin.toString();
-//    if (allowedOrigins.includes(origin)) {
-   
-//    }
-   
-//     console.log('origin' + origin);
-    res.setHeader('Access-Control-Allow-Origin', 'https://www.usebundle.co');
-    res.setHeader( 'Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE')
-    res.setHeader("Access-Control-Allow-Headers", "Accept, Content-Type, x-requested-with");
-    next();
-  });
 
 
   /*
