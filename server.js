@@ -2,27 +2,30 @@
 require('dotenv').config({ path: require('find-config')('.env') })
 const express = require('express')
 const app = express()
+var cors = require('cors')
 const mongoose = require('mongoose')
 var bodyParser = require('body-parser');
 
 const axios = require('axios')
-const stripe = require('stripe')('pk_test_51KtCf1LVDYVdzLHCzEQuGuw08kKelgXO7AgN6VDN874gIPxfr7dl7PvcNgUZUSnypEOxqJcMCu4G119l0MQixCkj00Rr1fOuls') //  secret key for test environment, to be replaced when we start taking orders
+const stripe = require('stripe')('sk_test_51KtCf1LVDYVdzLHCA31MSSlOKhe7VQtXqJJiPnJK90sRLsmYU3R5MlTljmTe5AGZTNaKzKF0Fr8BC2fNOsTBgDP100TiYqCU9k') //  secret key for test environment, to be replaced when we start taking orders
 const oldStripeTestKey = 'sk_test_51KtCf1LVDYVdzLHCA31MSSlOKhe7VQtXqJJiPnJK90sRLsmYU3R5MlTljmTe5AGZTNaKzKF0Fr8BC2fNOsTBgDP100TiYqCU9k'
 
-app.use((req, res, next) => {
+// app.use((req, res, next) => {
    
-    //    const allowedOrigins = ['http://localhost:3000', 'https://bundle.love', 'https://www.bundle.love', 'https://www.usebundle.co', 'https://usebunde.co', 'https://usebundle.co/messages', 'https://www.usebundle.co/messages', 'https://www.usebundle.co/'];
-    //    const origin = req.headers.origin.toString();
-    //    if (allowedOrigins.includes(origin)) {
+//     //    const allowedOrigins = ['http://localhost:3000', 'https://bundle.love', 'https://www.bundle.love', 'https://www.usebundle.co', 'https://usebunde.co', 'https://usebundle.co/messages', 'https://www.usebundle.co/messages', 'https://www.usebundle.co/'];
+//     //    const origin = req.headers.origin.toString();
+//     //    if (allowedOrigins.includes(origin)) {
        
-    //    }
+//     //    }
        
-    //     console.log('origin' + origin);
-        res.header('Access-Control-Allow-Origin', 'https://www.usebundle.co');
-        res.header( 'Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE')
-        res.header("Access-Control-Allow-Headers", "Accept, Content-Type, x-requested-with");
-        next();
-      });
+//     //     console.log('origin' + origin);
+//         res.header('Access-Control-Allow-Origin', 'https://www.usebundle.co');
+//         res.header( 'Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE')
+//         res.header("Access-Control-Allow-Headers", "Accept, Content-Type, x-requested-with");
+//         next();
+//       });
+
+app.use(cors());
     
 
 app.use(bodyParser.urlencoded({ extended: false }))
