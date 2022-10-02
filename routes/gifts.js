@@ -82,12 +82,12 @@ router.get('/messages', async(req, res)=>{
     res.send("Messages home page!!!")
 })
 
-app.post('/', upload.single('image'), (req, res, next) => {
+app.post('/',  (req, res, next) => {
   
    
 });
 
-router.post('/messages', upload.single('image'), async(req, res)=>{
+router.post('/messages',  async(req, res)=>{
 
     const response = {
         giftID: 12345,
