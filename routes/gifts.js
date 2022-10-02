@@ -82,10 +82,6 @@ router.get('/messages', async(req, res)=>{
     res.send("Messages home page!!!")
 })
 
-app.post('/',  (req, res, next) => {
-  
-   
-});
 
 router.post('/messages',  async(req, res)=>{
 
