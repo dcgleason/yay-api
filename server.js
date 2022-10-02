@@ -6,8 +6,8 @@ const mongoose = require('mongoose')
 var bodyParser = require('body-parser');
 
 const axios = require('axios')
-const stripe = require('stripe')('sk_test_51KtCf1LVDYVdzLHCA31MSSlOKhe7VQtXqJJiPnJK90sRLsmYU3R5MlTljmTe5AGZTNaKzKF0Fr8BC2fNOsTBgDP100TiYqCU9k') //  secret key for test environment, to be replaced when we start taking orders
-
+const stripe = require('stripe')('pk_test_51KtCf1LVDYVdzLHCzEQuGuw08kKelgXO7AgN6VDN874gIPxfr7dl7PvcNgUZUSnypEOxqJcMCu4G119l0MQixCkj00Rr1fOuls') //  secret key for test environment, to be replaced when we start taking orders
+const oldStripeTestKey = 'sk_test_51KtCf1LVDYVdzLHCA31MSSlOKhe7VQtXqJJiPnJK90sRLsmYU3R5MlTljmTe5AGZTNaKzKF0Fr8BC2fNOsTBgDP100TiYqCU9k'
 
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
