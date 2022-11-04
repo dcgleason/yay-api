@@ -9,11 +9,9 @@ const { google } = require('googleapis');
 
 router.post('/send', (req, res) => {
 
-    var name = req.body.recipient
-    var email = req.body.email
-    var giftCode = req.body.giftCode
-    var ownerName = req.body.ownerName
-    var giftOwnerMessage = req.body.giftOwnerMessage;
+    var ownerName = req.body.ownerName;
+    var email = req.body.email;
+    var recipient = req.body.recipient;
   
     console.log('email inside of post request');
     console.log('gmail client id' + process.env.GMAIL_CLIENT_ID)
@@ -40,13 +38,13 @@ router.post('/send', (req, res) => {
       }
     })
       
-      const mail_options_two = {
+      const mail_options= {
         from: 'Bundle <dan@usebundle.co', 
         to: email, 
-        subject: ownerName + 'selected you to contribute in a gift for ' + name + ' !',
-        html: '<p> You have been selected to contribute to a Bundle for' + name + '! This means that' + ownerName + 'has asked you to write a positive or loving message for ' + name + '.  Your Bundle code is ' + giftCode  + '.  This message is from ' + ownerName+ ': ' + giftOwnerMessage + '. To contribute, go to ' + '<a href="https://bundle.love/write">www.bundle.love/write</a></p>'
+        subject: ownerName + ', complete your order.',
+        html: '<p> Please input your bundle contributors here: <a href="https://usebundle.co/contributors">www.usebundle.co/contributors</a></p>'
     }
-      transport.sendMail( mail_options_two, function(error, result){
+      transport.sendMail( mail_options, function(error, result){
       if(error){
             console.log('Error!!!: ',  error)
             res.sendStatus(500);
