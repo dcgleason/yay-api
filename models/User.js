@@ -1,18 +1,23 @@
 
-const { ObjectId } = require('mongodb');
-const mongoose = require('mongoose')
+const mongoose = require("mongoose");
+
 const Schema = mongoose.Schema;
 /**
- * each user can initiate a Gift <-- user can be placed inside of the gift schema
+ * each user can initiate a Gift <-- user can be placed inside of the gift schema as owner of the gift
  */
-const userSchema = new Schema({
-    name: String,
+const userSchema = new Schema(
+  {
+    associatedGiftIDs: [String],
+    firstName: String,
+    lastName: String,
+    shippingAddress: String,
     email: String,
-    giftID: ObjectId
   },
   { timestamps: true }
-  );
+);
 
-const User = mongoose.model('User', userSchema);
 
-module.exports = User
+const User = mongoose.model("User", userSchema);
+
+
+module.exports = User;
