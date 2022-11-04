@@ -9,6 +9,7 @@ const Schema = mongoose.Schema;
  * and are identified by their _id
  * each contribution will contain all the information necessary to make an entry. images message etc...
  */
+//bundle.com/gifts/contribution/kxzjdfl;kasdf
 
 const contributionSchema = new Schema(
   {

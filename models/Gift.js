@@ -18,6 +18,8 @@ const giftSchema = new Schema(
     contributerEmails: [String], //emails provided by the user for contributers to this gift.
     bookTitle: String,
     published: Boolean,
+    customPrompts: [String],
+    contributions: [String],
     fiveDays: false, // for determining if it's been 5 days or not
     sent: false, // for determining if it was shipped to end user / recipient
   },
