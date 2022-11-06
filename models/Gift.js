@@ -8,6 +8,7 @@ const Schema = mongoose.Schema;
 const giftSchema = new Schema(
   {
     giftOwnerID: String, //this will be the string representing User._id
+    recipientName: { type: String, required: true },
     shippingAddress: String,
     city: String,
     state: String,
