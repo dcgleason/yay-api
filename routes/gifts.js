@@ -1,9 +1,13 @@
+
 const express = require("express");
 const router = express.Router();
 const Gift = require("../models/Gift");
 
+
+
 require("dotenv").config({ path: require("find-config")(".env") });
 
+<<<<<<< HEAD
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 //GET ROUTES
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -24,6 +28,12 @@ router.get("/:id", async (req, res) => {
     }
   });
 });
+=======
+//gifts Home page
+
+router.post("/create", (req, res) => {
+  // do we need to add a timestamp object here? or will it timestamp it automatically?
+>>>>>>> b5f9e57eace7fb39956854f0f533bd45dc7dc534
 
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 //POST ROUTES
@@ -45,7 +55,12 @@ router.post("/create", (req, res) => {
     }
     console.log("created the following gift in DB", createdGift);
 
+<<<<<<< HEAD
     res.send(createdGift);
+=======
+
+    res.send(createdUser);
+>>>>>>> b5f9e57eace7fb39956854f0f533bd45dc7dc534
   });
 });
 
