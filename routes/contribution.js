@@ -1,8 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const Gift = require("../models/Gift");
-
-require("dotenv").config({ path: require("find-config")(".env") });
+const Contribution = require("../models/Contribution");
 
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 //GET ROUTES
@@ -10,7 +8,7 @@ require("dotenv").config({ path: require("find-config")(".env") });
 
 //find user by id
 router.get("/:id", async (req, res) => {
-  Gift.findById(req.params.id, (err, gift) => {
+  Contribution.findById(req.params.id, (err, contribution) => {
     if (err) {
       console.log(err.message);
       const error = {
@@ -20,7 +18,7 @@ router.get("/:id", async (req, res) => {
       };
       res.status(400).send(error);
     } else {
-      res.send(gift);
+      res.send(contribution);
     }
   });
 });
@@ -28,10 +26,8 @@ router.get("/:id", async (req, res) => {
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 //POST ROUTES
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-//gifts create route
 router.post("/create", (req, res) => {
-  Gift.create(req.body, (err, createdGift) => {
+  Contribution.create(req.body, (err, contribution) => {
     if (err) {
       console.log(err.message);
       // handle error
@@ -40,26 +36,23 @@ router.post("/create", (req, res) => {
         error: true,
         message: "error could not find user",
       };
-
-      res.status(400).send(error);
     }
-    console.log("created the following gift in DB", createdGift);
+    console.log("created the following contribution in DB", contribution);
 
-    res.send(createdGift);
+    res.send(contribution);
   });
 });
 
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 //  PUT / UPDATE ROUTES
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
 router.put("/update/:id", (req, res) => {
   console.log("heres what we got..............", "\n", req.body);
-  Gift.findByIdAndUpdate(
+  Contribution.findByIdAndUpdate(
     req.params.id,
     req.body,
     { new: true },
-    (err, updatedGift) => {
+    (err, contribution) => {
       if (err) {
         console.log(err.message); // handle error
         const error = {
@@ -69,9 +62,9 @@ router.put("/update/:id", (req, res) => {
         };
         res.status(400).send(error);
       }
-      console.log("updated the following user in DB", updatedGift);
+      console.log("updated the following user in DB", contribution);
 
-      res.send(updatedGift);
+      res.send(contribution);
     }
   );
 });
