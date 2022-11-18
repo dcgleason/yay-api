@@ -7,16 +7,22 @@ router.get('/',(req, res)=>{
     res.send("Users home page!!!")
 })
 
-router.get('/:id',(req, res)=>{
-    //get url parameters by accessing the 
-    //"dynamically created" property added 
-    //in the url of the get request
-    // in this case the url say "/:id" which means the "req.params" object
-    // that gets returned now has a ".id" property
-    // We can use this feature to render a page with the user specific 
-    // data or a completely seperate page layout based on the whether
-    //the user is signed in or not
-    res.send(`${req.params.id}`)
+//find user by id
+router.get("/:id", async (req, res) => {
+  User.findById(req.params.id, (err, user) => {
+    if (err) {
+      console.log(err.message);
+      const error = {
+        userFound: false,
+        error: true,
+        message: "error could not find user",
+      };
+      res.status(400).send(error);
+    } else {
+      res.send(user);
+    }
+  });
+});
 
 
     // implications of this is that a requester could select the questions he wants to ask, along with prompts. 
