@@ -1,13 +1,7 @@
 const express = require("express");
-const router = express.Router();
-var express = require('express');
 var app = express();
-var bodyParser = require('body-parser');
-var cookieParser = require('cookie-parser');
-var session = require('express-session');
-var passport = require('passport');
-var LocalStrategy = require('passport-local').Strategy;
-var mongoose = require('mongoose');
+const router = express.Router();
+const User = require("../models/User");
 
 
 app.post('/login', function(req, res) {
