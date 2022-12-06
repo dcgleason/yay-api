@@ -4,18 +4,67 @@ const router = express.Router();
 var passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const User = require("../models/User");
+var crypto = require("crypto");
 
 
-passport.use(new LocalStrategy(
-  function(username, password, done) {
-    User.findOne({ username: username }, function (err, user) {
-      if (err) { return done(err); }
-      if (!user) { return done(null, false); }
-      if (!user.verifyPassword(password)) { return done(null, false); }
-      return done(null, user);
-    });
-  }
-));
+function validPassword(password, hash, salt) {
+  var hashVerify = crypto
+    .pbkdf2Sync(password, salt, 10000, 64, "sha512")
+    .toString("hex");
+  return hash === hashVerify;
+}
+
+function genPassword(password) {
+  var salt = crypto.randomBytes(32).toString("hex");
+  var genHash = crypto
+    .pbkdf2Sync(password, salt, 10000, 64, "sha512")
+    .toString("hex");
+
+  return {
+    salt: salt,
+    hash: genHash,
+  };
+}
+
+
+passport.use(
+  new LocalStrategy(function (username, password, cb) {
+    User.findOne({ username: username })
+      .then((user) => {
+        if (!user) {
+          return cb(null, false);
+        }
+
+        // Function defined at bottom of app.js
+        const isValid = validPassword(password, user.hash, user.salt);
+
+        if (isValid) {
+          return cb(null, user);
+        } else {
+          return cb(null, false);
+        }
+      })
+      .catch((err) => {
+        cb(err);
+      });
+  })
+);
+
+passport.serializeUser(function (user, cb) {
+  cb(null, user.id);
+});
+
+passport.deserializeUser(function (id, cb) {
+  User.findById(id, function (err, user) {
+    if (err) {
+      return cb(err);
+    }
+    cb(null, user);
+  });
+});
+
+app.use(passport.initialize());
+app.use(passport.session());
 
 
 app.post('/login', 

@@ -9,7 +9,8 @@ const userSchema = new Schema(
   {
     associatedGiftIDs: [String],
     username: String,
-    password: String,
+    hash: String,
+    salt: String,
     firstName: String,
     lastName: String,
     shippingAddress: String,
