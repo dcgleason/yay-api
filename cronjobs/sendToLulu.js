@@ -53,7 +53,7 @@ function saveToDrive(fileName, fileContent) {
     });
   }
 
-const sendToLulu = () => {
+const sendToLulu = async () => {
 
  const baseurl = "https://api.lulu.com/auth/realms/glasstree/protocol/openid-connect/token"
  const data = new URLSearchParams()
