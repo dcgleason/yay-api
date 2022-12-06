@@ -47,6 +47,7 @@ const payment = require("./routes/stripe");
 const email = require("./routes/email");
 const userID = require("./routes/check");
 const contribution = require("./routes/contribution");
+const login = require('./routes/login');
 
 //initialization of variables
 const port = process.env.PORT || 3001;
@@ -74,6 +75,7 @@ connectDB();
 // app route controllers - app.use
 app.use("/users", users);
 app.use("/gifts", gifts);
+app.use("/login", login);
 app.use("/beta", beta);
 app.use("/lulu", lulu); // for all requests that go to the print api
 app.use("/stripe", payment);
