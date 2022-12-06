@@ -89,8 +89,7 @@ const  uploadFile = async () => {
     }
   }
 
-  generatePublicUrl('1z3zc-9Z3j26FYcvdlbM65wh6csS2CQC2');
-
+ // generatePublicUrl('1z3zc-9Z3j26FYcvdlbM65wh6csS2CQC2');
 
 
 
