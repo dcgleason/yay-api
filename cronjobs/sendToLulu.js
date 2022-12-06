@@ -5,6 +5,54 @@ dotenv.config()
 
 
 
+// save to Google Drive // need to handle Google Auth for dan@usebundle.co
+
+function saveToDrive(fileName, fileContent) {
+    var boundary = '-------314159265358979323846';
+    var delimiter = "\r\n--" + boundary + "\r\n";
+    var close_delim = "\r\n--" + boundary + "--";
+    var contentType = 'text/html';
+    var metadata = {
+      'title': fileName,
+      'mimeType': contentType
+    };
+    var base64Data = btoa(fileContent);
+    var multipartRequestBody =
+      delimiter +
+      'Content-Type: application/json\r\n\r\n' +
+      JSON.stringify(metadata) +
+      delimiter +
+      'Content-Type: ' + contentType + '\r\n' +
+      'Content-Transfer-Encoding: base64\r\n' +
+      '\r\n' +
+      base64Data +
+      close_delim;
+    var request = gapi.client.request({
+      'path': '/upload/drive/v2/files',
+      'method': 'POST',
+      'params': {
+        'uploadType': 'multipart'
+      },
+      'headers': {
+        'Content-Type': 'multipart/mixed; boundary="' + boundary + '"'
+      },
+      'body': multipartRequestBody
+    });
+    request.execute(function(file) {
+      var url = 'https://docs.google.com/file/d/' + file.id + '/edit';
+      console.log(url);
+      setTimeout(function() {
+        var request = gapi.client.drive.files.delete({
+          'fileId': file.id
+        });
+        request.execute(function(resp) {
+          console.log('File with ID: ' + file.id + ' deleted.');
+        });
+      }, 172800000);
+      return url;
+    });
+  }
+
 const sendToLulu = () => {
 
  const baseurl = "https://api.lulu.com/auth/realms/glasstree/protocol/openid-connect/token"
