@@ -10,66 +10,41 @@ var LocalStrategy = require('passport-local').Strategy;
 var mongoose = require('mongoose');
 
 
-var Schema = mongoose.Schema;
-
-var db = mongoose.connect('mongodb://localhost/test');
-var User = new Schema({
-  username: String,
-  password: String
-});
-
-var UserModel = mongoose.model('User', User);
-
-passport.use(new LocalStrategy(
-  function(username, password, done) {
-    UserModel.findOne({
-      username: username
-    }, function(err, user) {
+app.post('/login', function(req, res) {
+    var username = req.body.username;
+    var password = req.body.password;
+    var user = User.findOne({username: username}, function(err, user) {
       if (err) {
-        return done(err);
-      }
-      if (!user) {
-        return done(null, false, {
-          message: 'Incorrect username.'
+        console.log(err);
+        res.send(500);
+      } else if (!user) {
+        res.send(404);
+      } else {
+        user.comparePassword(password, function(err, isMatch) {
+          if (err) {
+            console.log(err);
+            res.send(500);
+          } else if (isMatch) {
+            res.send(200);
+          } else {
+            res.send(401);
+          }
         });
       }
-      if (!user.validPassword(password)) {
-        return done(null, false, {
-          message: 'Incorrect password.'
-        });
-      }
-      return done(null, user);
     });
-  }
-));
+  });
 
-app.use(bodyParser.urlencoded({
-  extended: true
-}));
-app.use(cookieParser());
-
-app.use(session({
-  secret: 'secret',
-  saveUninitialized: true,
-  resave: true
-}));
-
-app.use(passport.initialize());
-
-app.use(passport.session());
-
-
-app.get('/', function(req, res) {
-  res.send('Hello World');
-});
-
-
-app.post('/login', passport.authenticate('local', {
-  successRedirect: '/',
-  failureRedirect: '/login'
-}));
-
-app.listen(3000);
-
-
+  app.post('/signup', function(req, res) { 
+   var username = req.body.username;
+  var password = req.body.password;
+  var user = new User({username: username, password: password})
+  user.save(function(err) {
+    if (err) {
+        console.log(err);
+        res.send(500);
+      } else {
+        res.send(200);
+      }
+    });
+  });
 
