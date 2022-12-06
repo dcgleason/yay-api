@@ -10,6 +10,7 @@
   "author": "daniel gleason",
   "license": "ISC",
   "dependencies": {
+    "@google-cloud/local-auth": "^2.1.0",
     "@pdfme/generator": "^1.0.14",
     "add": "^2.0.6",
     "axios": "^0.26.1",
@@ -22,8 +23,9 @@
     "express-http-proxy": "1.0.6",
     "find-config": "^1.0.0",
     "fs": "^0.0.1-security",
+    "gapi": "^0.0.3",
     "gaxios": "^5.0.0",
-    "googleapis": "^100.0.0",
+    "googleapis": "^105.0.0",
     "jspdf": "^2.5.1",
     "kerberos": "^2.0.0",
     "lodash": "^4.17.21",

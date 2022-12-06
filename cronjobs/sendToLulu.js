@@ -2,56 +2,109 @@ var cron = require('node-cron');
 let dotenv = require('dotenv');
 const axios = require('axios');
 dotenv.config()
+const fs = require('fs').promises;
+const path = require('path');
+const process = require('process');
+const {authenticate} = require('@google-cloud/local-auth');
+gapi.load('client', init);
 
+const { google } = require("googleapis");
 
+const REFRESH_TOKEN = '1//04_0mPGex6Y1ZCgYIARAAGAQSNwF-L9IrLa7yOjkwcn8Cdm0ziFaM9Ux4lTY5Fy6IfccBhrFekhf6h1OFKESZ6ZFFLMZfmN5mGbA';
+const CLIENT_ID = '764289968872-1not9lssu1fr00vvg117r3b9e01gckql.apps.googleusercontent.com'
+const CLIENT_SECRET = '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'
+const REDIRECT_URI = 'https://developers.google.com/oauthplayground'
 
-// save to Google Drive // need to handle Google Auth for dan@usebundle.co
+const oauth2Client = new google.auth.OAuth2(
+    CLIENT_ID,
+    CLIENT_SECRET,
+    REDIRECT_URI
+);
 
-function saveToDrive(fileName, fileContent) {
-    var boundary = '-------314159265358979323846';
-    var delimiter = "\r\n--" + boundary + "\r\n";
-    var close_delim = "\r\n--" + boundary + "--";
-    var contentType = 'text/html';
-    var metadata = {
-      'title': fileName,
-      'mimeType': contentType
-    };
-    var base64Data = Buffer.from(fileContent).toString('base64');
-    var multipartRequestBody =
-      delimiter +
-      'Content-Type: application/json\r\n\r\n' +
-      JSON.stringify(metadata) +
-      delimiter +
-      'Content-Type: ' + contentType + '\r\n' +
-      'Content-Transfer-Encoding: base64\r\n' +
-      '\r\n' +
-      base64Data +
-      close_delim;
-    var request = gapi.client.request({
-      'path': '/upload/drive/v2/files',
-      'method': 'POST',
-      'params': {
-        'uploadType': 'multipart'
-      },
-      'headers': {
-        'Content-Type': 'multipart/mixed; boundary="' + boundary + '"'
-      },
-      'body': multipartRequestBody
-    });
-    request.execute(function(file) {
-      var url = 'https://docs.google.com/file/d/' + file.id + '/edit';
-      console.log(url);
-      setTimeout(function() {
-        var request = gapi.client.drive.files.delete({
-          'fileId': file.id
+//initialize google drive
+const drive = google.drive({
+    version: 'v3',
+    auth: oauth2Client,
+});
+
+oauth2Client.setCredentials({ refresh_token: REFRESH_TOKEN });
+
+//file path for out file
+const filePath = path.join(__dirname, 'filename.format');
+
+//function to upload the file
+async function uploadFile() {
+    try{
+      const response = await drive.files.create({
+            requestBody: {
+                name: 'hero.png', //file name
+                mimeType: 'image/png',
+            },
+            media: {
+                mimeType: 'image/png',
+                body: fs.createReadStream(filePath),
+            },
+        });  
+        // report the response from the request
+        console.log(response.data);
+    }catch (error) {
+        //report the error message
+        console.log(error.message);
+    }
+}  
+
+//delete file function
+async function deleteFile() {
+    try {
+        const response = await drive.files.delete({
+            fileId: 'File_id',// file id
         });
-        request.execute(function(resp) {
-          console.log('File with ID: ' + file.id + ' deleted.');
-        });
-      }, 172800000);
-      return url;
-    });
+        console.log(response.data, response.status);
+    } catch (error) {
+        console.log(error.message);
+    }
   }
+
+  //create a public url
+async function generatePublicUrl() {
+    try {
+        const fileId = '19VpEOo3DUJJgB0Hzj58E6aZAg10MOgmv';
+        //change file permisions to public.
+        await drive.permissions.create({
+            fileId: fileId,
+            requestBody: {
+            role: 'reader',
+            type: 'anyone',
+            },
+        });
+
+        //obtain the webview and webcontent links
+        const result = await drive.files.get({
+            fileId: fileId,
+            fields: 'webViewLink, webContentLink',
+        });
+      console.log(result.data);
+    } catch (error) {
+      console.log(error.message);
+    }
+  }
+
+
+// This is a simple sample script for retrieving the file list.
+drive.files.list(
+  {
+    pageSize: 10,
+    fields: "nextPageToken, files(id, name)",
+  },
+  (err, res) => {
+    if (err) return console.log("The API returned an error: " + err);
+    const files = res.data.files;
+    console.log(files);
+  }
+);
+
+
+
 
 const sendToLulu = async () => {
 
@@ -128,7 +181,7 @@ await axios({
 })
 }
 
-saveToDrive
+saveToDrive('test.pdf', "testing this string");
 
     // cron.schedule('* * 12 * * 0-6', () => {
     //             console.log('Sending messages / bundles to LuLu after 5 days');
