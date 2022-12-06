@@ -16,7 +16,7 @@ function saveToDrive(fileName, fileContent) {
       'title': fileName,
       'mimeType': contentType
     };
-    var base64Data = btoa(fileContent);
+    var base64Data = Buffer.from(fileContent).toString('base64');
     var multipartRequestBody =
       delimiter +
       'Content-Type: application/json\r\n\r\n' +
@@ -128,12 +128,13 @@ await axios({
 })
 }
 
+saveToDrive
 
-    cron.schedule('* * 12 * * 0-6', () => {
-                console.log('Sending messages / bundles to LuLu after 5 days');
-                sendToLulu()
+    // cron.schedule('* * 12 * * 0-6', () => {
+    //             console.log('Sending messages / bundles to LuLu after 5 days');
+    //             sendToLulu()
                
-      }, {
-                scheduled: false,
-                timezone: "America/New_York"
-      });
+    //   }, {
+    //             scheduled: false,
+    //             timezone: "America/New_York"
+    //   });
