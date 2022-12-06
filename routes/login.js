@@ -1,32 +1,29 @@
 const express = require("express");
 var app = express();
 const router = express.Router();
+var passport = require('passport');
+const LocalStrategy = require('passport-local').Strategy;
 const User = require("../models/User");
 
 
-app.post('/login', function(req, res) {
-    var username = req.body.username;
-    var password = req.body.password;
-    var user = User.findOne({username: username}, function(err, user) {
-      if (err) {
-        console.log(err);
-        res.send(500);
-      } else if (!user) {
-        res.send(404);
-      } else {
-        user.comparePassword(password, function(err, isMatch) {
-          if (err) {
-            console.log(err);
-            res.send(500);
-          } else if (isMatch) {
-            res.send(200);
-          } else {
-            res.send(401);
-          }
-        });
-      }
+passport.use(new LocalStrategy(
+  function(username, password, done) {
+    User.findOne({ username: username }, function (err, user) {
+      if (err) { return done(err); }
+      if (!user) { return done(null, false); }
+      if (!user.verifyPassword(password)) { return done(null, false); }
+      return done(null, user);
     });
+  }
+));
+
+
+app.post('/login', 
+  passport.authenticate('local', { failureRedirect: '/login' }),
+  function(req, res) {
+    res.redirect('/');
   });
+
 
   app.post('/signup', function(req, res) { 
    var username = req.body.username;
@@ -41,4 +38,7 @@ app.post('/login', function(req, res) {
       }
     });
   });
+
+
+
 
