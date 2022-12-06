@@ -2,11 +2,8 @@ var cron = require('node-cron');
 let dotenv = require('dotenv');
 const axios = require('axios');
 dotenv.config()
-const fs = require('fs').promises;
+const fs = require('fs')
 const path = require('path');
-const process = require('process');
-const {authenticate} = require('@google-cloud/local-auth');
-gapi.load('client', init);
 
 const { google } = require("googleapis");
 
@@ -30,18 +27,18 @@ const drive = google.drive({
 oauth2Client.setCredentials({ refresh_token: REFRESH_TOKEN });
 
 //file path for out file
-const filePath = path.join(__dirname, 'filename.format');
+const filePath = path.join(__dirname, '../pdfs/basic_two.pdf');
 
 //function to upload the file
-async function uploadFile() {
+const  uploadFile = async () => {
     try{
       const response = await drive.files.create({
             requestBody: {
-                name: 'hero.png', //file name
-                mimeType: 'image/png',
+                name: 'testpdf.pdf', //file name
+                mimeType: 'application/pdf',
             },
             media: {
-                mimeType: 'image/png',
+                mimeType: 'application/pdf',
                 body: fs.createReadStream(filePath),
             },
         });  
@@ -53,22 +50,25 @@ async function uploadFile() {
     }
 }  
 
+//uploadFile();
+
 //delete file function
-async function deleteFile() {
+ const deleteFile = async (fileID) => {
     try {
         const response = await drive.files.delete({
-            fileId: 'File_id',// file id
+            fileId: fileID,// file id
         });
         console.log(response.data, response.status);
     } catch (error) {
         console.log(error.message);
     }
   }
+//deleteFile('1z3zc-9Z3j26FYcvdlbM65wh6csS2CQC2');
 
   //create a public url
-async function generatePublicUrl() {
+ const generatePublicUrl  = async (fileID) =>{
     try {
-        const fileId = '19VpEOo3DUJJgB0Hzj58E6aZAg10MOgmv';
+        const fileId = fileID;
         //change file permisions to public.
         await drive.permissions.create({
             fileId: fileId,
@@ -89,19 +89,7 @@ async function generatePublicUrl() {
     }
   }
 
-
-// This is a simple sample script for retrieving the file list.
-drive.files.list(
-  {
-    pageSize: 10,
-    fields: "nextPageToken, files(id, name)",
-  },
-  (err, res) => {
-    if (err) return console.log("The API returned an error: " + err);
-    const files = res.data.files;
-    console.log(files);
-  }
-);
+  generatePublicUrl('1z3zc-9Z3j26FYcvdlbM65wh6csS2CQC2');
 
 
 
@@ -181,7 +169,6 @@ await axios({
 })
 }
 
-saveToDrive('test.pdf', "testing this string");
 
     // cron.schedule('* * 12 * * 0-6', () => {
     //             console.log('Sending messages / bundles to LuLu after 5 days');
