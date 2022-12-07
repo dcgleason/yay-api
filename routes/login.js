@@ -7,6 +7,7 @@ const session = require("express-session");
 var passport = require("passport");
 var crypto = require("crypto");
 var LocalStrategy = require("passport-local").Strategy;
+var server = require('../server');
 
 // Package documentation - https://www.npmjs.com/package/connect-mongo
 const MongoStore = require("connect-mongo")(session);
@@ -24,32 +25,7 @@ var app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-/**
- * -------------- DATABASE ----------------
- */
 
-/**
- * Connect to MongoDB Server using the connection string in the `.env` file.  To implement this, place the following
- * string into the `.env` file
- *
- * DB_STRING=mongodb://<user>:<password>@localhost:27017/database_name
- */
-
-const conn = "mongodb://devuser:123@localhost:27017/general_dev";
-//process.env.DB_STRING
-const connection = mongoose.createConnection(conn, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
-
-// Creates simple schema for a User.  The hash and salt are derived from the user's given password when they register
-const UserSchema = new mongoose.Schema({
-  username: String,
-  hash: String,
-  salt: String,
-});
-
-const User = connection.model("User", UserSchema);
 
 /**
  * This function is called when the `passport.authenticate()` method is called.
@@ -115,7 +91,7 @@ passport.deserializeUser(function (id, cb) {
  * Note that the `connection` used for the MongoStore is the same connection that we are using above
  */
 const sessionStore = new MongoStore({
-  mongooseConnection: connection,
+  mongooseConnection: server.connectDB,
   collection: "sessions",
 });
 
