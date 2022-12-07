@@ -1,8 +1,5 @@
-const express = require("express");
-var app = express();
+
 const router = express.Router();
-var passport = require('passport');
-const LocalStrategy = require('passport-local').Strategy;
 const User = require("../models/User");
 const express = require("express");
 const mongoose = require("mongoose");
