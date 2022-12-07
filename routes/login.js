@@ -6,6 +6,29 @@ const LocalStrategy = require('passport-local').Strategy;
 const User = require("../models/User");
 var crypto = require("crypto");
 
+const mongoose = require("mongoose");
+const session = require("express-session");
+
+// Package documentation - https://www.npmjs.com/package/connect-mongo
+const MongoStore = require("connect-mongo")(session);
+
+// Gives us access to variables set in the .env file via `process.env.VARIABLE_NAME` syntax
+require("dotenv").config();
+
+// Middleware that allows Express to parse through both JSON and x-www-form-urlencoded request bodies
+// These are the same as `bodyParser` - you probably would see bodyParser put here in most apps
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+
+const connection = mongoose.createConnection(process.env.DB_STRING);
+
+//Note that the `connection` used for the MongoStore is the same connection that we are using above
+
+const sessionStore = new MongoStore({
+ mongooseConnection: connection,
+ collection: "sessions",
+});
 
 function validPassword(password, hash, salt) {
   var hashVerify = crypto
