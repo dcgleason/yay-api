@@ -252,7 +252,7 @@ app.get("/login-failure", (req, res, next) => {
  * -------------- HELPER FUNCTIONS ----------------
  */
 
-/**
+/*
  *
  * @param {*} password - The plain text password
  * @param {*} hash - The hash stored in the database
@@ -268,7 +268,7 @@ app.get("/login-failure", (req, res, next) => {
   return hash === hashVerify;
 }
 
-/**
+/*
  *
  * @param {*} password - The password string that the user inputs to the password field in the register form
  *
