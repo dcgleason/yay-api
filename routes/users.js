@@ -25,9 +25,6 @@ router.get("/:id", async (req, res) => {
 });
 
 
-    // implications of this is that a requester could select the questions he wants to ask, along with prompts. 
-})
-
 router.get('/about', (req,res)=>{
     res.send("About Users page")
 })
