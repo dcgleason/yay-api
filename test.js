@@ -1,80 +1,86 @@
+'use strict';
 
-const url = 'mongodb+srv://dcgleason:F1e2n3n4!!@yay-cluster01.lijs4.mongodb.net/test'
+const fs = require('fs');
+const path = require('path');
+const http = require('http');
+const url = require('url');
+const opn = require('open');
+const destroyer = require('server-destroy');
 
-const { MongoClient } = require("mongodb");
-// Connection URI
-const uri =
-  "mongodb+srv://sample-hostname:27017/?maxPoolSize=20&w=majority";
-// Create a new MongoClient
-const client = new MongoClient(url);
+const {google} = require('googleapis');
+const people = google.people('v1');
 
-
-
-async function run() {
-  try {
-    // Connect the client to the server
-    await client.connect();
-    // Establish and verify connection
-    await client.db("sample_mflix").command({ ping: 1 });
-    console.log("Connected successfully to server");
-  } finally {
-    // Ensures that the client will close when you finish/error
-    await client.close();
-  }
-}
-//run().catch(console.dir);
-
-
-
-
-const mongoConnect = async () => {
-
-try {
- const client = new MongoClient(url);
-await client.connect();
-
-const movies = client.db("sample_mflix").collection("movies");
-const update = await movies.updateMany({ 'imdb.votes': { $gt: 1188 } },
-{$set: {'plot': "This plot has been updated!!!" }});
-console.log('update happend')
-if(update){
-console.log('find about to start')
-movies.find(
-    {$and: [{'plot': "This plot has been updated!!!"}, {'title': 'Body Melt'}]}).forEach(function(data) {
-     console.log("movie title: " + data.title)
-    })
-    console.log('find happened');
-} 
-}
-finally {
-await client.close();
-}
+/**
+ * To use OAuth2 authentication, we need access to a CLIENT_ID, CLIENT_SECRET, AND REDIRECT_URI.  To get these credentials for your application, visit https://console.cloud.google.com/apis/credentials.
+ */
+const keyPath = path.join(__dirname, './credentialss.json');
+let keys = {redirect_uris: ['']};
+if (fs.existsSync(keyPath)) {
+  keys = require(keyPath).web;
 }
 
-//mongoConnect();
+/**
+ * Create a new OAuth2 client with the configured keys.
+ */
+const oauth2Client = new google.auth.OAuth2(
+  keys.client_id,
+  keys.client_secret,
+  keys.redirect_uris[0]
+);
 
-messagesByGiftCode=[];
+/**
+ * This is one of the many ways you can configure googleapis to use authentication credentials.  In this method, we're setting a global reference for all APIs.  Any other API you use here, like google.drive('v3'), will now use this auth client. You can also override the auth client at the service and method call levels.
+ */
+google.options({auth: oauth2Client});
 
-var gift = [  {gift: {giftCode: 1235}},  {gift: {giftCode: 1254}},  {gift: {giftCode: 1134}},  {gift: {giftCode: 1634}},  {gift: {giftCode: 9853}}]
-  for(var i = 0; i<gift.length; i++){
-    messagesByGiftCode.push( 'giftcode'+ i + " is "+ gift[i].gift.giftCode)
-  }
+/**
+ * Open an http server to accept the oauth callback. In this simple example, the only request to our webserver is to /callback?code=<code>
+ */
+async function authenticate(scopes) {
+  return new Promise((resolve, reject) => {
+    // grab the url that will be used for authorization
+    const authorizeUrl = oauth2Client.generateAuthUrl({
+      access_type: 'offline',
+      scope: scopes.join(' '),
+    });
+    const server = http
+      .createServer(async (req, res) => {
+        try {
+          if (req.url.indexOf('/oauth2callback') > -1) {
+            const qs = new url.URL(req.url, 'http://localhost:3000')
+              .searchParams;
+            res.end('Authentication successful! Please return to the console.');
+            server.destroy();
+            const {tokens} = await oauth2Client.getToken(qs.get('code'));
+            oauth2Client.credentials = tokens; // eslint-disable-line require-atomic-updates
+            resolve(oauth2Client);
+          }
+        } catch (e) {
+          reject(e);
+        }
+      })
+      .listen(3000, () => {
+        // open the browser to the authorize url to start the workflow
+        opn(authorizeUrl, {wait: false}).then(cp => cp.unref());
+      });
+    destroyer(server);
+  });
+}
 
-  console.log(messagesByGiftCode)
+async function runSample() {
+  // retrieve user profile
+  const res = await people.people.get({
+    resourceName: 'people/me',
+    personFields: 'emailAddresses',
+  });
+  console.log(res.data);
+}
 
-  // if messageByGiftCode[i].includes(messages[i].giftCode)
-
-// var fortnightAgo = new Date(Date.now() - 12096e5).getTime();
-// console.log(fortnightAgo)
-
-
-// var fortnightAway = new Date(Date.now() + 12096e5);
-//   //var dbo = db.db("yay_gift_oders");
-//   /*Return only the documents with the address "Park Lane 38":*/
-// //  await client.connect();
-//   // Establish and verify connection
-//  // await client.db("yay_gift_oders").command({ ping: 1 });
-//   var query = { 'tomatoes.viewer.rating': 3 };
-//   var results = client.db('sample_mflix').collection('movies').find(query);
-//   console.log("results: "+ results);
-//   db.close();
+const scopes = [
+  'https://www.googleapis.com/auth/contacts.readonly',
+  'https://www.googleapis.com/auth/user.emails.read',
+  'profile',
+];
+authenticate(scopes)
+  .then(client => runSample(client))
+  .catch(console.error);
