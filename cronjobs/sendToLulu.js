@@ -4,7 +4,7 @@ const axios = require('axios');
 dotenv.config()
 const fs = require('fs');
 const AWS = require('aws-sdk');
-const htmlpdf = require('html-pdf');
+//const htmlpdf = require('html-pdf');
 const { convertHTMLToPDF } = require('pdf-puppeteer');
 
 AWS.config.loadFromPath('./config.json'); // Load AWS credentials from config.json
