@@ -2,97 +2,63 @@ var cron = require('node-cron');
 let dotenv = require('dotenv');
 const axios = require('axios');
 dotenv.config()
-const fs = require('fs')
-const path = require('path');
+const fs = require('fs');
+const AWS = require('aws-sdk');
+const htmlpdf = require('html-pdf');
 
-const { google } = require("googleapis");
+// will need to loop through all the messages and associated imagees and send bundle (compiled pages) to lulu
 
-const REFRESH_TOKEN = '1//04_0mPGex6Y1ZCgYIARAAGAQSNwF-L9IrLa7yOjkwcn8Cdm0ziFaM9Ux4lTY5Fy6IfccBhrFekhf6h1OFKESZ6ZFFLMZfmN5mGbA';
-const CLIENT_ID = '764289968872-1not9lssu1fr00vvg117r3b9e01gckql.apps.googleusercontent.com'
-const CLIENT_SECRET = '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'
-const REDIRECT_URI = 'https://developers.google.com/oauthplayground'
+async function generatePDF(templatePath, text, imagePath, s3Bucket, s3Key) { // THIS IS PER PAGE (LEFT AND RIGHT)
+  // Read in the HTML template
+  const template = fs.readFileSync(templatePath, 'utf8');
 
-const oauth2Client = new google.auth.OAuth2(
-    CLIENT_ID,
-    CLIENT_SECRET,
-    REDIRECT_URI
-);
+// Replace placeholder text in the template with the provided text -- 
+// QUESTION: DOES THIS NEED TO BE LOOPED THROUGH? 
+// HOW DO WE DO THIS PER PAGE? WHAT IF THE PAGE HAS MULTIPLE IMAGES? 
+// WHAT IF THE PAGE HAS NO IMAGES? 
+// WHAT IS THE PAGE HAS TOO MUCH TEXT TO FIT? -- WE WILL NEED TO DO IF STATEMENTS AND CHECK THE LENGTH OF THE TEXT AND THEN ADD THE TEXT TO THE NEXT PAGE
 
-//initialize google drive
-const drive = google.drive({
-    version: 'v3',
-    auth: oauth2Client,
-});
-
-oauth2Client.setCredentials({ refresh_token: REFRESH_TOKEN });
-
-//file path for out file
-const filePath = path.join(__dirname, '../pdfs/basic_two.pdf');
-
-//function to upload the file
-const  uploadFile = async () => {
-    try{
-      const response = await drive.files.create({
-            requestBody: {
-                name: 'testpdf.pdf', //file name
-                mimeType: 'application/pdf',
-            },
-            media: {
-                mimeType: 'application/pdf',
-                body: fs.createReadStream(filePath),
-            },
-        });  
-        // report the response from the request
-        console.log(response.data);
-    }catch (error) {
-        //report the error message
-        console.log(error.message);
-    }
-}  
-
-//uploadFile();
-
-//delete file function
- const deleteFile = async (fileID) => {
-    try {
-        const response = await drive.files.delete({
-            fileId: fileID,// file id
-        });
-        console.log(response.data, response.status);
-    } catch (error) {
-        console.log(error.message);
-    }
-  }
-//deleteFile('1z3zc-9Z3j26FYcvdlbM65wh6csS2CQC2');
-
-  //create a public url
- const generatePublicUrl  = async (fileID) =>{
-    try {
-        const fileId = fileID;
-        //change file permisions to public.
-        await drive.permissions.create({
-            fileId: fileId,
-            requestBody: {
-            role: 'reader',
-            type: 'anyone',
-            },
-        });
-
-        //obtain the webview and webcontent links
-        const result = await drive.files.get({
-            fileId: fileId,
-            fields: 'webViewLink, webContentLink',
-        });
-      console.log(result.data);
-    } catch (error) {
-      console.log(error.message);
-    }
-  }
-
- // generatePublicUrl('1z3zc-9Z3j26FYcvdlbM65wh6csS2CQC2');
+  const html = template.replace(/{{text}}/g, text);
 
 
 
+  // Add the image to the template
+  html = html.replace('{{image}}', `<img src="${imagePath}" alt="image">`);
+
+  // Convert the HTML to a PDF
+  const pdfBuffer = await htmlpdf.create(html).toBuffer();
+
+  // Create an instance of the AWS SDK for JavaScript
+  const s3 = new AWS.S3();
+
+  // Upload the PDF to Amazon S3
+  await s3.putObject({
+    Bucket: s3Bucket,
+    Key: s3Key,
+    Body: pdfBuffer
+  }).promise();
+
+  // Return a downloadable link from Amazon S3 for the PDF
+  return s3.getSignedUrl('getObject', {
+    Bucket: s3Bucket,
+    Key: s3Key,
+    Expires: 60 // Link will expire in 60 seconds
+  });
+}
+
+
+// example
+
+const templatePath = '/path/to/template.html';
+const text = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.';
+const imagePath = '/path/to/image.jpg';
+const s3Bucket = 'my-s3-bucket';
+const s3Key = 'my-pdf.pdf';
+
+const downloadLink = await generatePDF(templatePath, text, imagePath, s3Bucket, s3Key);
+console.log(downloadLink); // https://my-s3-bucket.s3.amazonaws.com/my-pdf.pdf?AWSAccessKeyId=...
+
+//send to lulu function
 const sendToLulu = async () => {
 
  const baseurl = "https://api.lulu.com/auth/realms/glasstree/protocol/openid-connect/token"
