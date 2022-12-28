@@ -5,6 +5,100 @@ dotenv.config()
 const fs = require('fs');
 const AWS = require('aws-sdk');
 const htmlpdf = require('html-pdf');
+const { convertHTMLToPDF } = require('pdf-puppeteer');
+
+AWS.config.loadFromPath('./config.json'); // Load AWS credentials from config.json
+
+
+// config.json
+//{
+//    "accessKeyId": "YOUR_ACCESS_KEY_ID",
+ //   "secretAccessKey": "YOUR_SECRET_ACCESS_KEY"
+//  }
+
+// html template is the template for the page it is an html string -- what we need is a template for the left page and a template for the right page (and keep them together)
+// ex. const htmlTemplate = '<html><body><div>{{message}}</div><div><img src="{{image}}" /></div></body></html>';
+// messages is the image / message object for the page
+// s3 bucket is for the Amazon S3 bucket
+// s3 key is the key for the Amazon S3 bucket
+
+
+// need to make sure the the text is not too long for the page  -- if it is too long, we need to split it up and create multiple pages
+async function createPDFAndUploadToS3(htmlTemplate, messages, s3Bucket, s3Key) {
+  // Compile the HTML pages with the given messages and images
+  let compiledHTML = '';
+  for (let i = 0; i < messages.length; i++) {
+
+     // Split the message into multiple pages if it exceeds a certain number of characters (lines 33 to 46)
+     const maxWordsPerPage = 300;
+     let words = messages[i].message.split(' '); // array of total words
+     let message = ''; // will hold the message for each page
+     if(words.length > maxWordsPerPage) {  // if the message is too long, we need to split it up into multiple pages
+            for(let j = 0; j < words.length; j++) { // loop through the words
+                message += ' ' + words[j];
+                if(j % maxWordsPerPage === 0 && j !== 0) { // when the message is too long, we need to split it up into multiple pages
+                    compiledHTML += htmlTemplate //
+                        .replace('{{message}}', message) // replace the message with the message for page 1
+                        .replace('{{image}}', messages[i].image); // replace the image with the image for page 1
+                   
+                
+                }
+         message = ''; // reset the message for the next page
+        while(j < words.length) {  //while there are still words left, add them to the message (this will be the second page text)
+                message += ' ' + words[j];
+                j++;
+            }
+
+         compiledHTML += htmlTemplate
+         .replace('{{message}}', message)
+
+         if(messages[i].imageTwo) { // if there is a second image, add it to the page
+             compiledHTML += htmlTemplate
+             .replace('{{image}}', messages[i].imageTwo);  
+     }
+
+            }
+        }
+
+        compiledHTML += htmlTemplate
+        .replace('{{message}}', message)
+        if(messages[i].imageTwo) {
+            compiledHTML += htmlTemplate
+            .replace('{{image}}', messages[i].imageTwo);  
+    }
+    }
+ 
+  
+    }
+
+
+  // Convert the compiled HTML to a PDF
+  const pdfBuffer = await convertHTMLToPDF(compiledHTML);
+
+  // Upload the PDF to Amazon S3
+  const s3 = new AWS.S3();
+  const params = {
+    Body: pdfBuffer,
+    Bucket: s3Bucket,
+    Key: s3Key,
+    ContentType: 'application/pdf',
+  };
+  await s3.putObject(params).promise();
+
+  // Return the downloadable link of the PDF
+  return `https://${s3Bucket}.s3.amazonaws.com/${s3Key}`;
+
+  // OR
+
+  /*
+    // Return a downloadable link from Amazon S3 for the PDF
+  return s3.getSignedUrl('getObject', {
+        Bucket: s3Bucket,
+        Key: s3Key,
+        Expires: 60 // Link will expire in 60 seconds
+      });
+    */
+}
 
 // will need to loop through all the messages and associated imagees and send bundle (compiled pages) to lulu
 
@@ -38,12 +132,7 @@ async function generatePDF(templatePath, text, imagePath, s3Bucket, s3Key) { // 
     Body: pdfBuffer
   }).promise();
 
-  // Return a downloadable link from Amazon S3 for the PDF
-  return s3.getSignedUrl('getObject', {
-    Bucket: s3Bucket,
-    Key: s3Key,
-    Expires: 60 // Link will expire in 60 seconds
-  });
+
 }
 
 
