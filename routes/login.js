@@ -10,6 +10,46 @@ var LocalStrategy = require("passport-local").Strategy;
 var connect = require("../server");
 const MongoStoreDB = require("connect-mongo");
 
+
+/*
+ * -------------- HELPER FUNCTIONS ----------------
+ */
+
+/*
+ *
+ * @param {*} password - The plain text password
+ * @param {*} hash - The hash stored in the database
+ * @param {*} salt - The salt stored in the database
+ *
+ * This function uses the crypto library to decrypt the hash using the salt and then compares
+ * the decrypted hash/salt with the password that the user provided at login
+ */
+ const validPassword = (password, hash, salt) => {
+  var hashVerify = crypto
+    .pbkdf2Sync(password, salt, 10000, 64, "sha512")
+    .toString("hex");
+  return hash === hashVerify;
+}
+
+/*
+ * @param {*} password - The password string that the user inputs to the password field in the register form
+ *
+ * This function takes a plain text password and creates a salt and hash out of it.  Instead of storing the plaintext
+ * password in the database, the salt and hash are stored for security
+ */
+
+function genPassword(password) {
+  var salt = crypto.randomBytes(32).toString("hex");
+  var genHash = crypto
+    .pbkdf2Sync(password, salt, 10000, 64, "sha512")
+    .toString("hex");
+
+  return {
+    salt: salt,
+    hash: genHash,
+  };
+}
+
 // Connect to MongoDB
 mongoose.connect('mongodb+srv://dcgleason:F1e2n3n4!!@yay-cluster01.lijs4.mongodb.net/?retryWrites=true&w=majority', {
   useNewUrlParser: true,
@@ -42,9 +82,13 @@ passport.use(new LocalStrategy(
       if (!user) {
         return done(null, false, { message: 'Incorrect username.' });
       }
-      if (!user.validPassword(password)) {
+      if (user) {
+       if (validPassword(password)) {
         return done(null, false, { message: 'Incorrect password.' });
-      }
+    
+    }
+  }
+    
       return done(null, user);
     });
   }
@@ -68,21 +112,18 @@ passport.deserializeUser(function(id, done) {
 // /signin route
 router.post('/signin', passport.authenticate('local', { successRedirect: '/', failureRedirect: '/login-failure' }));
 
-// Path: routes/index.js
-router.get("/", (req, res, next) => {
-  res.send("<h1>Home</h1>");
-});
-
-
+// signup route
 router.post("/signup", (req, res, next) => {
+  console.log('inside /signup route');
   const saltHash = genPassword(req.body.password);
 
   const salt = saltHash.salt;
   const hash = saltHash.hash;
 
-const db = mongoose.connection;
-db.on('error', console.error.bind(console, 'connection error:'));
-db.once('open', function() {
+// const db = mongoose.connection;
+// db.on('error', console.error.bind(console, 'connection error:'));
+// db.once('open', function() {
+  console.log("Connected to MongoDB / inside /signup route");
   const newUser = new User({
     username: req.body.username,
     hash: hash,
@@ -93,11 +134,17 @@ db.once('open', function() {
     console.log(user);
   });
 
+// });
+  res.redirect("/");
 });
 
-  
-  res.redirect("/signin");
+// Path: routes/index.js
+router.get("/", (req, res, next) => {
+  res.send("<h1>Home</h1>");
 });
+
+
+
 
 // Visiting this route logs the user out
 router.get("/logout", (req, res, next) => {
@@ -110,44 +157,5 @@ router.get("/login-failure", (req, res, next) => {
   res.send("You entered the wrong password.");
 });
 
-
-/**
- * -------------- HELPER FUNCTIONS ----------------
- */
-
-/*
- *
- * @param {*} password - The plain text password
- * @param {*} hash - The hash stored in the database
- * @param {*} salt - The salt stored in the database
- *
- * This function uses the crypto library to decrypt the hash using the salt and then compares
- * the decrypted hash/salt with the password that the user provided at login
- */
- function validPassword(password, hash, salt) {
-  var hashVerify = crypto
-    .pbkdf2Sync(password, salt, 10000, 64, "sha512")
-    .toString("hex");
-  return hash === hashVerify;
-}
-
-/*
- * @param {*} password - The password string that the user inputs to the password field in the register form
- *
- * This function takes a plain text password and creates a salt and hash out of it.  Instead of storing the plaintext
- * password in the database, the salt and hash are stored for security
- */
-
-function genPassword(password) {
-  var salt = crypto.randomBytes(32).toString("hex");
-  var genHash = crypto
-    .pbkdf2Sync(password, salt, 10000, 64, "sha512")
-    .toString("hex");
-
-  return {
-    salt: salt,
-    hash: genHash,
-  };
-}
 
 module.exports = router;

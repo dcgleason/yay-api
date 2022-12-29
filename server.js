@@ -19,14 +19,14 @@ app.use(bodyParser.json());
 app.set("view engine", "ejs");
 
 app.use((req, res, next) => {
-  //    const allowedOrigins = ['http://localhost:3000', 'https://bundle.love', 'https://www.bundle.love', 'https://www.usebundle.co', 'https://usebunde.co', 'https://usebundle.co/messages', 'https://www.usebundle.co/messages', 'https://www.usebundle.co/'];
+    // const allowedOrigins = ['http://localhost:3000', 'https://bundle.love', 'https://www.bundle.love', 'https://www.usebundle.co', 'https://usebunde.co', 'https://usebundle.co/messages', 'https://www.usebundle.co/messages', 'https://www.usebundle.co/'];
   //    const origin = req.headers.origin.toString();
   //    if (allowedOrigins.includes(origin)) {
 
   //    }
 
   //     console.log('origin' + origin);
-  res.setHeader("Access-Control-Allow-Origin", "https://www.usebundle.co");
+  res.setHeader("Access-Control-Allow-Origin",  "*");
   res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
   res.setHeader(
     "Access-Control-Allow-Headers",
