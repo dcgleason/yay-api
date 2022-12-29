@@ -9,6 +9,8 @@ const axios = require("axios");
 const stripe = require("stripe")(
   "sk_test_51KtCf1LVDYVdzLHCA31MSSlOKhe7VQtXqJJiPnJK90sRLsmYU3R5MlTljmTe5AGZTNaKzKF0Fr8BC2fNOsTBgDP100TiYqCU9k"
 ); //  secret key for test environment, to be replaced when we start taking orders
+const uri = "mongodb+srv://dcgleason:F1e2n3n4!!@yay-cluster01.lijs4.mongodb.net/?retryWrites=true&w=majority";
+
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -58,7 +60,7 @@ app.use(express.urlencoded({ extended: true }));
 // db connection - mongo atlas
 const connectDB = async () => {
   await mongoose.connect(
-    process.env.DB_URI,
+    'mongodb+srv://dcgleason:F1e2n3n4!!@yay-cluster01.lijs4.mongodb.net/?retryWrites=true&w=majority',
     { useUnifiedTopology: true, useNewUrlParser: true },
     (err) => {
       if (err) {
@@ -71,6 +73,12 @@ const connectDB = async () => {
 };
 //execute connection
 connectDB();
+
+const db = mongoose.connection;
+db.on('error', console.error.bind(console, 'connection error:'));
+db.once('open', function() {
+  // we're connected!
+});
 
 // app route controllers - app.use
 app.use("/users", users);
