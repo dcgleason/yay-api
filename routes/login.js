@@ -115,7 +115,7 @@ passport.deserializeUser(function(id, done) {
  */
 
 // /signin route
-router.post('/signin', passport.authenticate('local', { successRedirect: '/edit', failureRedirect: '/login-failure' }), (err, req, res, next) => {
+router.post('/signin', passport.authenticate('local', { successRedirect: 'http://localhost:3000', failureRedirect: '/login-failure' }), (err, req, res, next) => {
 
   if (err) next(err);
   console.log("You are logged in!");
