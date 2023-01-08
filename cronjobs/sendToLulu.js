@@ -5,9 +5,20 @@ dotenv.config()
 const fs = require('fs');
 const AWS = require('aws-sdk');
 //const htmlpdf = require('html-pdf');
-const { convertHTMLToPDF } = require('pdf-puppeteer');
 
-AWS.config.loadFromPath('./config.json'); // Load AWS credentials from config.json
+const puppeteer = require('puppeteer');
+
+async function convertHTMLToPDF(html) {
+  const browser = await puppeteer.launch();
+  const page = await browser.newPage();
+  await page.setContent(html);
+  const pdf = await page.pdf({ format: 'A4' });
+  await browser.close();
+  return pdf;
+}
+
+
+// AWS.config.loadFromPath('./config.json'); // Load AWS credentials from config.json
 
 
 // config.json
@@ -23,6 +34,18 @@ AWS.config.loadFromPath('./config.json'); // Load AWS credentials from config.js
 // s3 key is the key for the Amazon S3 bucket
 
 
+const message = 'This is my message to you. I hope you like it. This is my message to you. I hope you like it. This is my message to you. I hope you like it. This is my message to you. I hope you like it. This is my message to you. I hope you like it. This is my message to you. I hope you like it. This is my message to you. I hope you like it. This is my message to you. I hope you like it. This is my message to you. I hope you like it. This is my message to you. I hope you like it. This is my message to you. I hope you like it. This is my message to you. I hope you like it. This is my message to you. I hope you like it. This is my message to you. I hope you like it. This is my message to you. I hope you like it. This is my message to you. I hope you like it. This is my message to you. I hope you like it. This is my message to you. I hope you like it. This is my message to you. I hope you like it. This is my message to you. I hope you like it. This is my message to you. I hope you like it.  '
+
+const messages = [ 
+    {
+        message: message, 
+        image: null
+}
+]
+
+
+const htmlTemplate = '<html><body><div>{{message}}</div><div><img src="{{image}}" /></div></body></html>';
+
 // need to make sure the the text is not too long for the page  -- if it is too long, we need to split it up and create multiple pages
 async function createPDFAndUploadToS3(htmlTemplate, messages, s3Bucket, s3Key) {
   // Compile the HTML pages with the given messages and images
@@ -33,7 +56,7 @@ async function createPDFAndUploadToS3(htmlTemplate, messages, s3Bucket, s3Key) {
      const maxWordsPerPage = 300;
      let words = messages[i].message.split(' '); // array of total words
      let message = ''; // will hold the message for each page
-     if(words.length > maxWordsPerPage) {  // if the message is too long, we need to split it up into multiple pages
+     if(words.length > maxWordsPerPage ) {  // if the message is too long, we need to split it up into multiple pages
             for(let j = 0; j < words.length; j++) { // loop through the words
                 message += ' ' + words[j];
                 if(j % maxWordsPerPage === 0 && j !== 0) { // when the message is too long, we need to split it up into multiple pages
@@ -67,13 +90,13 @@ async function createPDFAndUploadToS3(htmlTemplate, messages, s3Bucket, s3Key) {
             .replace('{{image}}', messages[i].imageTwo);  
     }
     }
- 
-  
-    }
 
 
   // Convert the compiled HTML to a PDF
-  const pdfBuffer = await convertHTMLToPDF(compiledHTML);
+  const pdfBuffer = convertHTMLToPDF(compiledHTML);
+
+
+
 
   // Upload the PDF to Amazon S3
   const s3 = new AWS.S3();
@@ -83,10 +106,16 @@ async function createPDFAndUploadToS3(htmlTemplate, messages, s3Bucket, s3Key) {
     Key: s3Key,
     ContentType: 'application/pdf',
   };
-  await s3.putObject(params).promise();
+   s3.putObject(params).promise();
 
   // Return the downloadable link of the PDF
-  return `https://${s3Bucket}.s3.amazonaws.com/${s3Key}`;
+  console.log( `https://${s3Bucket}.s3.amazonaws.com/${s3Key}`);
+
+
+}
+
+
+createPDFAndUploadToS3(htmlTemplate, messages, 'dgbundle1', 'PHtjLSSTTu76qBSLHmAT+OwwHbPL3lECTD5CbvKp');
 
   // OR
 
@@ -98,8 +127,6 @@ async function createPDFAndUploadToS3(htmlTemplate, messages, s3Bucket, s3Key) {
         Expires: 60 // Link will expire in 60 seconds
       });
     */
-}
-
 // will need to loop through all the messages and associated imagees and send bundle (compiled pages) to lulu
 
 async function generatePDF(templatePath, text, imagePath, s3Bucket, s3Key) { // THIS IS PER PAGE (LEFT AND RIGHT)
@@ -120,13 +147,13 @@ async function generatePDF(templatePath, text, imagePath, s3Bucket, s3Key) { // 
   html = html.replace('{{image}}', `<img src="${imagePath}" alt="image">`);
 
   // Convert the HTML to a PDF
-  const pdfBuffer = await htmlpdf.create(html).toBuffer();
+  const pdfBuffer =  htmlpdf.create(html).toBuffer();
 
   // Create an instance of the AWS SDK for JavaScript
   const s3 = new AWS.S3();
 
   // Upload the PDF to Amazon S3
-  await s3.putObject({
+   s3.putObject({
     Bucket: s3Bucket,
     Key: s3Key,
     Body: pdfBuffer
@@ -134,18 +161,18 @@ async function generatePDF(templatePath, text, imagePath, s3Bucket, s3Key) { // 
 
 
 }
-
+//
 
 // example
 
-const templatePath = '/path/to/template.html';
+//const templatePath = '/path/to/template.html';
 const text = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.';
-const imagePath = '/path/to/image.jpg';
-const s3Bucket = 'my-s3-bucket';
-const s3Key = 'my-pdf.pdf';
+//const imagePath = '/path/to/image.jpg';
+//const s3Bucket = 'my-s3-bucket';
+//const s3Key = 'my-pdf.pdf';
 
-const downloadLink = await generatePDF(templatePath, text, imagePath, s3Bucket, s3Key);
-console.log(downloadLink); // https://my-s3-bucket.s3.amazonaws.com/my-pdf.pdf?AWSAccessKeyId=...
+// const downloadLink =  generatePDF(templatePath, text, imagePath, s3Bucket, s3Key);
+// console.log(downloadLink); // https://my-s3-bucket.s3.amazonaws.com/my-pdf.pdf?AWSAccessKeyId=...
 
 //send to lulu function
 const sendToLulu = async () => {
@@ -157,7 +184,7 @@ const sendToLulu = async () => {
  data.append('grant_type', 'client_credentials')
 
 
-await axios({ 
+ axios({ 
     method: 'post',
     url: baseurl,
     data: data,

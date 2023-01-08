@@ -75,24 +75,29 @@ router.use(session({
 router.use(passport.initialize());
 router.use(passport.session());
 
-passport.use(new LocalStrategy(
-  function(username, password, done) {
-    User.findOne({ username: username }, function (err, user) {
-      if (err) { return done(err); }
-      if (!user) {
-        return done(null, false, { message: 'Incorrect username.' });
-      }
-      if (user) {
-       if (validPassword(password)) {
-        return done(null, false, { message: 'Incorrect password.' });
-    
-    }
-  }
-    
-      return done(null, user);
-    });
-  }
-));
+
+passport.use(
+  new LocalStrategy(function (username, password, cb) {
+    User.findOne({ username: username })
+      .then((user) => {
+        if (!user) {
+          return cb(null, false);
+        }
+
+        // Function defined at bottom of app.js
+        const isValid = validPassword(password, user.hash, user.salt);
+
+        if (isValid) {
+          return cb(null, user);
+        } else {
+          return cb(null, false);
+        }
+      })
+      .catch((err) => {
+        cb(err);
+      });
+  })
+);
 
 passport.serializeUser(function(user, done) {
   done(null, user.id);
