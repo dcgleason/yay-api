@@ -4,7 +4,6 @@ const axios = require('axios')
 
 
 
-
 /**
  * /api/token route retrieves a jwt for access to the lulu print api
  * this access_token must be sent with all subsequent requests

@@ -1,35 +1,24 @@
 const express = require("express");
 const router = express.Router();
-const User = require("../models/User");
+const Contribution = require("../models/Contribution");
 
-//TODO: create the following functionality
-
-// create user : DONE
-// find user by id: DONE
-// update user info: DONE
-// bundle.com/users/
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 //GET ROUTES
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-//users Home page
-router.get("/", (req, res) => {
-  res.send("Users home page!!!");
-});
-
 //find user by id
 router.get("/:id", async (req, res) => {
-  User.findById(req.params.id, (err, user) => {
+  Contribution.findById(req.params.id, (err, contribution) => {
     if (err) {
       console.log(err.message);
       const error = {
         userFound: false,
         error: true,
-        message: "error could not find user"
-      }
+        message: "error could not find user",
+      };
       res.status(400).send(error);
     } else {
-      res.send(user);
+      res.send(contribution);
     }
   });
 });
@@ -37,15 +26,8 @@ router.get("/:id", async (req, res) => {
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 //POST ROUTES
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-/*
-CREATE USER: 
-create user is a post route that will accept an object with user data 
-as an object and will return the created user object for use on the front end
-*/
-//TODO: TEST WHETHER THE ASSOCIATEDIDS ARRAY IS ABLE TO RECEIVE INFO
 router.post("/create", (req, res) => {
-  User.create(req.body, (err, createdUser) => {
+  Contribution.create(req.body, (err, contribution) => {
     if (err) {
       console.log(err.message);
       // handle error
@@ -55,23 +37,22 @@ router.post("/create", (req, res) => {
         message: "error could not find user",
       };
     }
-    console.log("created the following user in DB", createdUser);
+    console.log("created the following contribution in DB", contribution);
 
-    res.send(createdUser);
+    res.send(contribution);
   });
 });
 
-// update user info
-//when updating from the front end , must pull the original object, then
-//push a new item to the gifts array and then use this route.
-//this route will REPLACE VALUES especially in the associatedGifts array
+//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//  PUT / UPDATE ROUTES
+//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 router.put("/update/:id", (req, res) => {
   console.log("heres what we got..............", "\n", req.body);
-  User.findByIdAndUpdate(
+  Contribution.findByIdAndUpdate(
     req.params.id,
     req.body,
     { new: true },
-    (err, updatedUser) => {
+    (err, contribution) => {
       if (err) {
         console.log(err.message); // handle error
         const error = {
@@ -81,9 +62,9 @@ router.put("/update/:id", (req, res) => {
         };
         res.status(400).send(error);
       }
-      console.log("updated the following user in DB", updatedUser);
+      console.log("updated the following user in DB", contribution);
 
-      res.send(updatedUser);
+      res.send(contribution);
     }
   );
 });
