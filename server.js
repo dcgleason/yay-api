@@ -36,7 +36,11 @@ app.set("view engine", "ejs");
 //   next();
 // });
 
-app.use(cors());
+const corsOption = {
+  origin: 'http://localhost:3000',
+  credentials: true
+}
+app.use(cors(corsOption))
 
 /*
 IMPORT ROUTE CONTROLLERS: 
