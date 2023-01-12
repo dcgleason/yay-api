@@ -114,18 +114,24 @@ passport.deserializeUser(function(id, done) {
  * -------------- ROUTES ----------------
  */
 
-// /signin route
-router.post('/signin', passport.authenticate('local', { successRedirect: '/success', failureRedirect: '/login-failure' }), (err, req, res, next) => {
 
-  if (err) next(err);
+router.get('/', (req, res) => {
+  console.log('login route')
+}
+
+
+);
+// /signin route
+router.post('/signin', passport.authenticate('local', { successRedirect: '/success', failureRedirect: '/login-failure' }), ( req, res) => {
+
   console.log("You are logged in!");
 
 
 });
 
-app.get("/success", (req, res, next) => {
+router.get("/success", (req, res) => {
+  res.status(200).send({ message: 'Login successful!' });
   console.log(req.session);
-  res.send("You successfully logged in.");
 });
 
 // signup route
@@ -151,12 +157,7 @@ router.post("/signup", (req, res, next) => {
   });
 
 // });
-  res.redirect("/");
-});
-
-// Path: routes/index.js
-router.get("/", (req, res, next) => {
-  res.send("<h1>Home</h1>");
+  res.redirect("/edit");
 });
 
 

@@ -4,6 +4,7 @@ const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
 var bodyParser = require("body-parser");
+const cors = require("cors");
 
 const axios = require("axios");
 const stripe = require("stripe")(
@@ -18,7 +19,7 @@ app.use(bodyParser.json());
 // Set EJS as templating engine
 app.set("view engine", "ejs");
 
-app.use((req, res, next) => {
+// app.use((req, res, next) => {
     // const allowedOrigins = ['http://localhost:3000', 'https://bundle.love', 'https://www.bundle.love', 'https://www.usebundle.co', 'https://usebunde.co', 'https://usebundle.co/messages', 'https://www.usebundle.co/messages', 'https://www.usebundle.co/'];
   //    const origin = req.headers.origin.toString();
   //    if (allowedOrigins.includes(origin)) {
@@ -26,14 +27,16 @@ app.use((req, res, next) => {
   //    }
 
   //     console.log('origin' + origin);
-  res.setHeader("Access-Control-Allow-Origin",  "*");
-  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
-  res.setHeader(
-    "Access-Control-Allow-Headers",
-    "Accept, Content-Type, x-requested-with"
-  );
-  next();
-});
+//   res.setHeader("Access-Control-Allow-Origin",  "*");
+//   res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+//   res.setHeader(
+//     "Access-Control-Allow-Headers",
+//     "Accept, Content-Type, x-requested-with"
+//   );
+//   next();
+// });
+
+app.use(cors());
 
 /*
 IMPORT ROUTE CONTROLLERS: 
