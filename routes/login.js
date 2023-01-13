@@ -164,6 +164,8 @@ router.post("/signup", (req, res, next) => {
   console.log("Connected to MongoDB / inside /signup route");
   const newUser = new User({
     username: req.body.username,
+    firstName: req.body.firstName,
+    lastName: req.body.lastName,
     hash: hash,
     salt: salt,
   });
