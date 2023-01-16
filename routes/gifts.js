@@ -25,6 +25,22 @@ router.get("/:id", async (req, res) => {
   });
 });
 
+router.get("user/:id", async (req, res) => {
+  Gift.findOne({ giftOwnerID: req.params.giftOwnerID }, (err, gift) => {
+    if (err) {
+        console.log(err.message);
+        const error = {
+            userFound: false,
+            error: true,
+            message: "error could not find gift",
+        };
+        res.status(400).send(error);
+    } else {
+        res.send(gift);
+    }
+});
+});
+
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 //POST ROUTES
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
