@@ -25,7 +25,7 @@ router.get("/:id", async (req, res) => {
   });
 });
 
-router.get("user/:giftOwnerId", async (req, res) => {
+router.get("user/:giftOwnerID", async (req, res) => {
   Gift.findOne({ giftOwnerID: req.params.giftOwnerID }, (err, gift) => {
     if (err) {
         console.log(err.message);
