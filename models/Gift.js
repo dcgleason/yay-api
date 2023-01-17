@@ -10,6 +10,7 @@ const giftSchema = new Schema(
     giftOwnerID: String, //this will be the string representing User._id
     recipientName: { type: String, required: true },
     recipientFirstName: { type: String, required: true },
+    noteToContributors: String,
     shippingAddress: String,
     city: String,
     state: String,
