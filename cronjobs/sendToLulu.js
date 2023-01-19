@@ -68,6 +68,9 @@ async function createPDFAndUploadToS3(htmlTemplate, messages, s3Bucket, s3Key) {
      const maxWordsPerPage = 350;
      let words = messages[i].message.split(' '); // array of total words
      let message = ''; // will hold the message for each page
+
+     // needs to be based on how the INDD file is structured 
+     
      if(words.length > maxWordsPerPage ) {  // if the message is too long, we need to split it up into multiple pages
             for(let j = 0; j < words.length; j++) { // loop through the words
                 message += ' ' + words[j];
