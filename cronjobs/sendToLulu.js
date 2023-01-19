@@ -39,8 +39,9 @@ const message = 'This is my message to you. I hope you like it. This is my messa
 const messages = [ 
     {
         message: message, 
+        name: 'John Doe',
         image: null
-}
+    }
 ]
 
 
@@ -50,10 +51,21 @@ const htmlTemplate = '<html><body><div>{{message}}</div><div><img src="{{image}}
 async function createPDFAndUploadToS3(htmlTemplate, messages, s3Bucket, s3Key) {
   // Compile the HTML pages with the given messages and images
   let compiledHTML = '';
+
+  messages.sort((a, b) => { // sorts the messages in alphabetical order by the name property
+    if (a.name < b.name) {
+        return -1;
+    }
+    if (a.name > b.name) {
+        return 1;
+    }
+    return 0;
+});
+
   for (let i = 0; i < messages.length; i++) {
 
      // Split the message into multiple pages if it exceeds a certain number of characters (lines 33 to 46)
-     const maxWordsPerPage = 300;
+     const maxWordsPerPage = 350;
      let words = messages[i].message.split(' '); // array of total words
      let message = ''; // will hold the message for each page
      if(words.length > maxWordsPerPage ) {  // if the message is too long, we need to split it up into multiple pages
