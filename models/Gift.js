@@ -20,6 +20,7 @@ const giftSchema = new Schema(
     returnAddress: String,
     contributerEmails: [String], //emails provided by the user for contributers to this gift.
     bookTitle: String,
+    bookCover: String,
     published: Boolean,
     customPrompts: [String],
     contributions: [String],
