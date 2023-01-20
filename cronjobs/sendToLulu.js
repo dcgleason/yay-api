@@ -46,8 +46,8 @@ const messages = [
 // need to make sure the the text is not too long for the page  -- if it is too long, we need to split it up and create multiple pages
 async function createPDFAndUploadToS3(htmlTemplatePath, messages, s3Bucket, s3Key) {
 
-      // Read in the HTML template
-  const compiledHTML = fs.readFileSync(templatePath, 'utf8');
+
+
   // Compile the HTML pages with the given messages and images
   for (let i = 0; i < messages.length; i++) {
 
@@ -62,6 +62,7 @@ async function createPDFAndUploadToS3(htmlTemplatePath, messages, s3Bucket, s3Ke
                     compiledHTML += htmlTemplate //
                         .replace('{{message}}', message) // replace the message with the message for page 1
                         .replace('{{image}}', messages[i].image); // replace the image with the image for page 1
+                        .replace('{{qrCode}}', messages[i].qrCode); // replace the qrCode with the qrCode for page 1
                    
                 
                 }
@@ -74,19 +75,10 @@ async function createPDFAndUploadToS3(htmlTemplatePath, messages, s3Bucket, s3Ke
          compiledHTML += htmlTemplate
          .replace('{{message}}', message)
 
-         if(messages[i].imageTwo) { // if there is a second image, add it to the page
-             compiledHTML += htmlTemplate
-             .replace('{{image}}', messages[i].imageTwo);  
-     }
 
             }
         }
 
-        compiledHTML += htmlTemplate
-        .replace('{{message}}', message)
-        if(messages[i].imageTwo) {
-            compiledHTML += htmlTemplate
-            .replace('{{image}}', messages[i].imageTwo);  
     }
     }
 
