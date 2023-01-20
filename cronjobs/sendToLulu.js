@@ -39,17 +39,16 @@ const message = 'This is my message to you. I hope you like it. This is my messa
 const messages = [ 
     {
         message: message, 
-        image: null
+        image: null,
+        qrCode: null
 }
 ]
-
-
-const htmlTemplate = '<html><body><div>{{message}}</div><div><img src="{{image}}" /></div></body></html>';
-
 // need to make sure the the text is not too long for the page  -- if it is too long, we need to split it up and create multiple pages
-async function createPDFAndUploadToS3(htmlTemplate, messages, s3Bucket, s3Key) {
+async function createPDFAndUploadToS3(htmlTemplatePath, messages, s3Bucket, s3Key) {
+
+      // Read in the HTML template
+  const compiledHTML = fs.readFileSync(templatePath, 'utf8');
   // Compile the HTML pages with the given messages and images
-  let compiledHTML = '';
   for (let i = 0; i < messages.length; i++) {
 
      // Split the message into multiple pages if it exceeds a certain number of characters (lines 33 to 46)
