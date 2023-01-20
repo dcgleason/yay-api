@@ -3,6 +3,7 @@ require("dotenv").config({ path: require("find-config")(".env") });
 const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
+mongoose.set('strictQuery', false);
 var bodyParser = require("body-parser");
 const cors = require("cors");
 
@@ -37,7 +38,7 @@ app.set("view engine", "ejs");
 // });
 
 const corsOption = {
-  origin: 'http://localhost:3000',
+  origin: 'http://localhost:3002',
   credentials: true
 }
 app.use(cors(corsOption))

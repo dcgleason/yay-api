@@ -116,7 +116,7 @@ passport.deserializeUser(function(id, done) {
  */
 
 const corsOptions = {
-  origin: "http://localhost:3000", 
+  origin: "http://localhost:3002",
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   credentials: true
 }
@@ -175,7 +175,7 @@ router.post("/signup", (req, res, next) => {
   });
 
 // });
-  res.redirect("/edit");
+  res.redirect("/");
 });
 
 
