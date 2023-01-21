@@ -98,7 +98,7 @@ app.use("/stripe", payment);
 app.use("/email", email);
 app.use("/unique", userID);
 app.use("/contribution", contribution);
-app.use("/qrcode", qr);
+app.use("/qrcode", qrcode);
 
 // app root route app.get
 app.get("/", (req, res) => {
