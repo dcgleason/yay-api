@@ -27,7 +27,18 @@ router.get("/:id", async (req, res) => {
 //POST ROUTES
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 router.post("/create", (req, res) => {
+
+  if(req.body.audio){
+
+    
+
+  }
+
+
+  // take req.body.audio and create an QR code that is saved as an image and then save that, the url of the qr code image, in the contribution model as a string
+
   Contribution.create(req.body, (err, contribution) => {
+
     if (err) {
       console.log(err.message);
       // handle error
