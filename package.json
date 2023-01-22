@@ -15,6 +15,7 @@
     "add": "^2.0.6",
     "aws-sdk": "^2.1283.0",
     "axios": "^0.26.1",
+    "better-html-pdf": "^0.1.4",
     "body-parser": "^1.20.0",
     "compression": "^1.7.4",
     "connect-mongo": "^4.6.0",

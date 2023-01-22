@@ -12,31 +12,34 @@ var html_to_pdf = require('html-pdf-node');
 
 const imageReplacement = async () => {
 
-const  html_string = '<!DOCTYPE html>\n<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">\n<head>\n<title></title>\n\n<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>\n <br/>\n<style type="text/css">\n<!--\n\tp {margin: 0; padding: 0;}	.ft10{font-size:14px;font-family:Times;color:#231f20;}\n\t.ft11{font-size:44px;font-family:Times;color:#231f20;}\n\t.ft12{font-size:20px;font-family:Times;color:#231f20;}\n\t.ft13{font-size:14px;line-height:27px;font-family:Times;color:#231f20;}\n\t.ft14{font-size:14px;line-height:26px;font-family:Times;color:#231f20;}\n\timg {\n    width: 50%;\n    float: right;\n    padding: 87px;\n}\n-->\n</style>\n</head>\n<body bgcolor="#A0A0A0" vlink="blue" link="blue">\n<div id="page1-div" style="position:relative;width:1836px;height:918px;">\n<img width="747" height="747" src="../images/chris.png" alt="background image"/>\n<p style="position:absolute;top:197px;left:90px;white-space:nowrap" class="ft10">M</p>\n<p style="position:absolute;top:251px;left:90px;white-space:nowrap" class="ft13">You are relentlessly thoughtful, selfless &amp; determined and you are going to be the best&#160;<br/>mother in the world. I only hope our child gets the majority of&#160;your genes, and maybe&#160;<br/>some of my red hair &amp; dimples sprinkled in&#160;</p>\n<p style="position:absolute;top:359px;left:90px;white-space:nowrap" class="ft13">I can’t wait to raise a family with you, grow old with you, and&#160;constantly fall in love with&#160;<br/>you, day-in and day-out.&#160;</p>\n<p style="position:absolute;top:440px;left:90px;white-space:nowrap" class="ft10">But don’t take my word for it.</p>\n<p style="position:absolute;top:494px;left:90px;white-space:nowrap" class="ft14">What a better way to celebrate the handwritten first draft queen herself than with a&#160;<br/>timeless collection of those who know you best &amp; love you most&#160;from near and far.&#160;</p>\n<p style="position:absolute;top:575px;left:90px;white-space:nowrap" class="ft10">Cheers to the best life with the best wife.</p>\n<p style="position:absolute;top:629px;left:90px;white-space:nowrap" class="ft13">Forever & always<br/>Hub </p>\n<p style="position:absolute;top:100px;left:90px;white-space:nowrap" class="ft11">Hub</p>\n<p style="position:absolute;top:841px;left:819px;white-space:nowrap" class="ft12">2</p>\n</div>\n</body>\n</html>';
+const  html = '<!DOCTYPE html>\n<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">\n<head>\n<title></title>\n\n<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>\n <br/>\n<style type="text/css">\n<!--\n\tp {margin: 0; padding: 0;}	.ft10{font-size:14px;font-family:Times;color:#231f20;}\n\t.ft11{font-size:44px;font-family:Times;color:#231f20;}\n\t.ft12{font-size:20px;font-family:Times;color:#231f20;}\n\t.ft13{font-size:14px;line-height:27px;font-family:Times;color:#231f20;}\n\t.ft14{font-size:14px;line-height:26px;font-family:Times;color:#231f20;}\n\timg {\n    width: 50%;\n    float: right;\n    padding: 87px;\n}\n-->\n</style>\n</head>\n<body bgcolor="#A0A0A0" vlink="blue" link="blue">\n<div id="page1-div" style="position:relative;width:1836px;height:918px;">\n<img width="100%" height="auto" src="../images/chris.png" alt="background image"/>\n<p style="position:absolute;top:197px;left:90px;white-space:nowrap" class="ft10">M</p>\n<p style="position:absolute;top:251px;left:90px;white-space:nowrap" class="ft13">You are relentlessly thoughtful, selfless &amp; determined and you are going to be the best&#160;<br/>mother in the world. I only hope our child gets the majority of&#160;your genes, and maybe&#160;<br/>some of my red hair &amp; dimples sprinkled in&#160;</p>\n<p style="position:absolute;top:359px;left:90px;white-space:nowrap" class="ft13">I can’t wait to raise a family with you, grow old with you, and&#160;constantly fall in love with&#160;<br/>you, day-in and day-out.&#160;</p>\n<p style="position:absolute;top:440px;left:90px;white-space:nowrap" class="ft10">But don’t take my word for it.</p>\n<p style="position:absolute;top:494px;left:90px;white-space:nowrap" class="ft14">What a better way to celebrate the handwritten first draft queen herself than with a&#160;<br/>timeless collection of those who know you best &amp; love you most&#160;from near and far.&#160;</p>\n<p style="position:absolute;top:575px;left:90px;white-space:nowrap" class="ft10">Cheers to the best life with the best wife.</p>\n<p style="position:absolute;top:629px;left:90px;white-space:nowrap" class="ft13">Forever & always<br/>Hub </p>\n<p style="position:absolute;top:100px;left:90px;white-space:nowrap" class="ft11">Hub</p>\n<p style="position:absolute;top:841px;left:819px;white-space:nowrap" class="ft12">2</p>\n</div>\n</body>\n</html>';
 
 
 // Read the image file and get its aspect ratio
-const imgPath = '/Users/danielgleason/Desktop/yay-api/cronjobs/images/image.jpg'
+const imgPath = '/image.jpg';
 const img = fs.readFileSync(imgPath);
 const imgSize = sizeOf(img)
 const aspectRatio = imgSize.width / imgSize.height;
 
-var html;
+console.log('image height' + imgSize.height)
+console.log('image width' + imgSize.width)
+
 
 // Replace the image source with the image file
 //html = html_string.replace('../images/chris.png', imgPath);
 
 // Use javascript to set the width of the image element based on the aspect ratio
-const imgElement = "<img width='100%' height='auto' src='"+imgPath+"' alt='background image'/>";
-html = html_string.replace("<img width='747' height='747' src='../images/chris.png' alt='background image'/>", imgElement);
+
+var final_html = html.replace('../images/chris.png', imgPath);
 
 let options = { format: 'A4' };
-let file = { content: html };
+console.log('html' + final_html);
+let file = { content: final_html };
 
 html_to_pdf.generatePdf(file, options).then(pdfBuffer => {
     console.log("PDF Buffer.url", pdfBuffer);
     var pdf = pdfBuffer
-    fs.writeFile('testPDF3.pdf', pdf, (err) => {
+    fs.writeFile('testPDF7.pdf', pdf, (err) => {
         if (err) throw err;
         console.log('The file has been saved!');
     })
