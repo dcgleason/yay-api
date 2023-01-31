@@ -39,10 +39,11 @@ const Pdf = mongoose.model('Pdf', pdfSchema);
 
 // POST route to upload PDF to S3 and store URL in MongoDB
 router.post('/create', (req, res) => {
+
   const base64Data = new Buffer.from(req.body.pdf, 'base64');
 
   const params = {
-    Bucket: 'YOUR_BUCKET_NAME',
+    Bucket: 'YOUR_BUCKET_NAME', // add
     Key: `pdfs/${Date.now()}.pdf`,
     Body: base64Data,
     ContentEncoding: 'base64',
@@ -53,7 +54,7 @@ router.post('/create', (req, res) => {
     if (err) {
       res.status(500).send(err);
     } else {
-      const pdf = new Pdf({ pdfUrl: data.Location });
+      const pdf = new Contribution({ base64ContributionPage: data.Location });
       pdf.save((err) => {
         if (err) {
           res.status(500).send(err);
