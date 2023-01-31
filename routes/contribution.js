@@ -34,9 +34,6 @@ AWS.config.update({
 
 const s3 = new AWS.S3();
 
-// Create a model for PDF
-const Pdf = mongoose.model('Pdf', pdfSchema);
-
 // POST route to upload PDF to S3 and store URL in MongoDB
 router.post('/create', (req, res) => {
 
