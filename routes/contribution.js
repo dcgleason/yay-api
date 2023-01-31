@@ -26,37 +26,50 @@ router.get("/:id", async (req, res) => {
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 //POST ROUTES
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-router.post("/create", (req, res) => {
+r// Configure AWS S3
+AWS.config.update({
+  accessKeyId: 'YOUR_ACCESS_KEY_ID',
+  secretAccessKey: 'YOUR_SECRET_ACCESS_KEY'
+});
 
-  if(req.body.audio){
+const s3 = new AWS.S3();
 
-    
+// Create a model for PDF
+const Pdf = mongoose.model('Pdf', pdfSchema);
 
-  }
+// POST route to upload PDF to S3 and store URL in MongoDB
+router.post('/create', (req, res) => {
+  const base64Data = new Buffer.from(req.body.pdf, 'base64');
 
+  const params = {
+    Bucket: 'YOUR_BUCKET_NAME',
+    Key: `pdfs/${Date.now()}.pdf`,
+    Body: base64Data,
+    ContentEncoding: 'base64',
+    ContentType: 'application/pdf'
+  };
 
-  // take req.body.audio and create an QR code that is saved as an image and then save that, the url of the qr code image, in the contribution model as a string
-
-  Contribution.create(req.body, (err, contribution) => {
-
+  s3.upload(params, (err, data) => {
     if (err) {
-      console.log(err.message);
-      // handle error
-      const error = {
-        userFound: false,
-        error: true,
-        message: "error could not find user",
-      };
+      res.status(500).send(err);
+    } else {
+      const pdf = new Pdf({ pdfUrl: data.Location });
+      pdf.save((err) => {
+        if (err) {
+          res.status(500).send(err);
+        } else {
+          res.status(200).send({ message: 'PDF uploaded and URL stored' });
+        }
+      });
     }
-    console.log("created the following contribution in DB", contribution);
-
-    res.send(contribution);
   });
 });
 
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 //  PUT / UPDATE ROUTES
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
 router.put("/update/:id", (req, res) => {
   console.log("heres what we got..............", "\n", req.body);
   Contribution.findByIdAndUpdate(

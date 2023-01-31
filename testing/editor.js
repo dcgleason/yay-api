@@ -31,3 +31,13 @@ request(options, function (error, response, body) {
 // 2. Let the conributor see the PDF? ( ned a way to submit the PDF from the editor --> ask)
 // 3. Use ConvertAPI to merge all PDFs into one final PDF (ROUTE --> when user clicks Submit)
 // 4. Send to Lulu for printing
+
+
+convertapi.convert('merge', {
+    Files: [
+      'pdfs/basic_two.pdf',
+      'pdfs/basics.pdf',
+    ]
+}, 'pdf').then(function(result) {
+    result.saveFiles('pdfs');
+});
