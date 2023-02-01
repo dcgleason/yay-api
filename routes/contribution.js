@@ -26,13 +26,13 @@ router.get("/:id", async (req, res) => {
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 //POST ROUTES
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-r// Configure AWS S3
-AWS.config.update({
-  accessKeyId: 'YOUR_ACCESS_KEY_ID',
-  secretAccessKey: 'YOUR_SECRET_ACCESS_KEY'
-});
+// Configure AWS S3
+// AWS.config.update({
+//   accessKeyId: 'YOUR_ACCESS_KEY_ID',
+//   secretAccessKey: 'YOUR_SECRET_ACCESS_KEY'
+// });
 
-const s3 = new AWS.S3();
+// const s3 = new AWS.S3();
 
 // POST route to upload PDF to S3 and store URL in MongoDB
 router.post('/create', (req, res) => {

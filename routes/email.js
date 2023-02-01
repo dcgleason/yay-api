@@ -5,6 +5,7 @@ const { google } = require('googleapis');
 
 
 
+
 //email send to gift contributors  
 
 router.post('/send', (req, res) => {
@@ -60,5 +61,25 @@ router.post('/send', (req, res) => {
     
   
   })
+
+
+router.post("/contacts", (req, res) => {
+  const accessToken = req.body.accessToken;
+
+  const people = google.people({ version: "v1", auth: accessToken });
+  people.people.connections
+    .list({
+      resourceName: "people/me",
+      personFields: "names,emailAddresses"
+    })
+    .then(response => {
+      const connections = response.data.connections;
+      res.json(connections);
+    })
+    .catch(error => {
+      console.error(error);
+      res.status(500).send(error.message);
+    });
+});
 
   module.exports = router
