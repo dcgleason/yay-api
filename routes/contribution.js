@@ -1,6 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const Contribution = require("../models/Contribution");
+// Import
+const Transloadit = require('transloadit')
 
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 //GET ROUTES
@@ -35,33 +37,98 @@ router.get("/:id", async (req, res) => {
 // const s3 = new AWS.S3();
 
 // POST route to upload PDF to S3 and store URL in MongoDB
-router.post('/create', (req, res) => {
+router.post('/create-document', (req, res) => {
 
-  const base64Data = new Buffer.from(req.body.pdf, 'base64');
+  // create a document from the right template and then store it -- the url
+  const request = require('request');
 
-  const params = {
-    Bucket: 'YOUR_BUCKET_NAME', // add
-    Key: `pdfs/${Date.now()}.pdf`,
-    Body: base64Data,
-    ContentEncoding: 'base64',
-    ContentType: 'application/pdf'
+  const options = {
+    method: 'POST',
+    url: 'https://us1.pdfgeneratorapi.com/api/v4/documents/generate',
+    headers: {
+      'content-type': 'application/json',
+      Authorization: 'Bearer REPLACE_BEARER_TOKEN' // fill in
+    },
+    body: {
+      template: {
+        id: 'REPLACE_TEMPLATE_ID', // fill in
+        data: {id: 123, name: 'John Smith', birthdate: '2000-01-01', role: 'Developer'}   // fill in with req.body
+      },
+      format: 'pdf',
+      output: 'base64',
+      name: 'Invoice 123'
+    },
+    json: true
   };
-
-  s3.upload(params, (err, data) => {
-    if (err) {
-      res.status(500).send(err);
-    } else {
-      const pdf = new Contribution({ base64ContributionPage: data.Location });
-      pdf.save((err) => {
-        if (err) {
-          res.status(500).send(err);
-        } else {
-          res.status(200).send({ message: 'PDF uploaded and URL stored' });
-        }
-      });
-    }
+  
+  request(options, function (error, response, body) {
+    if (error) throw new Error(error);
+  
+    console.log(body); // upload to MongoDB contributor model
   });
+
 });
+  
+
+
+router.post('/audio-concat', (req, res) => {
+  
+// Init
+const transloadit = new Transloadit({
+  authKey: 'YOUR_TRANSLOADIT_KEY',
+  authSecret: 'MY_TRANSLOADIT_SECRET',
+})
+
+// Set Encoding Instructions
+const options = {
+  files: {
+    myfile_1: './dutch-anthem.mp3',
+  },
+  params: {
+    steps: {
+      ':original': {
+        robot: '/upload/handle',
+      },
+      imported_postroll: {
+        robot: '/http/import',
+        url: 'https://demos.transloadit.com/inputs/german-anthem.mp3',
+      },
+      concatenated: {
+        use: {
+          steps: [
+            {
+              name: ':original',
+              fields: 'file',
+              as: 'audio_1',
+            }, 
+,            {
+              name: 'imported_postroll',
+              as: 'audio_2',
+            }, 
+          ],
+        },
+        robot: '/audio/concat',
+        result: true,
+        ffmpeg_stack: 'v4.3.1',
+      },
+      exported: {
+        use: ['imported_postroll', 'concatenated', ':original'],
+        robot: '/s3/store',
+        credentials: 'YOUR_AWS_CREDENTIALS',
+        path: '${unique_prefix}/both-anthems.${file.ext}',
+        url_prefix: 'https://demos.transloadit.com/',
+      },
+    },
+  },
+}
+
+// Execute
+const result = await transloadit.createAssembly(options)
+
+// Show results
+console.log({ result })
+
+})
 
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 //  PUT / UPDATE ROUTES

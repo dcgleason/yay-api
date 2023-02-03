@@ -61,6 +61,7 @@
     "request": "^2.88.2",
     "serialize-javascript": "^6.0.0",
     "stripe": "^8.219.0",
+    "transloadit": "3.0.2",
     "uuid": "^8.3.2",
     "uuidv4": "^6.2.13",
     "yarn": "^1.22.18"
