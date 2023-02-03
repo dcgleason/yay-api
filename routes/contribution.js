@@ -53,7 +53,7 @@ router.post('/create-document', (req, res) => {
     },
     body: {
       template: {
-        id: 'REPLACE_TEMPLATE_ID', // fill in with req.body.tempalateID
+        id: req.body.templateID, // fill in with req.body.tempalateID
         data: {id: 123, name: 'John Smith', birthdate: '2000-01-01', role: 'Developer'}   // fill in with req.body -- qrcode -- needs to proide a link to audio
       },
       format: 'pdf',
@@ -76,7 +76,7 @@ router.post("/create-book", async (req, res) => {
 
   // get the contribution page URLs from MongoDB and have them listed in alphabetical order by first name
 
-const ownerID = req.body.giftOwnerID;
+const ownerID = req.body.giftOwnerID; // from the session data of next/auth when the user is logged in, to be developed.
 
 const contributions = await Contribution.find({ associatedGiftID: ownerID });
 
