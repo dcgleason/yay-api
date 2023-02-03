@@ -91,13 +91,6 @@ imageReplacement();
 
 // const message = 'This is my message to you. I hope you like it. This is my message to you. I hope you like it. This is my message to you. I hope you like it. This is my message to you. I hope you like it. This is my message to you. I hope you like it. This is my message to you. I hope you like it. This is my message to you. I hope you like it. This is my message to you. I hope you like it. This is my message to you. I hope you like it. This is my message to you. I hope you like it. This is my message to you. I hope you like it. This is my message to you. I hope you like it. This is my message to you. I hope you like it. This is my message to you. I hope you like it. This is my message to you. I hope you like it. This is my message to you. I hope you like it. This is my message to you. I hope you like it. This is my message to you. I hope you like it. This is my message to you. I hope you like it. This is my message to you. I hope you like it. This is my message to you. I hope you like it.  '
 
-// const messages = [ 
-//     {
-//         message: message, 
-//         name: 'John Doe',
-//         image: null
-//     }
-// ]
 
 
 // const htmlTemplate = '<html><body><div>{{message}}</div><div><img src="{{image}}" /></div></body></html>';
@@ -106,6 +99,14 @@ imageReplacement();
 // async function createPDFAndUploadToS3(htmlTemplate, messages, s3Bucket, s3Key) {
 //   // Compile the HTML pages with the given messages and images
 //   let compiledHTML = '';
+
+// const messages = [ 
+//     {
+//         message: message, 
+//         name: 'John Doe',
+//         image: null
+//     }
+// ]
 
 //   messages.sort((a, b) => { // sorts the messages in alphabetical order by the name property
 //     if (a.name < b.name) {

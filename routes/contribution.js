@@ -102,6 +102,56 @@ convertapi.convert('merge', {
 
 });
 
+router.post('/convert-audio-to-mp3', async (req, res) => {
+  const buffer = Buffer.from(req.body.blob, 'binary');
+
+  // Convert the buffer to an MP3 audio file using ffmpeg
+  return new Promise((resolve, reject) => {
+    ffmpeg(buffer)
+      .audioCodec('libmp3lame')
+      .audioBitrate(128)
+      .audioChannels(2)
+      .audioFrequency(44100)
+      .format('mp3')
+      .on('error', reject)
+      .on('end', async () => {
+        const audioFile = new Contribution({
+
+          audioAddress: `http://localhost:3000/play/${audioFile._id}`,
+        });
+
+        // Save the contribution with the audio URL to the database
+        try {
+          await audioFile.save();
+          resolve();
+        } catch (err) {
+          reject(err);
+        }
+      })
+      .save('./audio.mp3');
+  })
+  .then(() => {
+    res.send({
+    message: 'Contribution created successfully',
+    audioAddress: `http://localhost:3000/play/${audioFile._id}`,
+    contribution_id: audioFile._id });
+  })
+  .catch(err => {
+    res.status(500).send({ error: err.message });
+  });
+});
+
+
+// route that lets you play the audio file (from the qr code)
+router.get('/play/:id', async (req, res) => {
+  const contribution = await Contribution.findById(req.params.id);
+  if (!contribution) return res.status(404).send('Contribution not found');
+
+  res.set('Content-Type', 'audio/mpeg');
+  res.send(contribution.audioAddress);
+});
+
+
 
 
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
