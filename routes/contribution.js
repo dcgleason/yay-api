@@ -54,7 +54,7 @@ router.post('/create-document', (req, res) => {
     body: {
       template: {
         id: 'REPLACE_TEMPLATE_ID', // fill in with req.body.tempalateID
-        data: {id: 123, name: 'John Smith', birthdate: '2000-01-01', role: 'Developer'}   // fill in with req.body
+        data: {id: 123, name: 'John Smith', birthdate: '2000-01-01', role: 'Developer'}   // fill in with req.body -- qrcode -- needs to proide a link to audio
       },
       format: 'pdf',
       output: 'url',
@@ -72,15 +72,29 @@ router.post('/create-document', (req, res) => {
 });
   
 
-router.post("/create-book", (req, res) => {
-  // get the contribution pages and create a book by first name alphabetical order then submits to Lulu for printing
+router.post("/create-book", async (req, res) => {
+
+  // get the contribution page URLs from MongoDB and have them listed in alphabetical order by first name
+
+const ownerID = req.body.giftOwnerID;
+
+const contributions = await Contribution.find({ associatedGiftID: ownerID });
+
+  contributions.sort((a, b) => { // sorts the messages in alphabetical order by the name property
+    if (a.name < b.name) {
+        return -1;
+    }
+    if (a.name > b.name) {
+        return 1;
+    }
+    return 0;
+});
+
+const contributionsPageURL = contributions.map(contribution => contribution.ContributionPageURL);
 
 
 convertapi.convert('merge', {
-    Files: [
-      '/path/to/bundlePageSpread.pdf', // url to the bundle page spread
-      '/path/to/Bundle Gifter Console Wireframe.pdf'
-    ],
+    Files: contributionsPageURL,
     StoreFile: true,
   }, 'pdf').then(function(result) {
       console.log(result.file.url); // donloadable link! --> to send to Lulu
