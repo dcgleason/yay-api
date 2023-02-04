@@ -9,7 +9,7 @@ const options = {
   url: 'https://us1.pdfgeneratorapi.com/api/v4/documents/generate',
   headers: {
     'content-type': 'application/json',
-    Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiIwNGI0MGEwNzNlNzFiMTQzMzM2ZGVhZjlkMjFlYTEyZmE4MjVjZDUyNGY0OTlkZTg0ZWI1Njg4YmRkMTc4MTI1Iiwic3ViIjoiZGFuQHVzZWJ1bmRsZS5jbyIsImV4cCI6MTY3NDU3MjMwMX0.BidTLrpEuZvswH3-iXUaqOzkfntxvYEwVmpJsEg9US0'
+    Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiIwNGI0MGEwNzNlNzFiMTQzMzM2ZGVhZjlkMjFlYTEyZmE4MjVjZDUyNGY0OTlkZTg0ZWI1Njg4YmRkMTc4MTI1Iiwic3ViIjoiZGFuQHVzZWJ1bmRsZS5jbyIsImV4cCI6MTY3NTQ3MTU1OX0.xNAWMrVVs1xL3nMKWnyz85xq4F5OdHM5EUAEag5DwMg'
   },
   body: {
     template: {
@@ -26,6 +26,7 @@ const options = {
 request(options, function (error, response, body) {
   if (error) throw new Error(error);
 
-  console.log(body);
+  
+  console.log(body.response);
 });
 

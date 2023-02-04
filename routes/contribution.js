@@ -3,6 +3,7 @@ const router = express.Router();
 const Contribution = require("../models/Contribution");
 // Import
 const Transloadit = require('transloadit')
+const request = require('request');
 
 var convertapi = require('convertapi')('vlman1y8KNerUdy7');
 
@@ -42,7 +43,7 @@ router.get("/:id", async (req, res) => {
 router.post('/create-document', (req, res) => {
 
   // create a document from the right template and then store it -- the url
-  const request = require('request');
+
 
   const options = {
     method: 'POST',
@@ -54,19 +55,24 @@ router.post('/create-document', (req, res) => {
     body: {
       template: {
         id: req.body.templateID, // fill in with req.body.tempalateID
-        data: {id: 123, name: 'John Smith', birthdate: '2000-01-01', role: 'Developer'}   // fill in with req.body -- qrcode -- needs to proide a link to audio
+        data: req.body.data   // fill in with req.body -- qrcode -- needs to proide a link to audio
       },
       format: 'pdf',
       output: 'url',
-      name: 'Contributor Name + Date' // fill in with req.body.contributorName + Date.now()
+      name: req.body.giftID + "-" + req.body.data.name + "-" + Date.now() // file name
     },
     json: true
   };
   
-  request(options, function (error, response, body) {
+  request(options, async function (error, response, body) {
     if (error) throw new Error(error);
-  
-    console.log(body); // upload to MongoDB contributor model as base64
+    console.log(body); 
+    // body.response is the url of the document
+    const contribution = await Contribution.findOneAndUpdate({ associatedGiftID: req.body.giftID }, { contributionPageURL: body.response });
+    if (!contribution) return res.status(404).send('Contribution not found');
+
+    res.send(contribution);
+    
   });
 
 });
@@ -76,9 +82,9 @@ router.post("/create-book", async (req, res) => {
 
   // get the contribution page URLs from MongoDB and have them listed in alphabetical order by first name
 
-const ownerID = req.body.giftOwnerID; // from the session data of next/auth when the user is logged in, to be developed.
+const giftID = req.body.giftID; // from the session data of next/auth when the user is logged in, to be developed.
 
-const contributions = await Contribution.find({ associatedGiftID: ownerID });
+const contributions = await Contribution.find({ associatedGiftID: giftID });
 
   contributions.sort((a, b) => { // sorts the messages in alphabetical order by the name property
     if (a.name < b.name) {
@@ -90,7 +96,7 @@ const contributions = await Contribution.find({ associatedGiftID: ownerID });
     return 0;
 });
 
-const contributionsPageURL = contributions.map(contribution => contribution.ContributionPageURL);
+const contributionsPageURL = contributions.map(contribution => contribution.contributionPageURL);
 
 
 convertapi.convert('merge', {
