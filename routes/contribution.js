@@ -66,7 +66,7 @@ router.post('/create-document', (req, res) => {
   
   request(options, async function (error, response, body) {
     if (error) throw new Error(error);
-    console.log(body); 
+    console.log("document URL" + body.response); 
     // body.response is the url of the document
     const contribution = await Contribution.findOneAndUpdate({ associatedGiftID: req.body.giftID }, { contributionPageURL: body.response });
     if (!contribution) return res.status(404).send('Contribution not found');
