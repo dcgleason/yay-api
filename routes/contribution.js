@@ -44,18 +44,74 @@ router.post('/create-document', (req, res) => {
 
   // create a document from the right template and then store it -- the url
 
+  console.log('req.body: ' + JSON.stringify(req.body.data));
+
+  if(req.body.optionsCode == 1){
+    const templateOjb = {
+      id: req.body.template, // fill in with req.body.tempalateID
+      data: {
+        name: req.body.data.name,
+        letter: req.body.data.letter,
+        letterTwo: req.body.data.letterTwo,
+      }  // fill in with req.body -- qrcode -- needs to proide a link to audio
+    }
+  }
+
+  else if(req.body.optionsCode == 2){
+    const templateOjb = {
+      id: req.body.template, // fill in with req.body.tempalateID
+      data: {
+        name: req.body.data.name,
+        letter: req.body.data.letter,
+        letterTwo: req.body.data.letterTwo,
+        qrcode: req.body.data.qrcode
+      }  // fill in with req.body -- qrcode -- needs to proide a link to audio
+    }
+  }
+
+  else if(req.body.optionsCode == 3){
+    const templateOjb = {
+      id: req.body.template, // fill in with req.body.tempalateID
+      data: {
+        name: req.body.data.name,
+        letter: req.body.data.letter,
+        image: req.body.data.image,
+      }  // fill in with req.body -- qrcode -- needs to proide a link to audio
+    }
+  }
+
+  else if(req.body.optionsCode == 4){
+    const templateOjb = {
+      id: req.body.template, // fill in with req.body.tempalateID
+      data: {
+        name: req.body.data.name,
+        letter: req.body.data.letter,
+        qrcode: req.body.data.qrcode,
+        image: req.body.data.image,
+      }  // fill in with req.body -- qrcode -- needs to proide a link to audio
+    }
+  }
+  
+
+
+
 
   const options = {
     method: 'POST',
     url: 'https://us1.pdfgeneratorapi.com/api/v4/documents/generate',
     headers: {
       'content-type': 'application/json',
-      Authorization: 'Bearer REPLACE_BEARER_TOKEN' // fill in
+      Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiIwNGI0MGEwNzNlNzFiMTQzMzM2ZGVhZjlkMjFlYTEyZmE4MjVjZDUyNGY0OTlkZTg0ZWI1Njg4YmRkMTc4MTI1Iiwic3ViIjoiZGFuQHVzZWJ1bmRsZS5jbyIsImV4cCI6MTY3NTUyMDEwMX0.UdXpUB_MtEJjP1BCKyRs0FNSP_53K7AvbEaQ-Fztohc' // fill in
     },
     body: {
       template: {
-        id: req.body.templateID, // fill in with req.body.tempalateID
-        data: req.body.data   // fill in with req.body -- qrcode -- needs to proide a link to audio
+        id: req.body.template, // fill in with req.body.tempalateID
+        data: {
+          name: req.body.data.name,
+          letter: req.body.data.letter,
+          letterTwo: req.body.data.letterTwo,
+          qrcode: req.body.data.qrcode,
+        }  // fill in with req.body -- qrcode -- needs to proide a link to audio
       },
       format: 'pdf',
       output: 'url',
@@ -66,7 +122,7 @@ router.post('/create-document', (req, res) => {
   
   request(options, async function (error, response, body) {
     if (error) throw new Error(error);
-    console.log("document URL" + body.response); 
+    console.log("document URL body: " + JSON.stringify(body)); 
     // body.response is the url of the document
     const contribution = await Contribution.findOneAndUpdate({ associatedGiftID: req.body.giftID }, { contributionPageURL: body.response });
     if (!contribution) return res.status(404).send('Contribution not found');
@@ -109,7 +165,9 @@ convertapi.convert('merge', {
 });
 
 router.post('/convert-audio-to-mp3', async (req, res) => {
-  const buffer = Buffer.from(req.body.blob, 'binary');
+  console.log("req.body.blog: " + req);
+
+  const buffer = Buffer.from(req.body.data.blob, 'binary');
 
   // Convert the buffer to an MP3 audio file using ffmpeg
   return new Promise((resolve, reject) => {
