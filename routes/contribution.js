@@ -53,7 +53,7 @@ router.post('/create-document-one', (req, res) => { // two pages with audio
     },
     body: {
       template: {
-        id: '',  // first page of text and audio
+        id: '580509',  // first page of text and audio
         data: {
           name: req.body.data.name,
           letter: req.body.data.letter,
@@ -83,7 +83,7 @@ router.post('/create-document-one', (req, res) => { // two pages with audio
         },
         body: {
           template: {
-            id: '',  // second apge of text no audio
+            id: '582026',  // second apge of text no audio
             data: {
               name: req.body.data.name, // don't need this
               letter: req.body.data.letterTwo,
@@ -127,7 +127,7 @@ router.post('/create-document-two', (req, res) => { // two pages with without au
     },
     body: {
       template: {
-        id: '',  // fill in with page 1 template id
+        id: '582019',  // fill in with page 1 template id
         data: {
           name: req.body.data.name,
           letter: req.body.data.letter,
@@ -156,7 +156,7 @@ router.post('/create-document-two', (req, res) => { // two pages with without au
         },
         body: {
           template: {
-            id: '', // fill in page 2 template id
+            id: '582026', // fill in page 2 template id
             data: {
               name: req.body.data.name, // don't needt his
               letter: req.body.data.letterTwo,
@@ -201,7 +201,7 @@ router.post('/create-document-three', (req, res) => { // one page with audio
     },
     body: {
       template: {
-        id: '571024', // fill in with page 1 tempalte ID
+        id: '580509', // fill in with page 1 tempalte ID
         data: {
           name: req.body.data.name,
           letter: req.body.data.letter,
@@ -231,7 +231,7 @@ router.post('/create-document-three', (req, res) => { // one page with audio
         },
         body: {
           template: {
-            id: '', // fill in with page 2 template id 
+            id: '582018', // fill in with page 2 template id 
             data: { 
               name: req.body.data.name, //
               image: req.body.data.image,
@@ -275,7 +275,7 @@ router.post('/create-document-four', (req, res) => { // one page without audio
     },
     body: {
       template: {
-        id: '570862', // fill in with req.body.tempalateID
+        id: '582019', // fill in with req.body.tempalateID
         data: {
           name: req.body.data.name,
           letter: req.body.data.letter,
@@ -306,7 +306,7 @@ router.post('/create-document-four', (req, res) => { // one page without audio
         },
         body: {
           template: {
-            id: '570862', // fill in with req.body.tempalateID
+            id: '582018', // fill in with req.body.tempalateID
             data: {
               name: req.body.data.name,
               image: req.body.data.qrcode,
