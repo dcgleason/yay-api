@@ -107,7 +107,6 @@ router.post('/create-document-one', (req, res) => { // two pages with audio
         
       });
     }
-
     
   });
 
@@ -132,7 +131,6 @@ router.post('/create-document-two', (req, res) => { // two pages with without au
         data: {
           name: req.body.data.name,
           letter: req.body.data.letter,
-          letterTwo: req.body.data.letterTwo,
         }  
       },
       format: 'pdf',
@@ -175,15 +173,14 @@ router.post('/create-document-two', (req, res) => { // two pages with without au
         if (error) throw new Error(error);
         console.log("document URL body: " + JSON.stringify(body)); 
         // body.response is the url of the document
-        const contribution = await Contribution.findOneAndUpdate({ associatedGiftID: req.body.giftID }, { contributionPageTwoURL: body.response });
-        if (!contribution) return res.status(404).send('Contribution not found');
+        const contributionTwo = await Contribution.findOneAndUpdate({ associatedGiftID: req.body.giftID }, { contributionPageTwoURL: body.response });
+        if (!contributionTwo) return res.status(404).send('Contribution not found');
     
-        res.send(contribution);
+        res.send([contribution, contributionTwo]);
         
       });
     }
 
-    res.send(contribution);
     
   });
 
@@ -251,17 +248,14 @@ router.post('/create-document-three', (req, res) => { // one page with audio
         if (error) throw new Error(error);
         console.log("document URL body: " + JSON.stringify(body)); 
         // body.response is the url of the document
-        const contribution = await Contribution.findOneAndUpdate({ associatedGiftID: req.body.giftID }, { contributionPageTwoURL: body.response });
-        if (!contribution) return res.status(404).send('Contribution not found');
+        const contributionTwo = await Contribution.findOneAndUpdate({ associatedGiftID: req.body.giftID }, { contributionPageTwoURL: body.response });
+        if (!contributionTwo) return res.status(404).send('Contribution not found');
     
-        res.send(contribution);
+        res.send([contribution, contributionTwo]);
       
     });
 
     }
-
-
-    res.send(contribution);
   })
 
 
@@ -285,7 +279,6 @@ router.post('/create-document-four', (req, res) => { // one page without audio
         data: {
           name: req.body.data.name,
           letter: req.body.data.letter,
-          image: req.body.data.qrcode,
         }  // fill in with req.body -- qrcode -- needs to proide a link to audio
       },
       format: 'pdf',
@@ -316,7 +309,6 @@ router.post('/create-document-four', (req, res) => { // one page without audio
             id: '570862', // fill in with req.body.tempalateID
             data: {
               name: req.body.data.name,
-              letter: req.body.data.letter,
               image: req.body.data.qrcode,
             }  // fill in with req.body -- qrcode -- needs to proide a link to audio
           },
@@ -331,15 +323,14 @@ router.post('/create-document-four', (req, res) => { // one page without audio
         if (error) throw new Error(error);
         console.log("document URL body: " + JSON.stringify(body)); 
         // body.response is the url of the document
-        const contribution = await Contribution.findOneAndUpdate({ associatedGiftID: req.body.giftID }, { contributionPageTwoURL: body.response });
-        if (!contribution) return res.status(404).send('Contribution not found');
+        const contributionTwo = await Contribution.findOneAndUpdate({ associatedGiftID: req.body.giftID }, { contributionPageTwoURL: body.response });
+        if (!contributionTwo) return res.status(404).send('Contribution not found');
     
-        res.send(contribution);
+        res.send([contribution, contributionTwo]);
         
       });
     }
 
-    res.send(contribution);
     
   });
 
