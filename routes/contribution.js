@@ -40,61 +40,9 @@ router.get("/:id", async (req, res) => {
 // const s3 = new AWS.S3();
 
 // POST route to upload PDF to S3 and store URL in MongoDB
-router.post('/create-document', (req, res) => {
-
-  // create a document from the right template and then store it -- the url
+router.post('/create-document-one', (req, res) => { // two pages with audio
 
   console.log('req.body: ' + JSON.stringify(req.body.data));
-
-  if(req.body.optionsCode == 1){
-    const templateOjb = {
-      id: req.body.template, // fill in with req.body.tempalateID
-      data: {
-        name: req.body.data.name,
-        letter: req.body.data.letter,
-        letterTwo: req.body.data.letterTwo,
-      }  // fill in with req.body -- qrcode -- needs to proide a link to audio
-    }
-  }
-
-  else if(req.body.optionsCode == 2){
-    const templateOjb = {
-      id: req.body.template, // fill in with req.body.tempalateID
-      data: {
-        name: req.body.data.name,
-        letter: req.body.data.letter,
-        letterTwo: req.body.data.letterTwo,
-        qrcode: req.body.data.qrcode
-      }  // fill in with req.body -- qrcode -- needs to proide a link to audio
-    }
-  }
-
-  else if(req.body.optionsCode == 3){
-    const templateOjb = {
-      id: req.body.template, // fill in with req.body.tempalateID
-      data: {
-        name: req.body.data.name,
-        letter: req.body.data.letter,
-        image: req.body.data.image,
-      }  // fill in with req.body -- qrcode -- needs to proide a link to audio
-    }
-  }
-
-  else if(req.body.optionsCode == 4){
-    const templateOjb = {
-      id: req.body.template, // fill in with req.body.tempalateID
-      data: {
-        name: req.body.data.name,
-        letter: req.body.data.letter,
-        qrcode: req.body.data.qrcode,
-        image: req.body.data.image,
-      }  // fill in with req.body -- qrcode -- needs to proide a link to audio
-    }
-  }
-  
-
-
-
 
   const options = {
     method: 'POST',
@@ -105,12 +53,239 @@ router.post('/create-document', (req, res) => {
     },
     body: {
       template: {
-        id: req.body.template, // fill in with req.body.tempalateID
+        id: '',  // first page of text and audio
+        data: {
+          name: req.body.data.name,
+          letter: req.body.data.letter,
+          qrcode: req.body.data.qrcode,
+        } 
+      },
+      format: 'pdf',
+      output: 'url',
+      name: req.body.giftID + "-" + req.body.data.name + "-" + Date.now() // file name
+    },
+    json: true
+  };
+  
+  request(options, async function (error, response, body) {
+    if (error) throw new Error(error);
+    console.log("document URL body: " + JSON.stringify(body)); 
+    // body.response is the url of the document
+    const contribution = await Contribution.findOneAndUpdate({ associatedGiftID: req.body.giftID }, { contributionPageOneURL: body.response });
+    if (!contribution) return res.status(404).send('Contribution not found');
+    if (contribution){
+      const optionsTwo = {
+        method: 'POST',
+        url: 'https://us1.pdfgeneratorapi.com/api/v4/documents/generate',
+        headers: {
+          'content-type': 'application/json',
+          Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiIwNGI0MGEwNzNlNzFiMTQzMzM2ZGVhZjlkMjFlYTEyZmE4MjVjZDUyNGY0OTlkZTg0ZWI1Njg4YmRkMTc4MTI1Iiwic3ViIjoiZGFuQHVzZWJ1bmRsZS5jbyIsImV4cCI6MTY3NTUyMDEwMX0.UdXpUB_MtEJjP1BCKyRs0FNSP_53K7AvbEaQ-Fztohc' // fill in
+        },
+        body: {
+          template: {
+            id: '',  // second apge of text no audio
+            data: {
+              name: req.body.data.name, // don't need this
+              letter: req.body.data.letterTwo,
+            } 
+          },
+          format: 'pdf',
+          output: 'url',
+          name: req.body.giftID + "-" + req.body.data.name + "-" + Date.now() // file name
+        },
+        json: true
+      };
+      
+      request(optionsTwo, async function (error, response, body) {
+        if (error) throw new Error(error);
+        console.log("document URL body: " + JSON.stringify(body)); 
+        // body.response is the url of the document
+        const contributionTwo = await Contribution.findOneAndUpdate({ associatedGiftID: req.body.giftID }, { contributionPageTwoURL: body.response });
+        if (!contributionTwo) return res.status(404).send('Contribution not found');
+    
+        res.send([contribution, contributionTwo] );
+        
+      });
+    }
+
+    
+  });
+
+
+  
+
+});
+  
+router.post('/create-document-two', (req, res) => { // two pages with without audio
+  console.log('req.body: ' + JSON.stringify(req.body.data));
+
+  const options = {
+    method: 'POST',
+    url: 'https://us1.pdfgeneratorapi.com/api/v4/documents/generate',
+    headers: {
+      'content-type': 'application/json',
+      Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiIwNGI0MGEwNzNlNzFiMTQzMzM2ZGVhZjlkMjFlYTEyZmE4MjVjZDUyNGY0OTlkZTg0ZWI1Njg4YmRkMTc4MTI1Iiwic3ViIjoiZGFuQHVzZWJ1bmRsZS5jbyIsImV4cCI6MTY3NTUyMDEwMX0.UdXpUB_MtEJjP1BCKyRs0FNSP_53K7AvbEaQ-Fztohc' // fill in
+    },
+    body: {
+      template: {
+        id: '',  // fill in with page 1 template id
         data: {
           name: req.body.data.name,
           letter: req.body.data.letter,
           letterTwo: req.body.data.letterTwo,
+        }  
+      },
+      format: 'pdf',
+      output: 'url',
+      name: req.body.giftID + "-" + req.body.data.name + "-" + Date.now() // file name
+    },
+    json: true
+  };
+  
+  request(options, async function (error, response, body) {
+    if (error) throw new Error(error);
+    console.log("document URL body: " + JSON.stringify(body)); 
+    // body.response is the url of the document
+    const contribution = await Contribution.findOneAndUpdate({ associatedGiftID: req.body.giftID }, { contributionPageOneURL: body.response });
+    if (!contribution) return res.status(404).send('Contribution not found');
+    if (contribution) {
+      const optionsTwo = {
+        method: 'POST',
+        url: 'https://us1.pdfgeneratorapi.com/api/v4/documents/generate',
+        headers: {
+          'content-type': 'application/json',
+          Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiIwNGI0MGEwNzNlNzFiMTQzMzM2ZGVhZjlkMjFlYTEyZmE4MjVjZDUyNGY0OTlkZTg0ZWI1Njg4YmRkMTc4MTI1Iiwic3ViIjoiZGFuQHVzZWJ1bmRsZS5jbyIsImV4cCI6MTY3NTUyMDEwMX0.UdXpUB_MtEJjP1BCKyRs0FNSP_53K7AvbEaQ-Fztohc' // fill in
+        },
+        body: {
+          template: {
+            id: '', // fill in page 2 template id
+            data: {
+              name: req.body.data.name, // don't needt his
+              letter: req.body.data.letterTwo,
+            }  
+          },
+          format: 'pdf',
+          output: 'url',
+          name: req.body.giftID + "-" + req.body.data.name + "-" + Date.now() // file name
+        },
+        json: true
+      };
+      
+      request(optionsTwo, async function (error, response, body) {
+        if (error) throw new Error(error);
+        console.log("document URL body: " + JSON.stringify(body)); 
+        // body.response is the url of the document
+        const contribution = await Contribution.findOneAndUpdate({ associatedGiftID: req.body.giftID }, { contributionPageTwoURL: body.response });
+        if (!contribution) return res.status(404).send('Contribution not found');
+    
+        res.send(contribution);
+        
+      });
+    }
+
+    res.send(contribution);
+    
+  });
+
+
+
+});
+  
+router.post('/create-document-three', (req, res) => { // one page with audio
+
+  console.log('req.body: ' + JSON.stringify(req.body.data));
+
+  const options = {
+    method: 'POST',
+    url: 'https://us1.pdfgeneratorapi.com/api/v4/documents/generate',
+    headers: {
+      'content-type': 'application/json',
+      Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiIwNGI0MGEwNzNlNzFiMTQzMzM2ZGVhZjlkMjFlYTEyZmE4MjVjZDUyNGY0OTlkZTg0ZWI1Njg4YmRkMTc4MTI1Iiwic3ViIjoiZGFuQHVzZWJ1bmRsZS5jbyIsImV4cCI6MTY3NTUyMDEwMX0.UdXpUB_MtEJjP1BCKyRs0FNSP_53K7AvbEaQ-Fztohc' // fill in
+    },
+    body: {
+      template: {
+        id: '571024', // fill in with page 1 tempalte ID
+        data: {
+          name: req.body.data.name,
+          letter: req.body.data.letter,
           qrcode: req.body.data.qrcode,
+        } 
+      },
+      format: 'pdf',
+      output: 'url',
+      name: req.body.giftID + "-" + req.body.data.name + "-" + Date.now() // file name
+    },
+    json: true
+  };
+  
+  request(options, async function (error, response, body) {
+    if (error) throw new Error(error);
+    console.log("document URL body: " + JSON.stringify(body)); 
+    // body.response is the url of the document
+    const contribution = await Contribution.findOneAndUpdate({ associatedGiftID: req.body.giftID }, { contributionPageOneURL: body.response });
+    if (!contribution) return res.status(404).send('Contribution not found');
+    if (contribution){
+      const optionsTwo = {
+        method: 'POST',
+        url: 'https://us1.pdfgeneratorapi.com/api/v4/documents/generate',
+        headers: {
+          'content-type': 'application/json',
+          Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiIwNGI0MGEwNzNlNzFiMTQzMzM2ZGVhZjlkMjFlYTEyZmE4MjVjZDUyNGY0OTlkZTg0ZWI1Njg4YmRkMTc4MTI1Iiwic3ViIjoiZGFuQHVzZWJ1bmRsZS5jbyIsImV4cCI6MTY3NTUyMDEwMX0.UdXpUB_MtEJjP1BCKyRs0FNSP_53K7AvbEaQ-Fztohc' // fill in
+        },
+        body: {
+          template: {
+            id: '', // fill in with page 2 template id 
+            data: { 
+              name: req.body.data.name, //
+              image: req.body.data.image,
+            } 
+          },
+          format: 'pdf',
+          output: 'url',
+          name: req.body.giftID + "-" + req.body.data.name + "-" + Date.now() // file name
+        },
+        json: true
+      };
+      
+      request(options, async function (error, response, body) {
+        if (error) throw new Error(error);
+        console.log("document URL body: " + JSON.stringify(body)); 
+        // body.response is the url of the document
+        const contribution = await Contribution.findOneAndUpdate({ associatedGiftID: req.body.giftID }, { contributionPageTwoURL: body.response });
+        if (!contribution) return res.status(404).send('Contribution not found');
+    
+        res.send(contribution);
+      
+    });
+
+    }
+
+
+    res.send(contribution);
+  })
+
+
+
+});
+  
+router.post('/create-document-four', (req, res) => { // one page without audio
+
+  console.log('req.body: ' + JSON.stringify(req.body.data));
+
+  const options = {
+    method: 'POST',
+    url: 'https://us1.pdfgeneratorapi.com/api/v4/documents/generate',
+    headers: {
+      'content-type': 'application/json',
+      Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiIwNGI0MGEwNzNlNzFiMTQzMzM2ZGVhZjlkMjFlYTEyZmE4MjVjZDUyNGY0OTlkZTg0ZWI1Njg4YmRkMTc4MTI1Iiwic3ViIjoiZGFuQHVzZWJ1bmRsZS5jbyIsImV4cCI6MTY3NTUyMDEwMX0.UdXpUB_MtEJjP1BCKyRs0FNSP_53K7AvbEaQ-Fztohc' // fill in
+    },
+    body: {
+      template: {
+        id: '570862', // fill in with req.body.tempalateID
+        data: {
+          name: req.body.data.name,
+          letter: req.body.data.letter,
+          image: req.body.data.qrcode,
         }  // fill in with req.body -- qrcode -- needs to proide a link to audio
       },
       format: 'pdf',
@@ -124,12 +299,52 @@ router.post('/create-document', (req, res) => {
     if (error) throw new Error(error);
     console.log("document URL body: " + JSON.stringify(body)); 
     // body.response is the url of the document
-    const contribution = await Contribution.findOneAndUpdate({ associatedGiftID: req.body.giftID }, { contributionPageURL: body.response });
+    const contribution = await Contribution.findOneAndUpdate({ associatedGiftID: req.body.giftID }, { contributionPageOneURL: body.response });
     if (!contribution) return res.status(404).send('Contribution not found');
+    if (contribution) {
+      console.log("contribution: " + JSON.stringify(contribution));
+
+      const optionsTwo = {
+        method: 'POST',
+        url: 'https://us1.pdfgeneratorapi.com/api/v4/documents/generate',
+        headers: {
+          'content-type': 'application/json',
+          Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiIwNGI0MGEwNzNlNzFiMTQzMzM2ZGVhZjlkMjFlYTEyZmE4MjVjZDUyNGY0OTlkZTg0ZWI1Njg4YmRkMTc4MTI1Iiwic3ViIjoiZGFuQHVzZWJ1bmRsZS5jbyIsImV4cCI6MTY3NTUyMDEwMX0.UdXpUB_MtEJjP1BCKyRs0FNSP_53K7AvbEaQ-Fztohc' // fill in
+        },
+        body: {
+          template: {
+            id: '570862', // fill in with req.body.tempalateID
+            data: {
+              name: req.body.data.name,
+              letter: req.body.data.letter,
+              image: req.body.data.qrcode,
+            }  // fill in with req.body -- qrcode -- needs to proide a link to audio
+          },
+          format: 'pdf',
+          output: 'url',
+          name: req.body.giftID + "-" + req.body.data.name + "-" + Date.now() // file name
+        },
+        json: true
+      };
+      
+      request(options, async function (error, response, body) {
+        if (error) throw new Error(error);
+        console.log("document URL body: " + JSON.stringify(body)); 
+        // body.response is the url of the document
+        const contribution = await Contribution.findOneAndUpdate({ associatedGiftID: req.body.giftID }, { contributionPageTwoURL: body.response });
+        if (!contribution) return res.status(404).send('Contribution not found');
+    
+        res.send(contribution);
+        
+      });
+    }
 
     res.send(contribution);
     
   });
+
+
+  
 
 });
   
@@ -140,27 +355,26 @@ router.post("/create-book", async (req, res) => {
 
 const giftID = req.body.giftID; // from the session data of next/auth when the user is logged in, to be developed.
 
-const contributions = await Contribution.find({ associatedGiftID: giftID });
+  const contributions = await Contribution.find({ giftID })
+    .sort({ name: 1 });
 
-  contributions.sort((a, b) => { // sorts the messages in alphabetical order by the name property
-    if (a.name < b.name) {
-        return -1;
-    }
-    if (a.name > b.name) {
-        return 1;
-    }
-    return 0;
-});
+  const contributionURLArray = [];
 
-const contributionsPageURL = contributions.map(contribution => contribution.contributionPageURL);
+  for (const contribution of contributions) {
+    contributionURLArray.push(contribution.contributionPageOneURL);
+    contributionURLArray.push(contribution.contributionPageTwoURL);
+  }
 
 
-convertapi.convert('merge', {
-    Files: contributionsPageURL,
+  convertapi.convert('merge', {
+    Files: contributionURLArray, // array of urls in alphabetical order per person, for each person it goes urlOne, urlTwo
     StoreFile: true,
   }, 'pdf').then(function(result) {
       console.log(result.file.url); // donloadable link! --> to send to Lulu
 });
+
+
+
 
 });
 
