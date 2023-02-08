@@ -49,7 +49,7 @@ router.post('/create-document-one', (req, res) => { // two pages with audio
     url: 'https://us1.pdfgeneratorapi.com/api/v4/documents/generate',
     headers: {
       'content-type': 'application/json',
-      Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiIwNGI0MGEwNzNlNzFiMTQzMzM2ZGVhZjlkMjFlYTEyZmE4MjVjZDUyNGY0OTlkZTg0ZWI1Njg4YmRkMTc4MTI1Iiwic3ViIjoiZGFuQHVzZWJ1bmRsZS5jbyIsImV4cCI6MTY3NTUyMDEwMX0.UdXpUB_MtEJjP1BCKyRs0FNSP_53K7AvbEaQ-Fztohc' // fill in
+      Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiIwNGI0MGEwNzNlNzFiMTQzMzM2ZGVhZjlkMjFlYTEyZmE4MjVjZDUyNGY0OTlkZTg0ZWI1Njg4YmRkMTc4MTI1Iiwic3ViIjoiZGFuQHVzZWJ1bmRsZS5jbyIsImV4cCI6MTY3NTg5MTI1OX0.24zvMN41dYxRGXqXQXTM7WuMtYiv5bI4uXucJtthBBg' // fill in
     },
     body: {
       template: {
@@ -79,7 +79,7 @@ router.post('/create-document-one', (req, res) => { // two pages with audio
         url: 'https://us1.pdfgeneratorapi.com/api/v4/documents/generate',
         headers: {
           'content-type': 'application/json',
-          Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiIwNGI0MGEwNzNlNzFiMTQzMzM2ZGVhZjlkMjFlYTEyZmE4MjVjZDUyNGY0OTlkZTg0ZWI1Njg4YmRkMTc4MTI1Iiwic3ViIjoiZGFuQHVzZWJ1bmRsZS5jbyIsImV4cCI6MTY3NTUyMDEwMX0.UdXpUB_MtEJjP1BCKyRs0FNSP_53K7AvbEaQ-Fztohc' // fill in
+          Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiIwNGI0MGEwNzNlNzFiMTQzMzM2ZGVhZjlkMjFlYTEyZmE4MjVjZDUyNGY0OTlkZTg0ZWI1Njg4YmRkMTc4MTI1Iiwic3ViIjoiZGFuQHVzZWJ1bmRsZS5jbyIsImV4cCI6MTY3NTg5MTI1OX0.24zvMN41dYxRGXqXQXTM7WuMtYiv5bI4uXucJtthBBg' // fill in
         },
         body: {
           template: {
@@ -123,7 +123,7 @@ router.post('/create-document-two', (req, res) => { // two pages with without au
     url: 'https://us1.pdfgeneratorapi.com/api/v4/documents/generate',
     headers: {
       'content-type': 'application/json',
-      Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiIwNGI0MGEwNzNlNzFiMTQzMzM2ZGVhZjlkMjFlYTEyZmE4MjVjZDUyNGY0OTlkZTg0ZWI1Njg4YmRkMTc4MTI1Iiwic3ViIjoiZGFuQHVzZWJ1bmRsZS5jbyIsImV4cCI6MTY3NTUyMDEwMX0.UdXpUB_MtEJjP1BCKyRs0FNSP_53K7AvbEaQ-Fztohc' // fill in
+      Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiIwNGI0MGEwNzNlNzFiMTQzMzM2ZGVhZjlkMjFlYTEyZmE4MjVjZDUyNGY0OTlkZTg0ZWI1Njg4YmRkMTc4MTI1Iiwic3ViIjoiZGFuQHVzZWJ1bmRsZS5jbyIsImV4cCI6MTY3NTg5MTI1OX0.24zvMN41dYxRGXqXQXTM7WuMtYiv5bI4uXucJtthBBg' // fill in
     },
     body: {
       template: {
@@ -152,7 +152,7 @@ router.post('/create-document-two', (req, res) => { // two pages with without au
         url: 'https://us1.pdfgeneratorapi.com/api/v4/documents/generate',
         headers: {
           'content-type': 'application/json',
-          Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiIwNGI0MGEwNzNlNzFiMTQzMzM2ZGVhZjlkMjFlYTEyZmE4MjVjZDUyNGY0OTlkZTg0ZWI1Njg4YmRkMTc4MTI1Iiwic3ViIjoiZGFuQHVzZWJ1bmRsZS5jbyIsImV4cCI6MTY3NTUyMDEwMX0.UdXpUB_MtEJjP1BCKyRs0FNSP_53K7AvbEaQ-Fztohc' // fill in
+          Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiIwNGI0MGEwNzNlNzFiMTQzMzM2ZGVhZjlkMjFlYTEyZmE4MjVjZDUyNGY0OTlkZTg0ZWI1Njg4YmRkMTc4MTI1Iiwic3ViIjoiZGFuQHVzZWJ1bmRsZS5jbyIsImV4cCI6MTY3NTg5MTI1OX0.24zvMN41dYxRGXqXQXTM7WuMtYiv5bI4uXucJtthBBg' // fill in
         },
         body: {
           template: {
@@ -197,7 +197,7 @@ router.post('/create-document-three', (req, res) => { // one page with audio
     url: 'https://us1.pdfgeneratorapi.com/api/v4/documents/generate',
     headers: {
       'content-type': 'application/json',
-      Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiIwNGI0MGEwNzNlNzFiMTQzMzM2ZGVhZjlkMjFlYTEyZmE4MjVjZDUyNGY0OTlkZTg0ZWI1Njg4YmRkMTc4MTI1Iiwic3ViIjoiZGFuQHVzZWJ1bmRsZS5jbyIsImV4cCI6MTY3NTUyMDEwMX0.UdXpUB_MtEJjP1BCKyRs0FNSP_53K7AvbEaQ-Fztohc' // fill in
+      Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiIwNGI0MGEwNzNlNzFiMTQzMzM2ZGVhZjlkMjFlYTEyZmE4MjVjZDUyNGY0OTlkZTg0ZWI1Njg4YmRkMTc4MTI1Iiwic3ViIjoiZGFuQHVzZWJ1bmRsZS5jbyIsImV4cCI6MTY3NTg5MTI1OX0.24zvMN41dYxRGXqXQXTM7WuMtYiv5bI4uXucJtthBBg' // fill in
     },
     body: {
       template: {
@@ -227,7 +227,7 @@ router.post('/create-document-three', (req, res) => { // one page with audio
         url: 'https://us1.pdfgeneratorapi.com/api/v4/documents/generate',
         headers: {
           'content-type': 'application/json',
-          Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiIwNGI0MGEwNzNlNzFiMTQzMzM2ZGVhZjlkMjFlYTEyZmE4MjVjZDUyNGY0OTlkZTg0ZWI1Njg4YmRkMTc4MTI1Iiwic3ViIjoiZGFuQHVzZWJ1bmRsZS5jbyIsImV4cCI6MTY3NTUyMDEwMX0.UdXpUB_MtEJjP1BCKyRs0FNSP_53K7AvbEaQ-Fztohc' // fill in
+          Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiIwNGI0MGEwNzNlNzFiMTQzMzM2ZGVhZjlkMjFlYTEyZmE4MjVjZDUyNGY0OTlkZTg0ZWI1Njg4YmRkMTc4MTI1Iiwic3ViIjoiZGFuQHVzZWJ1bmRsZS5jbyIsImV4cCI6MTY3NTg5MTI1OX0.24zvMN41dYxRGXqXQXTM7WuMtYiv5bI4uXucJtthBBg' // fill in
         },
         body: {
           template: {
@@ -271,7 +271,7 @@ router.post('/create-document-four', (req, res) => { // one page without audio
     url: 'https://us1.pdfgeneratorapi.com/api/v4/documents/generate',
     headers: {
       'content-type': 'application/json',
-      Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiIwNGI0MGEwNzNlNzFiMTQzMzM2ZGVhZjlkMjFlYTEyZmE4MjVjZDUyNGY0OTlkZTg0ZWI1Njg4YmRkMTc4MTI1Iiwic3ViIjoiZGFuQHVzZWJ1bmRsZS5jbyIsImV4cCI6MTY3NTUyMDEwMX0.UdXpUB_MtEJjP1BCKyRs0FNSP_53K7AvbEaQ-Fztohc' // fill in
+      Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiIwNGI0MGEwNzNlNzFiMTQzMzM2ZGVhZjlkMjFlYTEyZmE4MjVjZDUyNGY0OTlkZTg0ZWI1Njg4YmRkMTc4MTI1Iiwic3ViIjoiZGFuQHVzZWJ1bmRsZS5jbyIsImV4cCI6MTY3NTg5MTI1OX0.24zvMN41dYxRGXqXQXTM7WuMtYiv5bI4uXucJtthBBg' // fill in
     },
     body: {
       template: {
@@ -302,7 +302,7 @@ router.post('/create-document-four', (req, res) => { // one page without audio
         url: 'https://us1.pdfgeneratorapi.com/api/v4/documents/generate',
         headers: {
           'content-type': 'application/json',
-          Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiIwNGI0MGEwNzNlNzFiMTQzMzM2ZGVhZjlkMjFlYTEyZmE4MjVjZDUyNGY0OTlkZTg0ZWI1Njg4YmRkMTc4MTI1Iiwic3ViIjoiZGFuQHVzZWJ1bmRsZS5jbyIsImV4cCI6MTY3NTUyMDEwMX0.UdXpUB_MtEJjP1BCKyRs0FNSP_53K7AvbEaQ-Fztohc' // fill in
+          Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiIwNGI0MGEwNzNlNzFiMTQzMzM2ZGVhZjlkMjFlYTEyZmE4MjVjZDUyNGY0OTlkZTg0ZWI1Njg4YmRkMTc4MTI1Iiwic3ViIjoiZGFuQHVzZWJ1bmRsZS5jbyIsImV4cCI6MTY3NTg5MTI1OX0.24zvMN41dYxRGXqXQXTM7WuMtYiv5bI4uXucJtthBBg' // fill in
         },
         body: {
           template: {
