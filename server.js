@@ -4,6 +4,7 @@ const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
 var bodyParser = require("body-parser");
+const { generateUploadURL } = require("./scripts/s3");
 
 const axios = require("axios");
 const stripe = require("stripe")(
@@ -24,7 +25,7 @@ app.use((req, res, next) => {
   //    }
 
   //     console.log('origin' + origin);
-  res.setHeader("Access-Control-Allow-Origin", "https://www.usebundle.co");
+  res.setHeader("Access-Control-Allow-Origin", "*"); //"https://www.usebundle.co"
   res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
   res.setHeader(
     "Access-Control-Allow-Headers",
@@ -85,6 +86,15 @@ app.use("/contribution", contribution);
 app.get("/", (req, res) => {
   console.log("root");
   res.send("APP ROOT");
+});
+
+//s3 endpoint
+app.get("/s3Url", async (req, res) => {
+  console.log("endpoint reached");
+  //some s3 logic here
+  const url = await generateUploadURL();
+  res.send({ url });
+  console.log(`url sent: ${url}`);
 });
 
 //server initialization

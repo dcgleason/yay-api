@@ -27,6 +27,7 @@ router.get("/:id", async (req, res) => {
         error: true,
         message: "error could not find user",
       };
+
       res.status(400).send(error);
     } else {
       res.send(user);
