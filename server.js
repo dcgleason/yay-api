@@ -27,7 +27,7 @@ const uri = "mongodb+srv://dcgleason:F1e2n3n4!!@yay-cluster01.lijs4.mongodb.net/
 //         res.header("Access-Control-Allow-Headers", "Accept, Content-Type, x-requested-with");
 //         next();
 //       });
-const allowedOrigins = ["https://www.givebundl.com", "https://givebundl.com", "http://localhost:3000", "http://wwww.localhost:3000"];
+const allowedOrigins = ["https://www.givebundl.com", "https://givebundl.com", "http://localhost:3000", "http://wwww.localhost:3000", "http://localhost:3001"];
 
 app.use(
   cors({
@@ -67,7 +67,7 @@ app.set("view engine", "ejs");
 // });
 
 const corsOption = {
-  origin: 'http://localhost:3002',
+  origin: 'https://givebundl.com',
   credentials: true
 }
 app.use(cors(corsOption))
