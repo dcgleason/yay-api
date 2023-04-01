@@ -9,6 +9,7 @@ var crypto = require("crypto");
 var LocalStrategy = require("passport-local").Strategy;
 var connect = require("../server");
 const MongoStoreDB = require("connect-mongo");
+const cors = require("cors");
 
 
 /*
@@ -114,23 +115,38 @@ passport.deserializeUser(function(id, done) {
  * -------------- ROUTES ----------------
  */
 
+const corsOptions = {
+  origin: "http://localhost:3002",
+  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+  credentials: true
+}
 
 router.get('/', (req, res) => {
   console.log('login route')
+  res.status(200).send({ message: 'Login route!' });
 }
 
 
 );
 // /signin route
-router.post('/signin', passport.authenticate('local', { successRedirect: '/success', failureRedirect: '/login-failure' }), ( req, res) => {
-
-  console.log("You are logged in!");
-
+router.post('/signin', cors(corsOptions), passport.authenticate('local', { successRedirect: '/login/success', failureRedirect: '/login-failure' }), ( req, res) => {
 
 });
 
-router.get("/success", (req, res) => {
-  res.status(200).send({ message: 'Login successful!' });
+router.get("/success", cors(corsOptions), (req, res) => {
+
+    res.status(200).send(`
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <title>Login Success</title>
+    </head>
+    <body>
+      <h1>Login Successful!</h1>
+    </body>
+    </html>
+  `);
+  console.log(req.session);
   console.log(req.session);
 });
 
@@ -148,6 +164,8 @@ router.post("/signup", (req, res, next) => {
   console.log("Connected to MongoDB / inside /signup route");
   const newUser = new User({
     username: req.body.username,
+    firstName: req.body.firstName,
+    lastName: req.body.lastName,
     hash: hash,
     salt: salt,
   });
@@ -157,7 +175,7 @@ router.post("/signup", (req, res, next) => {
   });
 
 // });
-  res.redirect("/edit");
+  res.redirect("/");
 });
 
 
