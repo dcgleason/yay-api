@@ -27,9 +27,21 @@ const uri = "mongodb+srv://dcgleason:F1e2n3n4!!@yay-cluster01.lijs4.mongodb.net/
 //         res.header("Access-Control-Allow-Headers", "Accept, Content-Type, x-requested-with");
 //         next();
 //       });
+const allowedOrigins = ["https://www.givebundl.com", "https://givebundl.com", "http://localhost:3000", "http://wwww.localhost:3000"];
 
-app.use(cors());
-    
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      // Allow requests with no origin (like mobile apps or curl requests)
+      if (!origin) return callback(null, true);
+      if (allowedOrigins.indexOf(origin) === -1) {
+        const msg = "The CORS policy for this site does not allow access from the specified origin.";
+        return callback(new Error(msg), false);
+      }
+      return callback(null, true);
+    },
+  })
+);
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
