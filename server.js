@@ -70,6 +70,7 @@ const email = require("./routes/email");
 const userID = require("./routes/check");
 const contribution = require("./routes/contribution");
 const login = require('./routes/login');
+const openai = require('./routes/openai');
 
 //initialization of variables
 const port = process.env.PORT || 3001;
@@ -110,6 +111,7 @@ app.use("/stripe", payment);
 app.use("/email", email);
 app.use("/unique", userID);
 app.use("/contribution", contribution);
+app.use("/openai", openai);
 
 // app root route app.get
 app.get("/", (req, res) => {
