@@ -29,7 +29,8 @@ const response = await openai.createCompletion({
 });
 
 console.log("response" + response.data.choices[0].text);
-res.send(response.data.choices[0].text);
+res.json({ message: response.data.choices[0].text });
+
 
 });
 
