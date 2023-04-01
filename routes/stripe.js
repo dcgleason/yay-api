@@ -10,7 +10,7 @@ router.get('/secret', async (req, res) => {
     console.log('Making requests!')
     const intent = await stripe.paymentIntents.create({
      currency: 'usd',
-     amount: 7900,
+     amount: 4900,
      metadata: {integration_check: 'accept_a_payment'}
    });
  

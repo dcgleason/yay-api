@@ -1,4 +1,5 @@
 const express = require('express')
+const app = express()
 const router = express.Router()
 const nodemailer = require('nodemailer');
 const { google } = require('googleapis');
@@ -16,7 +17,6 @@ router.post('/send', (req, res) => {
     console.log('email inside of post request');
     console.log('gmail client id' + process.env.GMAIL_CLIENT_ID)
     console.log('recipient email is ' + email);
-    console.log('gift Code is ' + giftCode);
 
       const OAuth2 = google.auth.OAuth2
  

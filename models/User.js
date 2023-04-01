@@ -8,6 +8,9 @@ const Schema = mongoose.Schema;
 const userSchema = new Schema(
   {
     associatedGiftIDs: [String],
+    username: String,
+    hash: String,
+    salt: String,
     firstName: String,
     lastName: String,
     shippingAddress: String,
