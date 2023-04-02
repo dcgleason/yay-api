@@ -67,7 +67,7 @@ app.set("view engine", "ejs");
 // });
 
 const corsOption = {
-  origin: 'https://www.givebundl.com',
+  origin:  ["https://www.givebundl.com, http://localhost:3000"],
   credentials: true
 }
 app.use(cors(corsOption))
