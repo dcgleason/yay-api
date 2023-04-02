@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const stripe = require('stripe')('sk_test_51KtCf1LVDYVdzLHCA31MSSlOKhe7VQtXqJJiPnJK90sRLsmYU3R5MlTljmTe5AGZTNaKzKF0Fr8BC2fNOsTBgDP100TiYqCU9k') // secret key for test environment, to be replaced by actual prod secret key when we start taking orderes
+const stripe = require('stripe')('pk_live_51KtCf1LVDYVdzLHCUtQK32jpPhwyxyjzgPrrkkmMILYyKKIZ0IQMg6qcabL5jZm1Po6hrjoTNPOpkcaCrTyIXPyK00vfZkVAtP') // secret key for test environment, to be replaced by actual prod secret key when we start taking orderes
 
 
 
