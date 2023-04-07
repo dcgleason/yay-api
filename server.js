@@ -8,9 +8,7 @@ var bodyParser = require("body-parser");
 const cors = require("cors");
 
 const axios = require("axios");
-const stripe = require("stripe")(
-  "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"
-); //  secret key for test environment, to be replaced when we start taking orders
+const stripe = require("stripe")(process.env.STRIPE_SECRET); //  secret live
 const uri = "mongodb+srv://dcgleason:F1e2n3n4!!@yay-cluster01.lijs4.mongodb.net/?retryWrites=true&w=majority";
 
 // app.use((req, res, next) => {
