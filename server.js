@@ -9,7 +9,7 @@ const cors = require("cors");
 
 const axios = require("axios");
 const stripe = require("stripe")(
-  "sk_test_51KtCf1LVDYVdzLHCA31MSSlOKhe7VQtXqJJiPnJK90sRLsmYU3R5MlTljmTe5AGZTNaKzKF0Fr8BC2fNOsTBgDP100TiYqCU9k"
+  "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"
 ); //  secret key for test environment, to be replaced when we start taking orders
 const uri = "mongodb+srv://dcgleason:F1e2n3n4!!@yay-cluster01.lijs4.mongodb.net/?retryWrites=true&w=majority";
 
