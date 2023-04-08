@@ -29,9 +29,24 @@ router.get("/:id", async (req, res) => {
 //POST ROUTES
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-//gifts create route
+// gifts create route
 router.post("/create", (req, res) => {
-  Gift.create(req.body, (err, createdGift) => {
+  const { owner, gift } = req.body;
+  
+  // Extract fields from the request body
+  const giftOwnerID = owner.ownerEmail;
+  const recipientName = gift.recipient;
+  const date = gift.date; // Extract the date field
+  
+  // Create a new gift object with the extracted fields
+  const newGift = {
+    giftOwnerID,
+    recipientName,
+    date // Include the date field
+  };
+
+  // Save the new gift object in the database
+  Gift.create(newGift, (err, createdGift) => {
     if (err) {
       console.log(err.message);
       // handle error
@@ -48,7 +63,6 @@ router.post("/create", (req, res) => {
     res.send(createdGift);
   });
 });
-
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 //  PUT / UPDATE ROUTES
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

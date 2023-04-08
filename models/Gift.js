@@ -7,7 +7,7 @@ const Schema = mongoose.Schema;
  */
 const giftSchema = new Schema(
   {
-    giftOwnerID: String, //this will be the string representing User._id
+    giftOwnerID: String,
     recipientName: { type: String, required: true },
     shippingAddress: String,
     city: String,
@@ -16,19 +16,20 @@ const giftSchema = new Schema(
     country: String,
     luluOrderString: String,
     returnAddress: String,
-    contributerEmails: [String], //emails provided by the user for contributers to this gift.
+    contributerEmails: [String],
     bookTitle: String,
     published: Boolean,
     customPrompts: [String],
     contributions: [String],
-    fiveDays: false, // for determining if it's been 5 days or not
-    sent: false, // for determining if it was shipped to end user / recipient
+    fiveDays: false,
+    sent: false,
+    date: { type: Date, required: true }, // Add the date field here
   },
   { timestamps: true }
 );
 
-
 const Gift = mongoose.model("Gift", giftSchema);
 
 module.exports = Gift;
+
 
