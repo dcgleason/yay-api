@@ -4,19 +4,21 @@ const stripe = require('stripe')(process.env.STRIPE_SECRET) // secret key for te
 
 
 
-// app route to /secret for Stripe.JS to get the client secret 
-router.get('/secret', async (req, res) => {
+// Change the route from a GET to a POST
+router.post('/secret', async (req, res) => {
+  console.log('Making requests!');
 
-    console.log('Making requests!')
-    const intent = await stripe.paymentIntents.create({
-     currency: 'usd',
-     amount: 4900,
-     metadata: {integration_check: 'accept_a_payment'}
-   });
- 
- 
-   res.json(intent);
- })
+  // Extract the email from the request body
+  const customerEmail = req.body.email;
 
+  const intent = await stripe.paymentIntents.create({
+    currency: 'usd',
+    amount: 4900,
+    metadata: { integration_check: 'accept_a_payment' },
+    receipt_email: customerEmail, // Add the receipt_email property
+  });
+
+  res.json(intent);
+});
  
 module.exports = router
