@@ -35,7 +35,7 @@ router.post("/create", (req, res) => {
   if (!req.body || !req.body.owner || !req.body.gift) {
     return res.status(400).json({ error: "Invalid request format" });
   }
-  
+
   const { owner, gift } = req.body;
   
   // Extract fields from the request body
@@ -51,7 +51,7 @@ router.post("/create", (req, res) => {
   };
 
   // Save the new gift object in the database
-  Gift.create(newGift, (err, createdGift) => {
+  Gift.save(newGift, (err, createdGift) => {
     if (err) {
       console.log(err.message);
       // handle error
