@@ -31,6 +31,11 @@ router.get("/:id", async (req, res) => {
 
 // gifts create route
 router.post("/create", (req, res) => {
+
+  if (!req.body || !req.body.owner || !req.body.gift) {
+    return res.status(400).json({ error: "Invalid request format" });
+  }
+  
   const { owner, gift } = req.body;
   
   // Extract fields from the request body
