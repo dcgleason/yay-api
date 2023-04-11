@@ -50,8 +50,8 @@ router.post("/create", (req, res) => {
     date // Include the date field
   };
 
-  // Save the new gift object in the database
-  Gift.save(newGift, (err, createdGift) => {
+  // Create the new gift object in the database
+  Gift.create(newGift, (err, createdGift) => {
     if (err) {
       console.log(err.message);
       // handle error
