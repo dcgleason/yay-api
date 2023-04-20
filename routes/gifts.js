@@ -8,15 +8,15 @@ require("dotenv").config({ path: require("find-config")(".env") });
 //GET ROUTES
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-//find user by id
-router.get("/:id", async (req, res) => {
-  Gift.findById(req.params.id, (err, gift) => {
+// Find gift by giftOwnerID
+router.get("/byowner/:giftOwnerID", async (req, res) => {
+  Gift.findOne({ giftOwnerID: req.params.giftOwnerID }, (err, gift) => {
     if (err) {
       console.log(err.message);
       const error = {
-        userFound: false,
+        giftFound: false,
         error: true,
-        message: "error could not find user",
+        message: "error could not find gift",
       };
       res.status(400).send(error);
     } else {
