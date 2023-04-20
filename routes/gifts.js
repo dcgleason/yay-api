@@ -39,13 +39,13 @@ router.post("/create", (req, res) => {
   const { owner, gift } = req.body;
   
   // Extract fields from the request body
-  const giftOwnerID = owner.ownerEmail;
+  const giftOwnerEmail = owner.ownerEmail;
   const recipientName = gift.recipient;
   const date = gift.date; // Extract the date field
   
   // Create a new gift object with the extracted fields
   const newGift = {
-    giftOwnerID,
+    giftOwnerEmail, 
     recipientName,
     date // Include the date field
   };
