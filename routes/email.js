@@ -6,6 +6,35 @@ const { google } = require('googleapis');
 
 
 
+// google people api contacts 
+
+router.post('/contacts', async (req, res) => {
+  const accessToken = req.headers.authorization.split(' ')[1];
+
+  const oauth2Client = new google.auth.OAuth2();
+  oauth2Client.setCredentials({ access_token: accessToken });
+
+  const people = google.people({
+    version: 'v1',
+    auth: oauth2Client,
+  });
+
+  try {
+    const response = await people.people.connections.list({
+      resourceName: 'people/me',
+      pageSize: 100,
+      personFields: 'names,emailAddresses',
+    });
+
+    const contacts = response.data.connections || [];
+
+    res.json(contacts);
+  } catch (error) {
+    console.error('Error fetching contacts:', error);
+    res.status(500).send('Error fetching contacts');
+  }
+});
+
 //email send to gift contributors  
 
 router.post('/send', (req, res) => {
