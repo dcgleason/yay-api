@@ -26,21 +26,86 @@ router.get("/:id", async (req, res) => {
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 //POST ROUTES
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-router.post("/create", (req, res) => {
-  Contribution.create(req.body, (err, contribution) => {
-    if (err) {
-      console.log(err.message);
-      // handle error
-      const error = {
-        userFound: false,
-        error: true,
-        message: "error could not find user",
-      };
-    }
+
+// code to incorperate 
+
+
+const aws = require("aws-sdk");
+require("dotenv").config({ path: require("find-config")(".env") });
+const uuid = require("uuid");
+
+const region = "us-east-1";
+const bucketName = "test-bundle-s3upload-proto1";
+const accessKeyId = process.env.AWS_ACCESS_KEY; //working
+const secretAccessKey = process.env.AWS_SECRET; //working
+
+const s3 = new aws.S3({
+  region,
+  accessKeyId,
+  secretAccessKey,
+  signatureVersion: "v4",
+});
+
+const generateUploadURL = async () => {
+  const randUUID = uuid.v4();
+  const imgName = randUUID + ".jpg";
+
+  const params = {
+    Bucket: bucketName,
+    Key: imgName,
+    Expires: 60,
+  };
+
+  const uploadURL = await s3.getSignedUrlPromise("putObject", params);
+  return uploadURL;
+};
+
+router.post("/create", async (req, res) => {
+  try {
+    // Generate the S3 upload URL
+    const uploadURL = await generateUploadURL();
+
+    // Add the upload URL to the request body as ImageAddress
+    req.body.ImageAddress = uploadURL;
+
+    // Create the contribution in the database
+    const contribution = await Contribution.create(req.body);
     console.log("created the following contribution in DB", contribution);
 
-    res.send(contribution);
-  });
+  router.post("/create", async (req, res) => {
+  try {
+    // Generate the S3 upload URL
+    const uploadURL = await generateUploadURL();
+
+    // Add the upload URL to the request body as ImageAddress
+    req.body.ImageAddress = uploadURL;
+
+    // Create the contribution in the database
+    const contribution = await Contribution.create(req.body);
+    console.log("created the following contribution in DB", contribution);
+
+   res.status(200).send({message: "Contribution successfully created"})
+  } catch (err) {
+    console.log(err.message);
+    // handle error
+    const error = {
+      userFound: false,
+      error: true,
+      message: "error could not create contribution",
+    };
+    res.status(400).send(error);
+  }
+});
+  } catch (err) {
+    console.log(err.message);
+    // handle error
+    const error = {
+      userFound: false,
+      error: true,
+      message: "error could not create contribution",
+    };
+    res.status(400).send(error);
+  }
 });
 
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
