@@ -82,19 +82,15 @@ router.post("/create", upload.single("imageAddress"), async (req, res) => {
     // Get the image URL
     const imageURL = uploadURL.split("?")[0];
 
-    // Add the image URL to the request file as imageAddress
-    req.file.imageAddress = imageURL;
-
-        // Use the req.file object to create the contribution in the database
-        const contributionData = {
-          name: req.body.name,
-          message: req.body.message,
-          associatedGiftID: req.body.associatedGiftID,
-          contributed: req.body.contributed === 'true',
-          imageAddress: req.file.imageAddress,
-        };
-    
-
+    // Create the contributionData object from req.body (parsed by multer)
+    const contributionData = {
+      name: req.body.name,
+      message: req.body.message,
+      associatedGiftID: req.body.associatedGiftID,
+      contributed: req.body.contributed === 'true',
+      imageAddress: imageURL,
+      email: req.body.email,
+    };
 
     // Create the contribution in the database
     const contribution = await Contribution.create(contributionData);
