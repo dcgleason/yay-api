@@ -82,11 +82,22 @@ router.post("/create", upload.single("imageAddress"), async (req, res) => {
     // Get the image URL
     const imageURL = uploadURL.split("?")[0];
 
-    // Add the image URL to the request body as ImageAddress
-    req.body.imageAddress = imageURL;
+    // Add the image URL to the request file as imageAddress
+    req.file.imageAddress = imageURL;
+
+        // Use the req.file object to create the contribution in the database
+        const contributionData = {
+          name: req.body.name,
+          message: req.body.message,
+          associatedGiftID: req.body.associatedGiftID,
+          contributed: req.body.contributed === 'true',
+          imageAddress: req.file.imageAddress,
+        };
+    
+
 
     // Create the contribution in the database
-    const contribution = await Contribution.create(req.body);
+    const contribution = await Contribution.create(contributionData);
     console.log("created the following contribution in DB", contribution);
 
     res.status(200).send({ message: "Contribution successfully created" });
