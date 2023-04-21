@@ -4,6 +4,10 @@ const Contribution = require("../models/Contribution");
 const multer = require("multer");
 const upload = multer();
 const axios = require("axios");
+const aws = require("aws-sdk");
+require("dotenv").config({ path: require("find-config")(".env") });
+const uuid = require("uuid");
+
 
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 //GET ROUTES
@@ -33,12 +37,8 @@ router.get("/:id", async (req, res) => {
 // code to incorperate 
 
 
-const aws = require("aws-sdk");
-require("dotenv").config({ path: require("find-config")(".env") });
-const uuid = require("uuid");
-
 const region = "us-east-1";
-const bucketName = "test-bundle-s3upload-proto1";
+const bucketName = "dgbundle1";
 const accessKeyId = process.env.AWS_ACCESS_KEY; //working
 const secretAccessKey = process.env.AWS_SECRET; //working
 
