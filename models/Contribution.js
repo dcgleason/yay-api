@@ -17,7 +17,7 @@ const contributionSchema = new Schema(
     message: String, // message that will be attached to the entry in the book
     associatedGiftID: String, // which gift is this entry for
     contributed: Boolean, //did the user submit a response? true or false
-    ImageAddress: String, // the plan currently is to host these images in an s3 bucket and pull them down as needed when creating the pdf.
+    imageAddress: String, // the plan currently is to host these images in an s3 bucket and pull them down as needed when creating the pdf.
     email: String,
   },
   { timestamps: true }

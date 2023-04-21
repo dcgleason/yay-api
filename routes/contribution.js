@@ -1,6 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const Contribution = require("../models/Contribution");
+const multer = require("multer");
+const upload = multer();
+const axios = require("axios");
 
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 //GET ROUTES
@@ -60,42 +63,33 @@ const generateUploadURL = async () => {
   return uploadURL;
 };
 
-router.post("/create", async (req, res) => {
+
+router.post("/create", upload.single("imageAddress"), async (req, res) => {
   try {
     // Generate the S3 upload URL
     const uploadURL = await generateUploadURL();
 
-    // Add the upload URL to the request body as ImageAddress
-    req.body.ImageAddress = uploadURL;
+    // Upload the file to S3
+    const file = req.file;
+    if (file) {
+      await axios.put(uploadURL, file.buffer, {
+        headers: {
+          "Content-Type": file.mimetype,
+        },
+      });
+    }
+
+    // Get the image URL
+    const imageURL = uploadURL.split("?")[0];
+
+    // Add the image URL to the request body as ImageAddress
+    req.body.ImageAddress = imageURL;
 
     // Create the contribution in the database
     const contribution = await Contribution.create(req.body);
     console.log("created the following contribution in DB", contribution);
 
-  router.post("/create", async (req, res) => {
-  try {
-    // Generate the S3 upload URL
-    const uploadURL = await generateUploadURL();
-
-    // Add the upload URL to the request body as ImageAddress
-    req.body.ImageAddress = uploadURL;
-
-    // Create the contribution in the database
-    const contribution = await Contribution.create(req.body);
-    console.log("created the following contribution in DB", contribution);
-
-   res.status(200).send({message: "Contribution successfully created"})
-  } catch (err) {
-    console.log(err.message);
-    // handle error
-    const error = {
-      userFound: false,
-      error: true,
-      message: "error could not create contribution",
-    };
-    res.status(400).send(error);
-  }
-});
+    res.status(200).send({ message: "Contribution successfully created" });
   } catch (err) {
     console.log(err.message);
     // handle error
