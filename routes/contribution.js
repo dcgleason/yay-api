@@ -83,7 +83,7 @@ router.post("/create", upload.single("imageAddress"), async (req, res) => {
     const imageURL = uploadURL.split("?")[0];
 
     // Add the image URL to the request body as ImageAddress
-    req.body.ImageAddress = imageURL;
+    req.body.imageAddress = imageURL;
 
     // Create the contribution in the database
     const contribution = await Contribution.create(req.body);
