@@ -10,6 +10,7 @@ const { google } = require('googleapis');
 
 router.get('/contacts', async (req, res) => {
   const accessToken = req.headers.authorization.split(' ')[1];
+  console.log('access token is ' + accessToken);
 
   const oauth2Client = new google.auth.OAuth2();
   oauth2Client.setCredentials({ access_token: accessToken });
