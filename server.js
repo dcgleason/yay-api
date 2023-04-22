@@ -86,6 +86,7 @@ const userID = require("./routes/check");
 const contribution = require("./routes/contribution");
 const login = require('./routes/login');
 const openai = require('./routes/openai');
+const contacts = require('./routes/contacts')
 
 //initialization of variables
 const port = process.env.PORT || 3001;
@@ -127,6 +128,7 @@ app.use("/email", email);
 app.use("/unique", userID);
 app.use("/contribution", contribution);
 app.use("/openai", openai);
+app.use("/contacts", contacts);
 
 // app root route app.get
 app.get("/", (req, res) => {
