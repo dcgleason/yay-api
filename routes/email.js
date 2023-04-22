@@ -8,7 +8,7 @@ const { google } = require('googleapis');
 
 // google people api contacts 
 
-router.post('/contacts', async (req, res) => {
+router.get('/contacts', async (req, res) => {
   const accessToken = req.headers.authorization.split(' ')[1];
 
   const oauth2Client = new google.auth.OAuth2();
