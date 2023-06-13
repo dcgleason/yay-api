@@ -65,10 +65,11 @@ app.set("view engine", "ejs");
 // });
 
 const corsOption = {
-  origin:  ["https://www.givebundl.com, https://givebundl.com", "http://localhost:3000", "http://localhost:3001", "https://www.usebundl.com", "https://usebundl.com"],
+  origin:  ["https://www.givebundl.com", "https://givebundl.com", "http://localhost:3000", "http://localhost:3001", "https://www.usebundl.com", "https://usebundl.com"],
   credentials: true
 }
 app.use(cors(corsOption))
+
 
 /*
 IMPORT ROUTE CONTROLLERS: 
@@ -83,7 +84,7 @@ const lulu = require("./routes/lulu");
 const payment = require("./routes/stripe");
 const email = require("./routes/email");
 const userID = require("./routes/check");
-const contribution = require("./routes/contribution");
+const book = require("./routes/book");
 const login = require('./routes/login');
 const openai = require('./routes/openai');
 const contacts = require('./routes/contacts')
@@ -126,7 +127,7 @@ app.use("/lulu", lulu); // for all requests that go to the print api
 app.use("/stripe", payment);
 app.use("/email", email);
 app.use("/unique", userID);
-app.use("/contribution", contribution);
+app.use("/book", book);
 app.use("/openai", openai);
 app.use("/contacts", contacts);
 

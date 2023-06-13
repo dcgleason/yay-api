@@ -159,7 +159,7 @@ router.get("/success", cors(corsOptions), (req, res) => {
 });
 
 // signup route
-router.post("/signup", (req, res, next) => {
+router.post("/signup", cors(corsOptions), (req, res, next) => {
   console.log('inside /signup route');
   const saltHash = genPassword(req.body.password);
 
