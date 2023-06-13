@@ -89,6 +89,7 @@ passport.use(
         const isValid = validPassword(password, user.hash, user.salt);
 
         if (isValid) {
+          // If the user is valid, return the user object including the giftOwnerID
           return cb(null, user);
         } else {
           return cb(null, false);
@@ -99,6 +100,7 @@ passport.use(
       });
   })
 );
+
 
 passport.serializeUser(function(user, done) {
   done(null, user.id);
@@ -129,25 +131,31 @@ router.get('/', (req, res) => {
 
 );
 // /signin route
-router.post('/signin', cors(corsOptions), passport.authenticate('local', { successRedirect: '/login/success', failureRedirect: '/login-failure' }), ( req, res) => {
-
+router.post('/signin', cors(corsOptions), (req, res, next) => {
+  passport.authenticate('local', (err, user, info) => {
+    if (err) {
+      return next(err);
+    }
+    if (!user) {
+      return res.status(401).json({ message: 'Invalid username or password' });
+    }
+    req.logIn(user, err => {
+      if (err) {
+        return next(err);
+      }
+      // Send user data as JSON response
+      res.json({ userId: user._id, username: user.username /* etc. */ });
+    });
+  })(req, res, next);
 });
 
-router.get("/success", cors(corsOptions), (req, res) => {
 
-    res.status(200).send(`
-    <!DOCTYPE html>
-    <html>
-    <head>
-      <title>Login Success</title>
-    </head>
-    <body>
-      <h1>Login Successful!</h1>
-    </body>
-    </html>
-  `);
-  console.log(req.session);
-  console.log(req.session);
+router.get("/success", cors(corsOptions), (req, res) => {
+  if (req.user) {
+    res.json({ userId: req.user._id, giftOwnerID: req.user.giftOwnerID });
+  } else {
+    res.status(401).json({ message: "Not authenticated" });
+  }
 });
 
 // signup route

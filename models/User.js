@@ -7,13 +7,13 @@ const Schema = mongoose.Schema;
  */
 const userSchema = new Schema(
   {
-    associatedGiftIDs: [String],
+    giftOwnerID: [String],
     username: String,
     hash: String,
     salt: String,
     fullName: String,
     shippingAddress: String,
-    email: String,
+    giftOwnerEmail: String,
   },
   { timestamps: true }
 );
