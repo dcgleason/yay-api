@@ -144,7 +144,8 @@ router.post('/signin', cors(corsOptions), (req, res, next) => {
         return next(err);
       }
       // Send user data as JSON response
-      res.json({ userId: user._id, username: user.username /* etc. */ });
+      res.json({ userId: user._id, username: user.username, giftOwnerID: user.giftOwnerID });
+
     });
   })(req, res, next);
 });
