@@ -7,7 +7,7 @@ const Schema = mongoose.Schema;
  */
 const userSchema = new Schema(
   {
-    giftOwnerID: [String],
+    bookID: { type: Schema.Types.ObjectId, ref: 'Book' }, // Assuming 'Book' is the name of your book model
     username: String,
     hash: String,
     salt: String,

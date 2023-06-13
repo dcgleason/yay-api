@@ -15,6 +15,7 @@ const bookSchema = new Schema(
       back: String,
     },
     rec_name: String,
+    userID: { type: Schema.Types.ObjectId, ref: 'User' },
     messages: {
       type: Map,
       of: messageSchema,

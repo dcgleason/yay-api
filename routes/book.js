@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const Book = require("../models/Book");
+const User = require("../models/User");
 const multer = require("multer");
 const upload = multer();
 const axios = require("axios");
@@ -100,5 +101,43 @@ router.post("/:id/messages", upload.single("imageAddress"), async (req, res) => 
     res.status(400).send(error);
   }
 });
+
+
+// POST route to create a new book and attach it to a user
+router.post('/create', async (req, res) => {
+  // Find the user by ID
+  const user = await User.findById(req.body.userId);
+
+  if (!user) {
+    return res.status(404).json({ message: 'User not found' });
+  }
+
+// Create a new book
+const newBook = new Book({
+  doc: {
+    front: 'front cover text',
+    back: 'back cover text',
+  },
+  rec_name: 'receiver name',
+  userID: user._id, // Set the userID field to the ID of the user
+  messages: new Map(), // Initialize with an empty Map
+});
+
+  try {
+    // Save the book to the database
+    const savedBook = await newBook.save();
+
+    // Update the user's bookID field with the ID of the new book
+    user.bookID = savedBook._id;
+    const updatedUser = await user.save();
+
+    // Send the updated user as a response
+    res.json(updatedUser);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 
 module.exports = router;
