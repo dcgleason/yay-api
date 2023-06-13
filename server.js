@@ -25,7 +25,7 @@ const uri = "mongodb+srv://dcgleason:F1e2n3n4!!@yay-cluster01.lijs4.mongodb.net/
 //         res.header("Access-Control-Allow-Headers", "Accept, Content-Type, x-requested-with");
 //         next();
 //       });
-const allowedOrigins = ["https://www.givebundl.com", "https://givebundl.com", "http://localhost:3000", "http://localhost:3001", "https://www.usebundl.com", "https://usebundl.com"];
+const allowedOrigins = ["*"];
 
 app.use(
   cors({

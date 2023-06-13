@@ -118,7 +118,7 @@ passport.deserializeUser(function(id, done) {
  */
 
 const corsOptions = {
-  origin: true,
+  origin: ['*'],
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   credentials: true
 }
