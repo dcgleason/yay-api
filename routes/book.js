@@ -103,7 +103,7 @@ router.post("/:id/message", upload.single("imageAddress"), async (req, res) => {
 });
 
 
-// POST route to create a new book and attach it to a user
+// POST route to create a new book and attach it to a user / gifter
 router.post('/create', async (req, res) => {
   // Find the user by ID
   const user = await User.findById(req.body.userId);
