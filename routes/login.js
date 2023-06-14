@@ -153,7 +153,7 @@ router.post('/signin', cors(corsOptions), (req, res, next) => {
 
 router.get("/success", cors(corsOptions), (req, res) => {
   if (req.user) {
-    res.json({ userId: req.user._id, giftOwnerID: req.user.giftOwnerID });
+    res.json({ userId: req.user._id });
   } else {
     res.status(401).json({ message: "Not authenticated" });
   }
