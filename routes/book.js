@@ -30,7 +30,7 @@ router.get("/:id", async (req, res) => {
 
 // Get all messages from the book
 router.get("/:id/messages", async (req, res) => {
-  Book.findById(req.params.id, (err, book) => {
+  Book.findOne({ userID: req.params.id }, (err, book) => {
     if (err) {
       console.log(err.message);
       const error = {
@@ -115,8 +115,8 @@ router.post('/create', async (req, res) => {
 // Create a new book
 const newBook = new Book({
   doc: {
-    front: 'front cover text',
-    back: 'back cover text',
+    front: 'front cover text', // front cover ID
+    back: 'back cover text', // back cover ID
   },
   rec_name: 'receiver name',
   userID: user._id, // Set the userID field to the ID of the user
