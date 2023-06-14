@@ -47,24 +47,21 @@ router.get("/:id/messages", async (req, res) => {
 
 // POST ROUTES
 
-// Create a new message in the book
 router.post("/:id/message", upload.single("imageAddress"), async (req, res) => {
   try {
-    // Generate the S3 upload URL
-    const uploadURL = await generateUploadURL();
+    let imageURL;
 
-    // Upload the file to S3
+    // Upload the file to S3 if it exists
     const file = req.file;
     if (file) {
+      const uploadURL = await generateUploadURL();
       await axios.put(uploadURL, file.buffer, {
         headers: {
           "Content-Type": file.mimetype,
         },
       });
+      imageURL = uploadURL.split("?")[0];
     }
-
-    // Get the image URL
-    const imageURL = uploadURL.split("?")[0];
 
     // Create the messageData object from req.body (parsed by multer)
     const messageData = {
@@ -72,35 +69,26 @@ router.post("/:id/message", upload.single("imageAddress"), async (req, res) => {
       name: req.body.name,
       msg: req.body.msg,
       img_file: imageURL,
+      email: req.body.email,  // Add the email attribute here
     };
 
     // Add the message to the book in the database
-    Book.findById(req.params.id, (err, book) => {
-      if (err) {
-        console.log(err.message);
-        const error = {
-          bookFound: false,
-          error: true,
-          message: "error could not find book",
-        };
-        res.status(400).send(error);
-      } else {
-        book.messages.set(req.body.messageId, messageData);
-        book.save();
-        res.status(200).send({ message: "Message successfully added to the book" });
-      }
-    });
+    const book = await Book.findById(req.params.id);
+    if (!book) {
+      return res.status(404).json({ error: "Book not found" });
+    }
+
+    book.messages.set(req.body.messageId, messageData);
+    await book.save();
+
+    res.status(200).json({ message: "Message successfully added to the book" });
   } catch (err) {
-    console.log(err.message);
-    // handle error
-    const error = {
-      messageAdded: false,
-      error: true,
-      message: "error could not add message to the book",
-    };
-    res.status(400).send(error);
+    console.error(err);
+    res.status(500).json({ error: "Could not add message to the book" });
   }
 });
+
+
 
 // Update a specific message in a book
 router.put('/:userId/message/:messageId', async (req, res) => {
