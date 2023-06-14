@@ -2,6 +2,7 @@ const express = require("express");
 require("dotenv").config();
 const router = express.Router();
 const User = require("../models/User");
+const Book = require("../models/Book");
 const mongoose = require("mongoose");
 const session = require("express-session");
 var passport = require("passport");
@@ -144,12 +145,10 @@ router.post('/signin', cors(corsOptions), (req, res, next) => {
         return next(err);
       }
       // Send user data as JSON response
-      res.json({ userId: user._id, username: user.username, giftOwnerID: user.giftOwnerID });
-
+      res.json({ userId: user._id, username: user.username });
     });
   })(req, res, next);
 });
-
 
 router.get("/success", cors(corsOptions), (req, res) => {
   if (req.user) {
@@ -160,16 +159,13 @@ router.get("/success", cors(corsOptions), (req, res) => {
 });
 
 // signup route
-router.post("/signup", cors(corsOptions), (req, res, next) => {
+router.post("/signup", cors(corsOptions), async (req, res, next) => {
   console.log('inside /signup route');
   const saltHash = genPassword(req.body.password);
 
   const salt = saltHash.salt;
   const hash = saltHash.hash;
 
-// const db = mongoose.connection;
-// db.on('error', console.error.bind(console, 'connection error:'));
-// db.once('open', function() {
   console.log("Connected to MongoDB / inside /signup route");
   const newUser = new User({
     username: req.body.username,
@@ -179,12 +175,31 @@ router.post("/signup", cors(corsOptions), (req, res, next) => {
     salt: salt,
   });
 
-  newUser.save().then((user) => {
-    console.log(user);
-  });
+  try {
+    // Save the new user to the database
+    const savedUser = await newUser.save();
+    console.log(savedUser);
 
-// });
-  res.redirect("/");
+    // Create a new book for the user
+    const newBook = new Book({
+      doc: {
+        front: 'front cover text', // front cover ID
+        back: 'back cover text', // back cover ID
+      },
+      rec_name: 'receiver name',
+      userID: savedUser._id, // Set the userID field to the ID of the user
+      messages: new Map(), // Initialize with an empty Map
+    });
+
+    // Save the new book to the database
+    const savedBook = await newBook.save();
+
+    // Send the user's ID as a response
+    res.json({ userId: savedUser._id });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
+  }
 });
 
 
