@@ -11,7 +11,7 @@ const userSchema = new Schema(
     username: String,
     hash: String,
     salt: String,
-    fullName: String,
+    name: String,
     shippingAddress: String,
     giftOwnerEmail: String,
   },
