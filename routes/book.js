@@ -102,6 +102,38 @@ router.post("/:id/message", upload.single("imageAddress"), async (req, res) => {
   }
 });
 
+// Update a specific message in a book
+router.put('/:userId/message/:messageId', async (req, res) => {
+  try {
+    // Find the book by userId
+    const book = await Book.findOne({ userID: req.params.userId });
+
+    if (!book) {
+      return res.status(404).json({ message: 'Book not found' });
+    }
+
+    // Get the message from the book's messages map
+    const message = book.messages.get(req.params.messageId);
+
+    if (!message) {
+      return res.status(404).json({ message: 'Message not found' });
+    }
+
+    // Update the message with the new data
+    message.name = req.body.name;
+    message.msg = req.body.msg;
+    message.img_file = req.body.img_file;
+
+    // Save the updated book
+    await book.save();
+
+    res.json({ message: 'Message updated successfully' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 
 // POST route to create a new book and attach it to a user / gifter
 router.post('/create', async (req, res) => {
