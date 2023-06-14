@@ -119,7 +119,7 @@ passport.deserializeUser(function(id, done) {
  */
 
 const corsOptions = {
-  origin: ['https://www.usebundl.com', 'http://localhost:3000', 'http://localhost:3001', 'https://wwww.usebundl.com/', "https://www.usebundl.com/"],
+  origin: ['https://www.usebundl.com', "https://www.admin.givebundl.com","https://admin.givebundl.com", 'http://localhost:3000', 'http://localhost:3001', 'https://wwww.usebundl.com/', "https://www.usebundl.com/"],
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   credentials: true
 }
