@@ -48,7 +48,7 @@ router.get("/:id/messages", async (req, res) => {
 // POST ROUTES
 
 // Create a new message in the book
-router.post("/:id/messages", upload.single("imageAddress"), async (req, res) => {
+router.post("/:id/message", upload.single("imageAddress"), async (req, res) => {
   try {
     // Generate the S3 upload URL
     const uploadURL = await generateUploadURL();
