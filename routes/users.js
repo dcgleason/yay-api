@@ -16,23 +16,28 @@ const User = require("../models/User");
 router.get("/", (req, res) => {
   res.send("Users home page!!!");
 });
-
-//find user by id
+// Find user by id
 router.get("/:id", async (req, res) => {
-  User.findById(req.params.id, (err, user) => {
-    if (err) {
-      console.log(err.message);
-      const error = {
+  try {
+    const user = await User.findById(req.params.id)
+    if (!user) {
+      return res.status(404).json({
         userFound: false,
         error: true,
-        message: "error could not find user"
-      }
-      res.status(400).send(error);
-    } else {
-      res.send(user);
+        message: "User not found"
+      });
     }
-  });
+    res.json(user);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({
+      userFound: false,
+      error: true,
+      message: "Server error"
+    });
+  }
 });
+
 
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 //POST ROUTES
