@@ -41,7 +41,7 @@ router.get("/:id/messages", async (req, res) => {
       res.status(400).send(error);
     } else {
       // Send both the messages and the book's id
-      res.send({ messages: book.messages, bookId: book._id });
+      res.send({ messages: book.messages, bookId: book._id, recipient: book.rec_name });
     }
   });
 });
