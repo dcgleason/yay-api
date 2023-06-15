@@ -37,58 +37,53 @@ router.get('/contacts', async (req, res) => {
 });
 
 //email send to gift contributors  
-
 router.post('/send', (req, res) => {
+  var senderEmail = process.env.SENDER_EMAIL; // sender's email
+  var emailSubject = req.body.subject; // email subject
+  var emailBody = req.body.body; // email body
+  var recipientEmails = req.body.recipients; // array of recipient emails who have not yet submitted a message
 
-    var ownerName = req.body.ownerName;
-    var email = req.body.email;
-    var recipient = req.body.recipient;
-  
-    console.log('email inside of post request');
-    console.log('gmail client id' + process.env.GMAIL_CLIENT_ID)
-    console.log('recipient email is ' + email);
+  console.log('email inside of post request');
+  console.log('gmail client id' + process.env.GMAIL_CLIENT_ID)
 
-      const OAuth2 = google.auth.OAuth2
+  const OAuth2 = google.auth.OAuth2
+
+  const OAuth2_client = new OAuth2(process.env.GMAIL_CLIENT_ID, process.env.GMAIL_CLIENT_SECRET);
  
-      const OAuth2_client = new OAuth2(process.env.GMAIL_CLIENT_ID, process.env.GMAIL_CLIENT_SECRET);
-   
-      OAuth2_client.setCredentials( { refresh_token: process.env.GMAIL_REFRESH_TOKEN } );
-  
-      const accessToken = OAuth2_client.getAccessToken();
-  
-      const transport = nodemailer.createTransport({
+  OAuth2_client.setCredentials( { refresh_token: process.env.GMAIL_REFRESH_TOKEN } );
+
+  const accessToken = OAuth2_client.getAccessToken();
+
+  const transport = nodemailer.createTransport({
       service: 'gmail',
       auth: {
           type: 'OAuth2',
-          user: process.env.GMAIL_USER,
+          user: senderEmail, // use the sender's email
           clientId: process.env.GMAIL_CLIENT_ID,
           clientSecret: process.env.GMAIL_CLIENT_SECRET,
           refreshToken: process.env.GMAIL_REFRESH_TOKEN,
           accessToken: accessToken
       }
-    })
-      
-      const mail_options= {
-        from: 'Bundle <dan@usebundle.co', 
-        to: email, 
-        subject: ownerName + ', complete your order.',
-        html: '<p> Please input your bundle contributors here: <a href="https://usebundle.co/contributors">www.usebundle.co/contributors</a></p>'
-    }
-      transport.sendMail( mail_options, function(error, result){
-      if(error){
-            console.log('Error!!!: ',  error)
-            res.sendStatus(500);
-        }
-        else {
-            console.log("Success woo!:  ", result)
-            res.sendStatus(200);
-        }
-        transport.close()
-    })
-
-    res.send()
-    
-  
   })
+    
+  const mail_options= {
+      from: `Bundle <${senderEmail}>`, // use the sender's email
+      to: recipientEmails.join(','), // send to all recipients
+      subject: emailSubject, // use the provided subject
+      html: emailBody // use the provided email body
+  }
+
+  transport.sendMail( mail_options, function(error, result){
+      if(error){
+          console.log('Error!!!: ',  error)
+          res.sendStatus(500);
+      }
+      else {
+          console.log("Success woo!:  ", result)
+          res.sendStatus(200);
+      }
+      transport.close()
+  })
+})
 
   module.exports = router
