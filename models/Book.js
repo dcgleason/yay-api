@@ -2,12 +2,14 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const messageSchema = new Schema({
+  _id: { type: Schema.Types.ObjectId, default: mongoose.Types.ObjectId() },
   layout_id: Number,
   name: String,
   msg: String,
   img_file: String,
   email: String,
 });
+
 
 const bookSchema = new Schema(
   {
