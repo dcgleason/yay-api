@@ -146,7 +146,7 @@ router.post('/signin', cors(corsOptions), (req, res, next) => {
       }
       // Send user data as JSON response
       console.log('user', user);
-      res.json({ userId: user._id, username: user.username });
+      res.json({ userId: user._id, username: user.username, name: user.name });
     });
   })(req, res, next);
 });
