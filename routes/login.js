@@ -11,6 +11,7 @@ var LocalStrategy = require("passport-local").Strategy;
 var connect = require("../server");
 const MongoStoreDB = require("connect-mongo");
 const cors = require("cors");
+const jwt = require('jsonwebtoken');
 
 
 /*
@@ -144,9 +145,20 @@ router.post('/signin', cors(corsOptions), (req, res, next) => {
       if (err) {
         return next(err);
       }
-      // Send user data as JSON response
-      console.log('user', user);
-      res.json({ userId: user._id, username: user.username, name: user.name });
+
+      // Define payload for JWT
+      const payload = { userId: user._id, username: user.username, name: user.name };
+
+      // Sign the JWT and send it in the response
+      jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' }, (err, token) => {
+        if (err) {
+          console.error('Error signing token', err);
+          return res.status(500).json({ message: 'Error signing token' });
+        }
+
+        // Send token as JSON response
+        res.json({ token });
+      });
     });
   })(req, res, next);
 });
