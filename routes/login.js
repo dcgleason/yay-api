@@ -157,6 +157,7 @@ router.post('/signin', cors(corsOptions), (req, res, next) => {
         }
 
         // Send token as JSON response
+        console.log('token', token)
         res.json({ token });
       });
     });
