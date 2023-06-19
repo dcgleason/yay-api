@@ -38,7 +38,7 @@ router.get('/contacts', async (req, res) => {
 
 // Email send to gift contributors  
 router.post('/send', (req, res) => {
-  const senderEmail = process.env.SENDER_EMAIL; // sender's email
+  const senderEmail = req.body.senderEmail; // sender's email
   const senderName = req.body.senderName; // sender's name
   const emailSubject = req.body.subject; // email subject
   const emailBody = req.body.body; // email body
