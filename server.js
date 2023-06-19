@@ -25,7 +25,7 @@ const uri = "mongodb+srv://dcgleason:F1e2n3n4!!@yay-cluster01.lijs4.mongodb.net/
 //         res.header("Access-Control-Allow-Headers", "Accept, Content-Type, x-requested-with");
 //         next();
 //       });
-const allowedOrigins = ["https://www.usebundl.com", "https://www.admin.givebundl.com","https://admin.givebundl.com", "https://usebundl.com", "https://givebundl.com", "https://www.givebundl.com", "https://www.usebundle.co", "https://usebundle.co", "https://www.usebundl.com/", "https://usebundl.com/", "https://givebundl.com/", "https://www.givebundl.com/", "https://www.usebundle.co/", "https://usebundle.co/"];
+const allowedOrigins = ["https://www.usebundl.com", "https://www.console.givebundl.com","https://console.givebundl.com", "https://usebundl.com", "https://givebundl.com", "https://www.givebundl.com", "https://www.usebundle.co", "https://usebundle.co", "https://www.usebundl.com/", "https://usebundl.com/", "https://givebundl.com/", "https://www.givebundl.com/", "https://www.usebundle.co/", "https://usebundle.co/"];
 
 app.use(
   cors({
