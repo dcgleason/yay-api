@@ -182,6 +182,7 @@ router.get("/getRefreshToken", cors(corsOptions), async (req, res) => {
       return res.status(400).json({ message: 'User not found' });
     } else {
       // If the user exists, send the refresh token
+      console.log('refresh token: ', user.refreshToken)
       res.status(200).json({ refreshToken: user.refreshToken });
     }
   } catch (err) {
@@ -208,7 +209,7 @@ router.post('/signin', cors(corsOptions), (req, res, next) => {
       const payload = { userId: user._id, username: user.username, name: user.name };
 
       // Sign the JWT and send it in the response
-      jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' }, (err, token) => {
+      jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '24h' }, (err, token) => {
         if (err) {
           console.error('Error signing token', err);
           return res.status(500).json({ message: 'Error signing token' });
@@ -241,8 +242,7 @@ router.post("/signup", cors(corsOptions), async (req, res, next) => {
   console.log("Connected to MongoDB / inside /signup route");
   const newUser = new User({
     username: req.body.username,
-    firstName: req.body.firstName,
-    lastName: req.body.lastName,
+    name: req.body.firstName + " " + req.body.lastName,
     hash: hash,
     salt: salt,
   });
