@@ -80,6 +80,13 @@ router.post("/:id/message", upload.single("imageAddress"), async (req, res) => {
       return res.status(404).json({ error: "Book not found" });
     }
 
+    // Check if the message already exists in the book
+    const existingMessage = Array.from(book.messages.values()).find(message => message.email === req.body.email);
+
+    if (existingMessage) {
+      return res.status(400).json({ error: "Message already exists in the book" });
+    }
+
     // Generate a unique ID for the message
     const messageId = uuid.v4();
 
@@ -92,6 +99,7 @@ router.post("/:id/message", upload.single("imageAddress"), async (req, res) => {
     res.status(500).json({ error: "Could not add message to the book" });
   }
 });
+
 
 
 
