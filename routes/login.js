@@ -194,6 +194,31 @@ router.post("/saveRefreshToken", cors(corsOptions), async (req, res) => {
   }
 });
 
+// Get refresh token route
+router.get("/getRefreshToken", cors(corsOptions), async (req, res) => {
+  const { userID } = req.query;
+
+  if (!userID) {
+    return res.status(400).json({ message: 'Missing userID' });
+  }
+
+  try {
+    // Find the user in the database
+    const user = await User.findById(userID);
+
+    if (!user) {
+      // If the user doesn't exist, return an error
+      return res.status(400).json({ message: 'User not found' });
+    } else {
+      // If the user exists, send the refresh token
+      res.status(200).json({ refreshToken: user.refreshToken });
+    }
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 // /signin route
 router.post('/signin', cors(corsOptions), (req, res, next) => {
   passport.authenticate('local', (err, user, info) => {
