@@ -7,17 +7,17 @@ const Schema = mongoose.Schema;
  */
 const userSchema = new Schema(
   {
-    bookID: { type: Schema.Types.ObjectId, ref: 'Book' }, // Assuming 'Book' is the name of your book model
+    bookID: { type: Schema.Types.ObjectId, ref: 'Book' },
     username: String,
     hash: String,
     salt: String,
     name: String,
     shippingAddress: String,
     giftOwnerEmail: String,
+    refreshToken: String, // Add this line
   },
   { timestamps: true }
 );
-
 
 const User = mongoose.model("User", userSchema);
 

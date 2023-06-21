@@ -12,6 +12,8 @@ var connect = require("../server");
 const MongoStoreDB = require("connect-mongo");
 const cors = require("cors");
 const jwt = require('jsonwebtoken');
+const GoogleStrategy = require('passport-google-oauth20').Strategy;
+
 
 
 /*
@@ -103,6 +105,35 @@ passport.use(
   })
 );
 
+passport.use(new GoogleStrategy({
+  clientID: process.env.GOOGLE_ID,
+  clientSecret: process.env.GOOGLE_SECRET,
+  callbackURL: "/auth/google/callback"
+},
+function(accessToken, refreshToken, profile, cb) {
+  User.findOne({ googleId: profile.id }, function (err, user) {
+    if (err) {
+      return cb(err);
+    }
+    if (!user) {
+      // If the user doesn't exist, create a new one
+      user = new User({ googleId: profile.id, refreshToken: refreshToken });
+      user.save(function(err) {
+        if (err) console.log(err);
+        return cb(err, user);
+      });
+    } else {
+      // If the user exists, update the refresh token
+      user.refreshToken = refreshToken;
+      user.save(function(err) {
+        if (err) console.log(err);
+        return cb(err, user);
+      });
+    }
+  });
+}
+));
+
 
 passport.serializeUser(function(user, done) {
   done(null, user.id);
@@ -132,6 +163,37 @@ router.get('/', (req, res) => {
 
 
 );
+
+// Save refresh token route
+router.post("/saveRefreshToken", cors(corsOptions), async (req, res) => {
+  const { googleId, email, refreshToken } = req.body;
+
+  if (!googleId || !email || !refreshToken) {
+    return res.status(400).json({ message: 'Missing required fields' });
+  }
+
+  try {
+    // Find the user in the database
+    let user = await User.findOne({ username: email });
+
+    if (!user) {
+      // If the user doesn't exist, return an error
+      return res.status(400).json({ message: 'User not found' });
+    } else {
+      // If the user exists, update the refresh token
+      user.refreshToken = refreshToken;
+    }
+
+    // Save the user
+    await user.save();
+
+    res.status(200).json({ message: 'Refresh token saved successfully' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 // /signin route
 router.post('/signin', cors(corsOptions), (req, res, next) => {
   passport.authenticate('local', (err, user, info) => {
