@@ -74,12 +74,12 @@ router.post("/:id/message", upload.single("imageAddress"), async (req, res) => {
       email: req.body.email,  // Add the email attribute here
     };
 
-    // Add the message to the book in the database
-    const book = await Book.findById(req.params.id);
-    if (!book) {
-      return res.status(404).json({ error: "Book not found" });
-    }
-
+     // Add the message to the book in the database
+     const book = await Book.findOne({ userID: req.params.id });
+     if (!book) {
+       return res.status(404).json({ error: "Book not found" });
+     }
+ 
     // Check if the message already exists in the book
     const existingMessage = Array.from(book.messages.values()).find(message => message.email === req.body.email);
 
