@@ -80,10 +80,13 @@ router.post("/:id/message", upload.single("imageAddress"), async (req, res) => {
       return res.status(404).json({ error: "Book not found" });
     }
 
-    book.messages.set(req.body.messageId, messageData);
+    // Generate a unique ID for the message
+    const messageId = uuid.v4();
+
+    book.messages.set(messageId, messageData);
     await book.save();
 
-    res.status(200).json({ message: "Message successfully added to the book" });
+    res.status(200).json({ message: "Message successfully added to the book", messageId: messageId });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Could not add message to the book" });
