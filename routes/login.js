@@ -12,7 +12,6 @@ var connect = require("../server");
 const MongoStoreDB = require("connect-mongo");
 const cors = require("cors");
 const jwt = require('jsonwebtoken');
-const GoogleStrategy = require('passport-google-oauth20').Strategy;
 
 
 
@@ -105,34 +104,6 @@ passport.use(
   })
 );
 
-passport.use(new GoogleStrategy({
-  clientID: process.env.GOOGLE_ID,
-  clientSecret: process.env.GOOGLE_SECRET,
-  callbackURL: "/auth/google/callback"
-},
-function(accessToken, refreshToken, profile, cb) {
-  User.findOne({ googleId: profile.id }, function (err, user) {
-    if (err) {
-      return cb(err);
-    }
-    if (!user) {
-      // If the user doesn't exist, create a new one
-      user = new User({ googleId: profile.id, refreshToken: refreshToken });
-      user.save(function(err) {
-        if (err) console.log(err);
-        return cb(err, user);
-      });
-    } else {
-      // If the user exists, update the refresh token
-      user.refreshToken = refreshToken;
-      user.save(function(err) {
-        if (err) console.log(err);
-        return cb(err, user);
-      });
-    }
-  });
-}
-));
 
 
 passport.serializeUser(function(user, done) {
