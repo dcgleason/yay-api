@@ -13,7 +13,7 @@ router.post('/secret', async (req, res) => {
 
   const intent = await stripe.paymentIntents.create({
     currency: 'usd',
-    amount: 4900,
+    amount: 7900,
     metadata: { integration_check: 'accept_a_payment' },
     receipt_email: customerEmail, // Add the receipt_email property
   });
