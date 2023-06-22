@@ -103,6 +103,7 @@ router.post("/:id/message", upload.single("imageAddress"), async (req, res) => {
 
 
 
+
 // Update a specific message in a book
 router.put('/:userId/message/:messageId', async (req, res) => {
   try {
@@ -129,6 +130,29 @@ router.put('/:userId/message/:messageId', async (req, res) => {
     await book.save();
 
     res.json({ message: 'Message updated successfully' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// DELETE route to delete a message from a book
+router.delete('/:bookId/message/:messageId', async (req, res) => {
+  try {
+    const book = await Book.findById(req.params.bookId);
+
+    if (!book) {
+      return res.status(404).json({ message: 'Book not found' });
+    }
+
+    if (!book.messages.has(req.params.messageId)) {
+      return res.status(404).json({ message: 'Message not found' });
+    }
+
+    book.messages.delete(req.params.messageId);
+    await book.save();
+
+    res.json({ message: 'Message deleted successfully' });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Server error' });
