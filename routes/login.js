@@ -277,12 +277,10 @@ router.post("/signup", cors(corsOptions), async (req, res, next) => {
 
 
 
-// Visiting this route logs the user out
-router.get("/logout", (req, res, next) => {
+router.get('/logout', function(req, res){
   req.logout();
-  res.redirect("/signin");
+  res.redirect('/signin');
 });
-
 
 router.get("/login-failure", (req, res, next) => {
   res.send("You entered the wrong password.");
