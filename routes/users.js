@@ -38,6 +38,30 @@ router.get("/:id", async (req, res) => {
   }
 });
 
+// Update user's lastEmailed attribute
+router.put("/:id/lastEmailed", async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id)
+    if (!user) {
+      return res.status(404).json({
+        userFound: false,
+        error: true,
+        message: "User not found"
+      });
+    }
+    user.lastEmailed = req.body.lastEmailed;
+    await user.save();
+    res.json(user);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({
+      userFound: false,
+      error: true,
+      message: "Server error"
+    });
+  }
+});
+
 
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 //POST ROUTES

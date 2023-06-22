@@ -15,6 +15,7 @@ const userSchema = new Schema(
     shippingAddress: String,
     giftOwnerEmail: String,
     refreshToken: String, // Add this line
+    lastEmailed: Date,
   },
   { timestamps: true }
 );
