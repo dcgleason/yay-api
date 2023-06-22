@@ -16,9 +16,13 @@ const userSchema = new Schema(
     giftOwnerEmail: String,
     refreshToken: String, // Add this line
     lastEmailed: Date,
+      // have this be an array of 5 prompts, each are a String
+      prompts: {
+        type: Map,
+        of: String
   },
   { timestamps: true }
-);
+});
 
 const User = mongoose.model("User", userSchema);
 
