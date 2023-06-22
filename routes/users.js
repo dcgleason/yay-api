@@ -63,6 +63,23 @@ router.put("/:id/lastEmailed", async (req, res) => {
   }
 });
 
+router.put("/:id/prompts", async (req, res) => {
+  try {
+    const user = await User.findOne({ _id: req.params.id });
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    user.prompts = req.body.prompts;
+    await user.save();
+
+    res.status(200).json({ message: "Prompts successfully updated" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Could not update prompts" });
+  }
+});
+
 
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 //POST ROUTES
