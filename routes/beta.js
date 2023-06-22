@@ -18,7 +18,7 @@ router.post('/waitlist', async (req, res) => {
         })
     }
   
-}
+})
 
 
 
