@@ -49,6 +49,7 @@ router.put("/:id/lastEmailed", async (req, res) => {
         message: "User not found"
       });
     }
+    console.log("user found in lastEmailed update route", user);
     user.lastEmailed = req.body.lastEmailed;
     await user.save();
     res.json(user);
