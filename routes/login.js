@@ -277,11 +277,17 @@ router.post("/signup", cors(corsOptions), async (req, res, next) => {
 
 
 
-router.get('/logout', function(req, res){
-  
+router.get('/logout', function(req, res, next){
   req.logout();
-  res.redirect('/signin');
+  req.session.destroy(function (err) {
+    if (err) { 
+      return next(err); 
+    }
+    // The response should be redirected to '/signin' only after the session is destroyed.
+    res.redirect('/signin');
+  });
 });
+
 
 router.get("/login-failure", (req, res, next) => {
   res.send("You entered the wrong password.");
