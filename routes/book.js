@@ -147,6 +147,7 @@ router.put('/:userId/message/:messageId', async (req, res) => {
     // Update the message with the new data
     message.name = req.body.name;
     message.msg = req.body.msg;
+    message.email = req.body.email;
     message.img_file = req.body.img_file;
 
     // Save the updated book
