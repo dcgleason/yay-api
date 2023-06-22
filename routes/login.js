@@ -245,6 +245,7 @@ router.post("/signup", cors(corsOptions), async (req, res, next) => {
     name: req.body.firstName + " " + req.body.lastName,
     hash: hash,
     salt: salt,
+    prompts: ["", "", "", "", "" ],
   });
 
   try {
