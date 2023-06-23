@@ -82,6 +82,24 @@ router.put("/:id/prompts", async (req, res) => {
 });
 
 
+router.put("/:id/recipient", async (req, res) => {
+  try {
+    const user = await User.findOne({ _id: req.params.id });
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    user.recipient = req.body.recipientFullName;
+    user.recipientFirst = req.body.recipientFirstName;
+    await user.save();
+
+    res.status(200).json({ message: "Recipient successfully updated" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Could not update recipient" });
+  }
+});
+
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 //POST ROUTES
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
