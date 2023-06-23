@@ -9,11 +9,16 @@ const userSchema = new Schema(
     hash: String,
     salt: String,
     name: String,
+    firstName: String,
+    lastName: String,
     shippingAddress: String,
     giftOwnerEmail: String,
     refreshToken: String,
     lastEmailed: Date,
     prompts: [String],
+    introNote: String,
+    recipinet: String,
+    recipientFirst: String,
   },
   { timestamps: true }
 );

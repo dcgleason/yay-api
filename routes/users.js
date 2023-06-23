@@ -71,6 +71,7 @@ router.put("/:id/prompts", async (req, res) => {
     }
 
     user.prompts = req.body.prompts;
+    user.introNote = req.body.longMessage;
     await user.save();
 
     res.status(200).json({ message: "Prompts successfully updated" });

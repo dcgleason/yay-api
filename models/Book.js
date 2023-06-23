@@ -18,6 +18,8 @@ const bookSchema = new Schema(
       back: String,
     },
     rec_name: String,
+    rec_first_name: String,
+    introNote: String,
     userID: { type: Schema.Types.ObjectId, ref: 'User' },
     messages: {
       type: Map,

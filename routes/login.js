@@ -243,6 +243,8 @@ router.post("/signup", cors(corsOptions), async (req, res, next) => {
   const newUser = new User({
     username: req.body.username,
     name: req.body.firstName + " " + req.body.lastName,
+    firstName: req.body.firstName,
+    lastName: req.body.lastName,
     hash: hash,
     salt: salt,
     prompts: ["", "", "", "", "" ],
