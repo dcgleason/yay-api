@@ -130,7 +130,8 @@ app.use("/email", email);
 app.use("/unique", userID);
 app.use("/book", book);
 app.use("/openai", openai);
-app.us("/sms", sms);
+app.use("/sms", sms);
+
 
 // app root route app.get
 app.get("/", (req, res) => {
