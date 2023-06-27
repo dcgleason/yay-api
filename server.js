@@ -88,6 +88,7 @@ const userID = require("./routes/check");
 const book = require("./routes/book");
 const login = require('./routes/login');
 const openai = require('./routes/openai');
+const sms = require('./routes/sms');
 
 //initialization of variables
 const port = process.env.PORT || 3001;
@@ -129,6 +130,7 @@ app.use("/email", email);
 app.use("/unique", userID);
 app.use("/book", book);
 app.use("/openai", openai);
+app.us("/sms", sms);
 
 // app root route app.get
 app.get("/", (req, res) => {
