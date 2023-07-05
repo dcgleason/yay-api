@@ -6,6 +6,22 @@ const { google } = require('googleapis');
 
 
 
+router.post('/startEmailProcess', (req, res) => {
+  // Get the recipients from the request
+  let recipients = req.body.recipients;
+
+  // Send the first email immediately
+  sendEmail(recipients);
+
+  // Schedule the other emails
+  setTimeout(() => sendEmail(recipients), 3 * 24 * 60 * 60 * 1000); // Email 2: after 3 days
+  setTimeout(() => sendEmail(recipients), 5 * 24 * 60 * 60 * 1000); // Email 3: after 5 days
+  setTimeout(() => sendEmail(recipients), 6 * 24 * 60 * 60 * 1000); // Email 4: after 6 days
+  setTimeout(() => sendEmail(recipients), 7 * 24 * 60 * 60 * 1000); // Email 5: after 7 days
+
+  res.send('Email process started');
+});
+
 // Email send to gift contributors after successful submission
 router.post('/sendContributorNotification', (req, res) => {
   const senderEmail = process.env.SENDER_EMAIL; // sender's email
