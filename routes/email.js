@@ -5,7 +5,7 @@ const nodemailer = require('nodemailer');
 const { google } = require('googleapis');
 const { spawn } = require('child_process');
 const nodemailer = require('nodemailer');
-
+const Book = require("../models/Book"); 
 // Create a Nodemailer transporter
 const transporter = nodemailer.createTransport({
   service: 'gmail',
@@ -32,7 +32,7 @@ const sendEmail = async (recipients, subject, text, attachments) => {
   }
 };
 
-router.post('/start-email-process', (req, res) => {
+router.post('/start-email-process', async (req, res) => {
 
     // Get the user ID from the request
     let userId = req.body.userId;
