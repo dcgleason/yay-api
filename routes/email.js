@@ -6,6 +6,51 @@ const { google } = require('googleapis');
 
 
 
+// Email send to gift contributors after successful submission
+router.post('/sendContributorNotification', (req, res) => {
+  const senderEmail = process.env.SENDER_EMAIL; // sender's email
+  const senderName = process.env.SENDER_NAME; // sender's name
+  const recipientEmail = req.body.email; // recipient's email
+  const contributor = req.body.contributor; // contributor's name
+  const recipient = req.body.recipient; // gift recipient's name
+
+  const OAuth2 = google.auth.OAuth2;
+  const OAuth2_client = new OAuth2(process.env.GMAIL_CLIENT_ID, process.env.GMAIL_CLIENT_SECRET);
+  OAuth2_client.setCredentials({ refresh_token: process.env.GMAIL_REFRESH_TOKEN });
+
+  const accessToken = OAuth2_client.getAccessToken();
+
+  const transport = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      type: 'OAuth2',
+      user: senderEmail,
+      clientId: process.env.GMAIL_CLIENT_ID,
+      clientSecret: process.env.GMAIL_CLIENT_SECRET,
+      refreshToken: process.env.GMAIL_REFRESH_TOKEN,
+      accessToken: accessToken
+    }
+  });
+
+  const mail_options = {
+    from: `${senderName} <${senderEmail}>`,
+    to: recipientEmail,
+    subject: "New Contribution to your Bundl",
+    html: `${contributor} has just contributed to your Bundl for ${recipient}!`
+  };
+
+  transport.sendMail(mail_options, (error, result) => {
+    if (error) {
+      console.error('Error:', error);
+      res.sendStatus(500);
+    } else {
+      console.log("Email sent successfully:", result);
+      res.sendStatus(200);
+    }
+    transport.close();
+  });
+});
+
 // google people api contacts 
 
 router.get('/contacts', async (req, res) => {

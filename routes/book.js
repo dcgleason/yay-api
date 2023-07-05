@@ -11,6 +11,24 @@ const uuid = require("uuid");
 
 // GET ROUTES
 
+// Get the book associated with a specific user
+router.get('/:userId', async (req, res) => {
+  try {
+    // Find the book by userId
+    const book = await Book.findOne({ userID: req.params.userId });
+
+    if (!book) {
+      return res.status(404).json({ message: 'Book not found' });
+    }
+
+    // Return the entire book object
+    res.json(book);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 // Get the whole book by id
 router.get("/:id", async (req, res) => {
   Book.findById(req.params.id, (err, book) => {
