@@ -16,6 +16,7 @@
     "aws-sdk": "^2.1283.0",
     "axios": "^0.26.1",
     "body-parser": "^1.20.0",
+    "child_process": "^1.0.2",
     "compression": "^1.7.4",
     "connect-mongo": "^4.6.0",
     "connect-mongodb-session": "^3.1.1",
