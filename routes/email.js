@@ -32,17 +32,27 @@ const sendEmail = async (recipients, subject, text, attachments) => {
   }
 };
 
-app.post('/start-email-process', (req, res) => {
-  // Get the recipients from the request
-  let recipients = req.body.recipients;
+router.post('/start-email-process', (req, res) => {
 
-  // Get the contributors who have already submitted their contributions
-  // This should be replaced with actual code to get this list from your database or other data source
-  let contributors = ['contributor1@example.com', 'contributor2@example.com'];
+    // Get the user ID from the request
+    let userId = req.body.userId;
 
-  // Filter out the contributors from the recipients list
-  recipients = recipients.filter(recipient => !contributors.includes(recipient));
-
+    // Find the book associated with the user
+    let book = await Book.findOne({ userID: userId });
+  
+    if (!book) {
+      return res.status(404).send('No book found for this user');
+    }
+  
+    // Get the recipients from the request
+    let recipients = req.body.recipients;
+  
+    // Get the emails of contributors who have already submitted their contributions
+    let contributors = Array.from(book.messages.values()).map(message => message.email);
+  
+    // Filter out the contributors from the recipients list
+    recipients = recipients.filter(recipient => !contributors.includes(recipient));
+  
   // Send the first email immediately
   sendEmail(recipients, 'Email 1', 'This is the first email.');
 
