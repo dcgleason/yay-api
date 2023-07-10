@@ -4,7 +4,6 @@ const router = express.Router()
 const nodemailer = require('nodemailer');
 const { google } = require('googleapis');
 const { spawn } = require('child_process');
-const nodemailer = require('nodemailer');
 const Book = require("../models/Book"); 
 // Create a Nodemailer transporter
 const transporter = nodemailer.createTransport({
