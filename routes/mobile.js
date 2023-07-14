@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { google } = require('googleapis');
+const people = google.people('v1');
 const cookie = require('cookie');
 
 router.get('/getPeople', async (req, res) => {
@@ -9,14 +10,17 @@ router.get('/getPeople', async (req, res) => {
 
     const oauth2Client = new google.auth.OAuth2();
     oauth2Client.setCredentials(tokens);
-
-    const people = google.people({ version: 'v1', auth: oauth2Client });
-
-    const connections = await people.people.connections.list({
+    
+    const peopleService = people.people({
+      auth: oauth2Client
+    });
+    
+    const connections = await peopleService.connections.list({
       resourceName: 'people/me',
       pageSize: 2000,
       personFields: 'names,emailAddresses',
     });
+    
 
     res.json(connections.data.connections);
   } catch (error) {
