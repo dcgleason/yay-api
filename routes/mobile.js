@@ -6,21 +6,25 @@ const cookie = require('cookie');
 
 router.get('/getPeople', async (req, res) => {
   try {
-    const tokens = JSON.parse(req.headers.authorization.replace('Bearer ', ''));
+    const tokens = req.headers.authorization.replace('Bearer ', '');
 
-    const oauth2Client = new google.auth.OAuth2();
-    oauth2Client.setCredentials(tokens);
-    
+    const oauth2Client = new google.auth.OAuth2(
+      process.env.GOOGLE_CLIENT_ID,
+      process.env.GOOGLE_SECRET,
+      'http://localhost:19006/' // replace with your redirect URI
+    );
+    oauth2Client.setCredentials({ access_token: tokens });
+
+    const people = google.people('v1');
     const peopleService = people.people({
       auth: oauth2Client
     });
-    
+
     const connections = await peopleService.connections.list({
       resourceName: 'people/me',
       pageSize: 2000,
       personFields: 'names,emailAddresses',
     });
-    
 
     res.json(connections.data.connections);
   } catch (error) {
