@@ -15,12 +15,9 @@ router.get('/getPeople', async (req, res) => {
     );
     oauth2Client.setCredentials({ access_token: tokens });
 
-    const people = google.people('v1');
-    const peopleService = people.people({
-      auth: oauth2Client
-    });
+    const peopleService = google.people({ version: 'v1', auth: oauth2Client });
 
-    const connections = await peopleService.connections.list({
+    const connections = await peopleService.people.connections.list({
       resourceName: 'people/me',
       pageSize: 2000,
       personFields: 'names,emailAddresses',
@@ -32,6 +29,7 @@ router.get('/getPeople', async (req, res) => {
     res.status(500).json({ error: 'Failed to initialize Google API client', message: error.message });
   }
 });
+
 
 router.get('/oauth2callback', async (req, res) => {
   const code = req.query.code;
