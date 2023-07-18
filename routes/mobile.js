@@ -44,6 +44,7 @@ router.get('/oauth2callback', async (req, res) => {
   );
 
   try {
+
     const { tokens } = await oauth2Client.getToken(code);
     oauth2Client.setCredentials(tokens);
 
