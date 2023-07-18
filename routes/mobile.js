@@ -19,7 +19,7 @@ router.get('/getPeople', async (req, res) => {
 
     const connections = await peopleService.people.connections.list({
       resourceName: 'people/me',
-      pageSize: 2000,
+      pageSize: 1000,
       personFields: 'names,emailAddresses',
     });
 
