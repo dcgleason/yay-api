@@ -90,6 +90,7 @@ const login = require('./routes/login');
 const openai = require('./routes/openai');
 const sms = require('./routes/sms');
 const mobile = require('./routes/mobile');
+const contribution = require('./routes/contribution');
 
 //initialization of variables
 const port = process.env.PORT || 3001;
@@ -133,6 +134,7 @@ app.use("/book", book);
 app.use("/openai", openai);
 app.use("/sms", sms);
 app.use('/mobile', mobile);
+app.use('/contribution', contribution);
 
 
 // app root route app.get
