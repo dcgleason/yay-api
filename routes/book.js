@@ -67,11 +67,29 @@ router.get("/:id/messages", async (req, res) => {
 });
 
 
-// POST ROUTES
+function promiseWithTimeout(promise, ms) {
+  let timeoutId;
+  const timeoutPromise = new Promise((resolve, reject) => {
+    timeoutId = setTimeout(() => {
+      reject(new Error('Promise timeout'));
+    }, ms);
+  });
+
+  return Promise.race([
+    promise,
+    timeoutPromise
+  ]).finally(() => {
+    clearTimeout(timeoutId);
+  });
+}
+
+
+
 // POST ROUTES
 router.post("/:id/message", upload.single("imageAddress"), async (req, res) => {
   try {
     let imageURL;
+    let isMessageAppropriate = false; // Initialize flag variable
 
     // Upload the file to S3 if it exists
     const file = req.file;
@@ -111,8 +129,8 @@ router.post("/:id/message", upload.single("imageAddress"), async (req, res) => {
     const configuration = new Configuration({ apiKey: process.env.OPENAI_API_KEY });
     const openai = new OpenAIApi(configuration);
 
-    // Call OpenAI for appropriateness check
-    const appropriatenessResponse = await openai.createChatCompletion({
+    // Call OpenAI for appropriateness check with a timeout of 5000 milliseconds (5 seconds)
+    const appropriatenessPromise = openai.createChatCompletion({
       model: "gpt-4",
       messages: [{ role: "user", content: `Please rate the appropriateness of the following letter (text) on a scale of 1 to 10, where 1 is highly inappropriate and 10 is highly appropriate: ${messageData.msg}`}],
       max_tokens: 500,
@@ -121,11 +139,18 @@ router.post("/:id/message", upload.single("imageAddress"), async (req, res) => {
       temperature: 1,
     });
 
+    let appropriatenessResponse;
+    try {
+      appropriatenessResponse = await promiseWithTimeout(appropriatenessPromise, 5000);
+    } catch (error) {
+      console.log('Appropriateness check timed out');
+    }
+
     // Check appropriateness score
-    if (appropriatenessResponse.data.choices && appropriatenessResponse.data.choices.length > 0 && appropriatenessResponse.data.choices[0].text) {
+    if (appropriatenessResponse && appropriatenessResponse.data.choices && appropriatenessResponse.data.choices.length > 0 && appropriatenessResponse.data.choices[0].text) {
       const score = Number(appropriatenessResponse.data.choices[0].text.trim());
       if (score > 5) {
-        const correctionResponse = await openai.createChatCompletion({
+        const correctionPromise = openai.createChatCompletion({
           model: "gpt-4",
           messages: [{ role: "user", content: `Please correct any spelling mistakes in the following text: ${messageData.msg}`}],
           max_tokens: 500,
@@ -134,11 +159,19 @@ router.post("/:id/message", upload.single("imageAddress"), async (req, res) => {
           temperature: 1,
         });
 
+        let correctionResponse;
+        try {
+          correctionResponse = await promiseWithTimeout(correctionPromise, 5000);
+        } catch (error) {
+          console.log('Correction check timed out');
+        }
+
         // Check if the correctionResponse has choices and text
-        if (correctionResponse.data.choices && correctionResponse.data.choices.length > 0 && correctionResponse.data.choices[0].text) {
+        if (correctionResponse && correctionResponse.data.choices && correctionResponse.data.choices.length > 0 && correctionResponse.data.choices[0].text) {
           // Replace the original message with the corrected message
           messageData.msg = correctionResponse.data.choices[0].text.trim();
           console.log("Message was corrected, and is above 4 appropriateness score");
+          isMessageAppropriate = true; // Set flag to true
         } else {
           console.log("No correction response from OpenAI");
         }
@@ -149,18 +182,24 @@ router.post("/:id/message", upload.single("imageAddress"), async (req, res) => {
       console.log("No appropriateness response from OpenAI");
     }
 
-    // Generate a unique ID for the message
-    const messageId = uuid.v4();
+    // Only post the message to MongoDB if it's appropriate
+    if (isMessageAppropriate) {
+      // Generate a unique ID for the message
+      const messageId = uuid.v4();
 
-    book.messages.set(messageId, messageData);
-    await book.save();
+      book.messages.set(messageId, messageData);
+      await book.save();
 
-    res.status(200).json({ message: "Message successfully added to the book", messageId: messageId });
+      res.status(200).json({ message: "Message successfully added to the book", messageId: messageId });
+    } else {
+      res.status(400).json({ error: "Message did not pass appropriateness check or spell check" });
+    }
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Could not add message to the book" });
   }
 });
+
 
 
 // PUT route to update the front and back of a book
