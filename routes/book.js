@@ -172,7 +172,7 @@ router.post("/:id/message", upload.single("imageAddress"), async (req, res) => {
           // Replace the original message with the corrected message
           messageData.msg = correctionResponse.data.choices[0].text.trim();
 
-          console.log("Message was corrected, and is above 4 appropriateness score -->", correctionResponse.data.choices[0].text.trim(););
+          console.log("Message was corrected, and is above 4 appropriateness score -->", correctionResponse.data.choices[0].text.trim());
           isMessageAppropriate = true; // Set flag to true
         } else {
           console.log("No correction response from OpenAI");
