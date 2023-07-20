@@ -8,6 +8,8 @@ const axios = require("axios");
 const aws = require("aws-sdk");
 require("dotenv").config({ path: require("find-config")(".env") });
 const uuid = require("uuid");
+const { Configuration, OpenAIApi } = require("openai");
+
 
 // GET ROUTES
 
