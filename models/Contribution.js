@@ -23,6 +23,6 @@ const contributionSchema = new Schema(
   { timestamps: true }
 );
 
-const Contrbution = mongoose.model("Contribution", contributionSchema);
+const Contribution = mongoose.model("Contribution", contributionSchema);
 
-module.exports = Contrbution;
+module.exports = Contribution;
