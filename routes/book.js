@@ -141,7 +141,7 @@ router.post("/:id/message", upload.single("imageAddress"), async (req, res) => {
 
     let appropriatenessResponse;
     try {
-      appropriatenessResponse = await promiseWithTimeout(appropriatenessPromise, 5000);
+      appropriatenessResponse = await promiseWithTimeout(appropriatenessPromise, 10000);
     } catch (error) {
       console.log('Appropriateness check timed out');
     }
@@ -149,6 +149,7 @@ router.post("/:id/message", upload.single("imageAddress"), async (req, res) => {
     // Check appropriateness score
     if (appropriatenessResponse && appropriatenessResponse.data.choices && appropriatenessResponse.data.choices.length > 0 && appropriatenessResponse.data.choices[0].text) {
       const score = Number(appropriatenessResponse.data.choices[0].text.trim());
+      console.log('OpenAI response', appropriatenessResponse.data.choices[0].text.trim());
       if (score > 5) {
         const correctionPromise = openai.createChatCompletion({
           model: "gpt-4",
@@ -161,7 +162,7 @@ router.post("/:id/message", upload.single("imageAddress"), async (req, res) => {
 
         let correctionResponse;
         try {
-          correctionResponse = await promiseWithTimeout(correctionPromise, 5000);
+          correctionResponse = await promiseWithTimeout(correctionPromise, 10000);
         } catch (error) {
           console.log('Correction check timed out');
         }
@@ -170,7 +171,8 @@ router.post("/:id/message", upload.single("imageAddress"), async (req, res) => {
         if (correctionResponse && correctionResponse.data.choices && correctionResponse.data.choices.length > 0 && correctionResponse.data.choices[0].text) {
           // Replace the original message with the corrected message
           messageData.msg = correctionResponse.data.choices[0].text.trim();
-          console.log("Message was corrected, and is above 4 appropriateness score");
+
+          console.log("Message was corrected, and is above 4 appropriateness score -->", correctionResponse.data.choices[0].text.trim(););
           isMessageAppropriate = true; // Set flag to true
         } else {
           console.log("No correction response from OpenAI");
