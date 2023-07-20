@@ -68,7 +68,7 @@ router.get("/:id/messages", async (req, res) => {
 
 
 // POST ROUTES
-
+// POST ROUTES
 router.post("/:id/message", upload.single("imageAddress"), async (req, res) => {
   try {
     let imageURL;
@@ -94,12 +94,12 @@ router.post("/:id/message", upload.single("imageAddress"), async (req, res) => {
       email: req.body.email,  // Add the email attribute here
     };
 
-     // Add the message to the book in the database
-     const book = await Book.findOne({ userID: req.params.id });
-     if (!book) {
-       return res.status(404).json({ error: "Book not found" });
-     }
- 
+    // Add the message to the book in the database
+    const book = await Book.findOne({ userID: req.params.id });
+    if (!book) {
+      return res.status(404).json({ error: "Book not found" });
+    }
+
     // Check if the message already exists in the book
     const existingMessage = Array.from(book.messages.values()).find(message => message.email === req.body.email);
 
@@ -107,40 +107,47 @@ router.post("/:id/message", upload.single("imageAddress"), async (req, res) => {
       return res.status(400).json({ error: "Message already exists in the book" });
     }
 
-        // Create OpenAI instance
-        const configuration = new Configuration({ apiKey: process.env.OPENAI_API_KEY });
-        const openai = new OpenAIApi(configuration);
-    
-        // Call OpenAI for appropriateness check
-        const appropriatenessResponse = await openai.createChatCompletion({
+    // Create OpenAI instance
+    const configuration = new Configuration({ apiKey: process.env.OPENAI_API_KEY });
+    const openai = new OpenAIApi(configuration);
+
+    // Call OpenAI for appropriateness check
+    const appropriatenessResponse = await openai.createChatCompletion({
+      model: "gpt-4",
+      messages: [{ role: "user", content: `Please rate the appropriateness of the following text on a scale of 1 to 10, where 1 is highly inappropriate and 10 is highly appropriate: ${messageData.msg}`}],
+      max_tokens: 500,
+      n: 1,
+      stop: null,
+      temperature: 1,
+    });
+
+    // Check appropriateness score
+    if (appropriatenessResponse.data.choices && appropriatenessResponse.data.choices.length > 0 && appropriatenessResponse.data.choices[0].text) {
+      const score = Number(appropriatenessResponse.data.choices[0].text.trim());
+      if (score > 4) {
+        const correctionResponse = await openai.createChatCompletion({
           model: "gpt-4",
-          messages: [{ role: "user", content: `Please rate the appropriateness of the following text on a scale of 1 to 10, where 1 is highly inappropriate and 10 is highly appropriate: ${messageData.msg}`}],
+          messages: [{ role: "user", content: `Please correct any spelling mistakes in the following text: ${messageData.msg}`}],
           max_tokens: 500,
           n: 1,
           stop: null,
           temperature: 1,
         });
 
-        // Check appropriateness score
-        const score = Number(appropriatenessResponse.data.choices[0].text.trim());
-        if (score > 4) {
-          const correctionResponse = await openai.createChatCompletion({
-            model: "gpt-4",
-            messages: [{ role: "user", content: `Please correct any spelling mistakes in the following text: ${messageData.msg}`}],
-            max_tokens: 500,
-            n: 1,
-            stop: null,
-            temperature: 1,
-          });
-
-           // Replace the original message with the corrected message
-           messageData.msg = correctionResponse.data.choices[0].text.trim();
-           console.log("Message was corrected, and is above 4 appropriateness score");
-    
+        // Check if the correctionResponse has choices and text
+        if (correctionResponse.data.choices && correctionResponse.data.choices.length > 0 && correctionResponse.data.choices[0].text) {
+          // Replace the original message with the corrected message
+          messageData.msg = correctionResponse.data.choices[0].text.trim();
+          console.log("Message was corrected, and is above 4 appropriateness score");
+        } else {
+          console.log("No correction response from OpenAI");
         }
-        else {
-          console.log("Message is inappropriate, and is below 4 appropriateness score");
-        }
+      } else {
+        console.log("Message is inappropriate, and is below 4 appropriateness score");
+      }
+    } else {
+      console.log("No appropriateness response from OpenAI");
+    }
 
     // Generate a unique ID for the message
     const messageId = uuid.v4();
