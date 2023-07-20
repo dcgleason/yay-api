@@ -114,7 +114,7 @@ router.post("/:id/message", upload.single("imageAddress"), async (req, res) => {
     // Call OpenAI for appropriateness check
     const appropriatenessResponse = await openai.createChatCompletion({
       model: "gpt-4",
-      messages: [{ role: "user", content: `Please rate the appropriateness of the following text on a scale of 1 to 10, where 1 is highly inappropriate and 10 is highly appropriate: ${messageData.msg}`}],
+      messages: [{ role: "user", content: `Please rate the appropriateness of the following text (based on the fact that this text is going to be given in a nice book with other people's kind, supportive, loving messages) on a scale of 1 to 10, where 1 is highly inappropriate and 10 is highly appropriate: ${messageData.msg}`}],
       max_tokens: 500,
       n: 1,
       stop: null,
@@ -124,7 +124,7 @@ router.post("/:id/message", upload.single("imageAddress"), async (req, res) => {
     // Check appropriateness score
     if (appropriatenessResponse.data.choices && appropriatenessResponse.data.choices.length > 0 && appropriatenessResponse.data.choices[0].text) {
       const score = Number(appropriatenessResponse.data.choices[0].text.trim());
-      if (score > 4) {
+      if (score > 5) {
         const correctionResponse = await openai.createChatCompletion({
           model: "gpt-4",
           messages: [{ role: "user", content: `Please correct any spelling mistakes in the following text: ${messageData.msg}`}],
