@@ -10,6 +10,8 @@ require("dotenv").config({ path: require("find-config")(".env") });
 const uuid = require("uuid");
 const { Configuration, OpenAIApi } = require("openai");
 const QRCode = require('qrcode');
+const AWS = require('aws-sdk');
+
 
 
 
