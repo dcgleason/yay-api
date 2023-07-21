@@ -125,7 +125,7 @@ router.post("/:id/message", upload.fields([{ name: 'imageAddress', maxCount: 1 }
         Key: `audio/${uuid.v4()}.mp3`, // Generate a unique file name
         Body: audioFile.buffer,
         ContentType: audioFile.mimetype,
-        ACL: 'public-read' // Make the file publicly readable
+        // ACL: 'public-read' // Make the file publicly readable
       };
 
       const audioUploadResult = await s3.upload(audioUploadParams).promise();
