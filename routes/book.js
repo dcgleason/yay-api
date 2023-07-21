@@ -154,9 +154,10 @@ async function checkAppropriateness(book, messageId, msg) {
 
   let appropriatenessResponse;
   try {
-    appropriatenessResponse = await promiseWithTimeout(appropriatenessPromise, 600000);
-    console.log('Appropriateness check response:', appropriatenessResponse.choices[0].message.content);
-    console.log('Appropriateness check response trim:', appropriatenessResponse.choices[0].message.content.trim());
+    console.log('appropriatenessPromise check response:', appropriatenessPromise.choices[0].message.content);
+    console.log('appropriatenessPromise check response trim:', appropriatenessPromise.choices[0].message.content.trim());
+    appropriatenessResponse = await promiseWithTimeout(appropriatenessPromise, 1000000);
+   
   } catch (error) {
     console.log('Appropriateness check timed out');
     return;
