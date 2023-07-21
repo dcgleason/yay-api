@@ -110,7 +110,7 @@ router.post("/:id/message", upload.fields([{ name: 'imageAddress', maxCount: 1 }
         Key: `images/${uuid.v4()}.${imageFile.originalname.split('.').pop()}`, // Generate a unique file name
         Body: imageFile.buffer,
         ContentType: imageFile.mimetype,
-        ACL: 'public-read' // Make the file publicly readable
+        // ACL: 'public-read' // Make the file publicly readable
       };
 
       const imageUploadResult = await s3.upload(imageUploadParams).promise();
