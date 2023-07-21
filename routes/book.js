@@ -138,7 +138,8 @@ router.post("/:id/message", upload.single("imageAddress"), async (req, res) => {
     let appropriatenessResponse;
     try {
       appropriatenessResponse = await promiseWithTimeout(appropriatenessPromise, 10000);
-      console.log('Appropriateness check response:', appropriatenessResponse);
+      console.log('Appropriateness check response:', appropriatenessResponse.choices[0].message.content);
+      console.log('Appropriateness check response trim:', appropriatenessResponse.choices[0].message.content.trim());
     } catch (error) {
       console.log('Appropriateness check timed out');
       return res.status(500).json({ error: "Appropriateness check timed out" });
@@ -147,11 +148,11 @@ router.post("/:id/message", upload.single("imageAddress"), async (req, res) => {
     // Generate a unique ID for the message
     const messageId = uuid.v4();
 
-    if (appropriatenessResponse && appropriatenessResponse.data.choices && appropriatenessResponse.data.choices.length > 0 && appropriatenessResponse.data.choices[0].text) {
-      messageData.msg = appropriatenessResponse.data.choices[0].text.trim();
+    if (appropriatenessResponse && appropriatenessResponse.choices && appropriatenessResponse.choices.length > 0 && appropriatenessResponse.choices[0].message.content) {
+      messageData.msg = appropriatenessResponse.data.choices[0].message.content.trim();
     } else {
       console.log("No appropriateness response from OpenAI");
-      console.log("approp response", appropriatenessResponse);
+      console.log("approp response", appropriatenessResponse.choices[0].message.content.trim());
     }
 
     book.messages.set(messageId, messageData);
