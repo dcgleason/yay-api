@@ -179,7 +179,7 @@ async function checkAppropriateness(book, messageId, msg, audioURL) {
     messageData.msg = appropriatenessResponse.choices[0].message.content.trim();
 
     // Generate QR code
-    QRCode.toFile(`./path/to/save/${messageId}.png`, audioURL, {
+    QRCode.toFile(`./qrCodes/${messageId}.png`, audioURL, {
       color: {
         dark: '#000000',
         light: '#ffffff'
