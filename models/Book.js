@@ -7,6 +7,7 @@ const messageSchema = new Schema({
   name: String,
   msg: String,
   img_file: String,
+  audio_file: String,
   email: String,
 });
 
