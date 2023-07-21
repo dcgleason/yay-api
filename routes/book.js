@@ -121,49 +121,57 @@ router.post("/:id/message", upload.single("imageAddress"), async (req, res) => {
       return res.status(400).json({ error: "Message already exists in the book" });
     }
 
-    // Create OpenAI instance
-    const configuration = new Configuration({ apiKey: process.env.OPENAI_API_KEY });
-    const openai = new OpenAIApi(configuration);
-
-    // Call OpenAI for appropriateness check with a timeout of 10000 milliseconds (10 seconds)
-    const appropriatenessPromise = openai.createChatCompletion({
-      model: "gpt-4",
-      messages: [{ role: "user", content: `Please rate the appropriateness of the following letter (text) on a scale of 1 to 10, where 1 is highly inappropriate and 10 is highly appropriate: ${messageData.msg}. If you rate the letter as a 4 or above, please correct any spelling mistakes in the letter and return just the corrected letter.`}],
-      max_tokens: 500,
-      n: 1,
-      stop: null,
-      temperature: 1,
-    });
-
-    let appropriatenessResponse;
-    try {
-      appropriatenessResponse = await promiseWithTimeout(appropriatenessPromise, 50000);
-      console.log('Appropriateness check response:', appropriatenessResponse.choices[0].message.content);
-      console.log('Appropriateness check response trim:', appropriatenessResponse.choices[0].message.content.trim());
-    } catch (error) {
-      console.log('Appropriateness check timed out');
-      return res.status(500).json({ error: "Appropriateness check timed out" });
-    }
-
     // Generate a unique ID for the message
     const messageId = uuid.v4();
-
-    if (appropriatenessResponse && appropriatenessResponse.choices && appropriatenessResponse.choices.length > 0 && appropriatenessResponse.choices[0].message.content) {
-      messageData.msg = appropriatenessResponse.choices[0].message.content.trim();
-    } else {
-      console.log("No appropriateness response from OpenAI");
-      console.log("approp response", appropriatenessResponse.choices[0].message.content.trim());
-    }
 
     book.messages.set(messageId, messageData);
     await book.save();
 
     res.status(200).json({ message: "Message successfully added to the book", messageId: messageId });
+
+    // Call the appropriateness check after the response has been sent
+    checkAppropriateness(book, messageId, messageData.msg);
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Could not add message to the book" });
   }
 });
+
+async function checkAppropriateness(book, messageId, msg) {
+  // Create OpenAI instance
+  const configuration = new Configuration({ apiKey: process.env.OPENAI_API_KEY });
+  const openai = new OpenAIApi(configuration);
+
+  // Call OpenAI for appropriateness check with a timeout of 50000 milliseconds (50 seconds)
+  const appropriatenessPromise = openai.createChatCompletion({
+    model: "gpt-4",
+    messages: [{ role: "user", content: `Please rate the appropriateness of the following letter (text) on a scale of 1 to 10, where 1 is highly inappropriate and 10 is highly appropriate: ${msg}. If you rate the letter as a 4 or above, please correct any spelling mistakes in the letter and return just the corrected letter.`}],
+    max_tokens: 900,
+    n: 1,
+    stop: null,
+    temperature: 1,
+  });
+
+  let appropriatenessResponse;
+  try {
+    appropriatenessResponse = await promiseWithTimeout(appropriatenessPromise, 600000);
+    console.log('Appropriateness check response:', appropriatenessResponse.choices[0].message.content);
+    console.log('Appropriateness check response trim:', appropriatenessResponse.choices[0].message.content.trim());
+  } catch (error) {
+    console.log('Appropriateness check timed out');
+    return;
+  }
+
+  if (appropriatenessResponse && appropriatenessResponse.choices && appropriatenessResponse.choices.length > 0 && appropriatenessResponse.choices[0].message.content) {
+    const messageData = book.messages.get(messageId);
+    messageData.msg = appropriatenessResponse.choices[0].message.content.trim();
+    book.messages.set(messageId, messageData);
+    await book.save();
+  } else {
+    console.log("No appropriateness response from OpenAI");
+    console.log("approp response", appropriatenessResponse.choices[0].message.content.trim());
+  }
+}
 
 
 // PUT route to update the front and back of a book
