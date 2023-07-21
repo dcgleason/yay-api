@@ -209,7 +209,8 @@ async function checkAppropriateness(book, messageId, msg, audioURL) {
     });
 
     // Save the URL of the QR code to the message data
-    messageData.qr_code_url = `https://example.com/path/to/qr/${messageId}.png`; // Replace with actual URL of the QR code image
+    messageData.qr_code_url = `https://https://s3.amazonaws.com/dgbundle1/audio/${messageId}.png`; // Replace with actual URL of the QR code image https://s3.amazonaws.com/my-bucket/images/image.png
+
 
     book.messages.set(messageId, messageData);
     await book.save();
