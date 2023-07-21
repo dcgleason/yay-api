@@ -70,23 +70,6 @@ router.get("/:id/messages", async (req, res) => {
   });
 });
 
-
-function promiseWithTimeout(promise, ms) {
-  let timeoutId;
-  const timeoutPromise = new Promise((resolve, reject) => {
-    timeoutId = setTimeout(() => {
-      reject(new Error('Promise timeout'));
-    }, ms);
-  });
-
-  return Promise.race([
-    promise,
-    timeoutPromise
-  ]).finally(() => {
-    clearTimeout(timeoutId);
-  });
-}
-
 // Configure AWS SDK
 AWS.config.update({
   accessKeyId: process.env.AWS_ACCESS_KEY_ID,
@@ -110,30 +93,28 @@ router.post("/:id/message", upload.fields([{ name: 'imageAddress', maxCount: 1 }
         Key: `images/${uuid.v4()}.${imageFile.originalname.split('.').pop()}`, // Generate a unique file name
         Body: imageFile.buffer,
         ContentType: imageFile.mimetype,
-        // ACL: 'public-read' // Make the file publicly readable
       };
 
       const imageUploadResult = await s3.upload(imageUploadParams).promise();
       imageURL = imageUploadResult.Location;
     }
 
-          // Upload the audio file to S3 if it exists
-          let audioFile;
-          if (req.files['audio']) {
-            audioFile = req.files['audio'][0];
-          }
-          if (audioFile) {
-            const audioUploadParams = {
-              Bucket: process.env.AWS_S3_BUCKET_NAME,
-              Key: `audio/${uuid.v4()}.mp3`, // Generate a unique file name
-              Body: audioFile.buffer,
-              ContentType: audioFile.mimetype,
-              // ACL: 'public-read' // Make the file publicly readable
-            };
+    // Upload the audio file to S3 if it exists
+    let audioFile;
+    if (req.files['audio']) {
+      audioFile = req.files['audio'][0];
+    }
+    if (audioFile) {
+      const audioUploadParams = {
+        Bucket: process.env.AWS_S3_BUCKET_NAME,
+        Key: `audio/${uuid.v4()}.mp3`, // Generate a unique file name
+        Body: audioFile.buffer,
+        ContentType: audioFile.mimetype,
+      };
 
-            const audioUploadResult = await s3.upload(audioUploadParams).promise();
-            audioURL = audioUploadResult.Location;
-          }
+      const audioUploadResult = await s3.upload(audioUploadParams).promise();
+      audioURL = audioUploadResult.Location;
+    }
 
     // Create the messageData object from req.body (parsed by multer)
     const messageData = {
@@ -167,7 +148,7 @@ router.post("/:id/message", upload.fields([{ name: 'imageAddress', maxCount: 1 }
     res.status(200).json({ message: "Message successfully added to the book", messageId: messageId });
 
     // Call the appropriateness check after the response has been sent
-    checkAppropriateness(book, messageId, messageData.msg, audioFile);
+    checkAppropriateness(book, messageId, messageData.msg, audioURL);
 
   } catch (err) {
     console.error(err);
@@ -180,8 +161,8 @@ async function checkAppropriateness(book, messageId, msg, audioURL) {
   const configuration = new Configuration({ apiKey: process.env.OPENAI_API_KEY });
   const openai = new OpenAIApi(configuration);
 
-  // Call OpenAI for appropriateness check with a timeout of 50000 milliseconds (50 seconds)
-  const appropriatenessPromise = openai.createChatCompletion({
+  // Call OpenAI for appropriateness check
+  const appropriatenessResponse = await openai.createChatCompletion({
     model: "gpt-4",
     messages: [{ role: "user", content: `Please rate the appropriateness of the following letter (text) on a scale of 1 to 10, where 1 is highly inappropriate and 10 is highly appropriate: ${msg}. If you rate the letter as a 4 or above, please correct any spelling mistakes in the letter and return just the corrected letter.`}],
     max_tokens: 900,
@@ -190,17 +171,9 @@ async function checkAppropriateness(book, messageId, msg, audioURL) {
     temperature: 1,
   });
 
-  // let appropriatenessResponse;
-  // try {
-  //   appropriatenessResponse = await promiseWithTimeout(appropriatenessPromise, 1000000);
-  // } catch (error) {
-  //   console.log('Appropriateness check timed out');
-  //   return;
-  // }
-
-  if (appropriatenessPromise.choices[0].message.content || appropriatenessPromise.choices[0].message.content.trim() !== "") {
+  if (appropriatenessResponse) {
     const messageData = book.messages.get(messageId);
-    messageData.msg = appropriatenessPromise.choices[0].message.content.trim();
+    messageData.msg = appropriatenessResponse.choices[0].message.content.trim();
 
     // Generate QR code
     QRCode.toFile(`./path/to/save/${messageId}.png`, audioURL, {
@@ -216,12 +189,11 @@ async function checkAppropriateness(book, messageId, msg, audioURL) {
     // Save the URL of the QR code to the message data
     messageData.qr_code_url = `https://https://s3.amazonaws.com/dgbundle1/audio/${messageId}.png`; // Replace with actual URL of the QR code image https://s3.amazonaws.com/my-bucket/images/image.png
 
-
     book.messages.set(messageId, messageData);
     await book.save();
   } else {
     console.log("No appropriateness response from OpenAI");
-    console.log("approp response" + appropriatenessPromise.choices[0].message.content.trim());
+    console.log("approp response" + appropriatenessResponse.choices[0].message.content.trim());
   }
 }
 
