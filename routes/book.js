@@ -149,7 +149,7 @@ router.post("/:id/message", upload.single("imageAddress"), async (req, res) => {
     const messageId = uuid.v4();
 
     if (appropriatenessResponse && appropriatenessResponse.choices && appropriatenessResponse.choices.length > 0 && appropriatenessResponse.choices[0].message.content) {
-      messageData.msg = appropriatenessResponse.data.choices[0].message.content.trim();
+      messageData.msg = appropriatenessResponse.choices[0].message.content.trim();
     } else {
       console.log("No appropriateness response from OpenAI");
       console.log("approp response", appropriatenessResponse.choices[0].message.content.trim());
