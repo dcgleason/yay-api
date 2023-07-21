@@ -117,20 +117,23 @@ router.post("/:id/message", upload.fields([{ name: 'imageAddress', maxCount: 1 }
       imageURL = imageUploadResult.Location;
     }
 
-    // Upload the audio file to S3 if it exists
-    const audioFile = req.files['audio'][0];
-    if (audioFile) {
-      const audioUploadParams = {
-        Bucket: process.env.AWS_S3_BUCKET_NAME,
-        Key: `audio/${uuid.v4()}.mp3`, // Generate a unique file name
-        Body: audioFile.buffer,
-        ContentType: audioFile.mimetype,
-        // ACL: 'public-read' // Make the file publicly readable
-      };
+          // Upload the audio file to S3 if it exists
+          let audioFile;
+          if (req.files['audio']) {
+            audioFile = req.files['audio'][0];
+          }
+          if (audioFile) {
+            const audioUploadParams = {
+              Bucket: process.env.AWS_S3_BUCKET_NAME,
+              Key: `audio/${uuid.v4()}.mp3`, // Generate a unique file name
+              Body: audioFile.buffer,
+              ContentType: audioFile.mimetype,
+              // ACL: 'public-read' // Make the file publicly readable
+            };
 
-      const audioUploadResult = await s3.upload(audioUploadParams).promise();
-      audioURL = audioUploadResult.Location;
-    }
+            const audioUploadResult = await s3.upload(audioUploadParams).promise();
+            audioURL = audioUploadResult.Location;
+          }
 
     // Create the messageData object from req.body (parsed by multer)
     const messageData = {
@@ -164,7 +167,7 @@ router.post("/:id/message", upload.fields([{ name: 'imageAddress', maxCount: 1 }
     res.status(200).json({ message: "Message successfully added to the book", messageId: messageId });
 
     // Call the appropriateness check after the response has been sent
-    checkAppropriateness(book, messageId, messageData.msg, req.files['audio'][0]);
+    checkAppropriateness(book, messageId, messageData.msg, audioFile);
 
   } catch (err) {
     console.error(err);
