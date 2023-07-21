@@ -190,17 +190,17 @@ async function checkAppropriateness(book, messageId, msg, audioURL) {
     temperature: 1,
   });
 
-  let appropriatenessResponse;
-  try {
-    appropriatenessResponse = await promiseWithTimeout(appropriatenessPromise, 1000000);
-  } catch (error) {
-    console.log('Appropriateness check timed out');
-    return;
-  }
+  // let appropriatenessResponse;
+  // try {
+  //   appropriatenessResponse = await promiseWithTimeout(appropriatenessPromise, 1000000);
+  // } catch (error) {
+  //   console.log('Appropriateness check timed out');
+  //   return;
+  // }
 
-  if (appropriatenessResponse && appropriatenessResponse.choices && appropriatenessResponse.choices.length > 0 && appropriatenessResponse.choices[0].message.content) {
+  if (appropriatenessPromise.choices[0].message.content || appropriatenessPromise.choices[0].message.content.trim() !== "") {
     const messageData = book.messages.get(messageId);
-    messageData.msg = appropriatenessResponse.choices[0].message.content.trim();
+    messageData.msg = appropriatenessPromise.choices[0].message.content.trim();
 
     // Generate QR code
     QRCode.toFile(`./path/to/save/${messageId}.png`, audioURL, {
@@ -221,7 +221,7 @@ async function checkAppropriateness(book, messageId, msg, audioURL) {
     await book.save();
   } else {
     console.log("No appropriateness response from OpenAI");
-    console.log("approp response", appropriatenessResponse.choices[0].message.content.trim());
+    console.log("approp response" + appropriatenessPromise.choices[0].message.content.trim());
   }
 }
 
