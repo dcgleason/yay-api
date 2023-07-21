@@ -137,7 +137,7 @@ router.post("/:id/message", upload.single("imageAddress"), async (req, res) => {
 
     let appropriatenessResponse;
     try {
-      appropriatenessResponse = await promiseWithTimeout(appropriatenessPromise, 10000);
+      appropriatenessResponse = await promiseWithTimeout(appropriatenessPromise, 50000);
       console.log('Appropriateness check response:', appropriatenessResponse.choices[0].message.content);
       console.log('Appropriateness check response trim:', appropriatenessResponse.choices[0].message.content.trim());
     } catch (error) {
