@@ -138,7 +138,7 @@ router.post("/:id/message", upload.single("imageAddress"), async (req, res) => {
     let appropriatenessResponse;
     try {
       appropriatenessResponse = await promiseWithTimeout(appropriatenessPromise, 10000);
-      console.log('Appropriateness check response:', appropriatenessResponse.data);
+      console.log('Appropriateness check response:', appropriatenessResponse);
     } catch (error) {
       console.log('Appropriateness check timed out');
       return res.status(500).json({ error: "Appropriateness check timed out" });
