@@ -177,7 +177,7 @@ async function checkAppropriateness(book, messageId, msg, audioURL) {
 
   if (appropriatenessResponse) {
     const messageData = book.messages.get(messageId);
-    messageData.msg = appropriatenessResponse.choices[0].message.content.trim();
+    messageData.msg = appropriatenessResponse.data.choices[0].message.content.trim();
 
           // Generate QR code
         QRCode.toFile(`./qrCodes/${messageId}.png`, audioURL, {
@@ -208,7 +208,7 @@ async function checkAppropriateness(book, messageId, msg, audioURL) {
         });
   } else {
     console.log("No appropriateness response from OpenAI");
-    console.log("approp response" + appropriatenessResponse.choices[0].message.content.trim());
+    console.log("approp response" + appropriatenessResponse.data.choices[0].message.content.trim());
   }
 }
 
