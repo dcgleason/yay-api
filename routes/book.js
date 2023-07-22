@@ -179,34 +179,40 @@ async function checkAppropriateness(book, messageId, msg, audioURL) {
   if (appropriatenessResponse) {
     const messageData = book.messages.get(messageId);
     messageData.msg = appropriatenessResponse.data.choices[0].message.content.trim();
+    const qrCodeDir = path.join(__dirname, '..', 'qrCodes');
 
-        // Generate QR code
-        QRCode.toFile(path.join(__dirname, 'qrCodes', `${messageId}.png`), audioURL, {
-          color: {
-            dark: '#000000',
-            light: '#ffffff'
-          }
-        }, async function (err) {
-          if (err) throw err
-          console.log('QR code generated and saved to qr.png');
-
-          // Upload the QR code file to S3
-          const qrCodeFile = fs.createReadStream(path.join(__dirname, '..', '..', 'qrCodes', `${messageId}.png`));
-          const qrCodeUploadParams = {
-            Bucket: process.env.AWS_S3_BUCKET_NAME,
-            Key: `qrCodes/${messageId}.png`,
-            Body: qrCodeFile,
-            ContentType: 'image/png',
-          };
-
-          const qrCodeUploadResult = await s3.upload(qrCodeUploadParams).promise();
-
-          // Save the URL of the QR code to the message data
-          messageData.qr_code_url = qrCodeUploadResult.Location;
-
-          book.messages.set(messageId, messageData);
-          await book.save();
-        });
+    // Create the qrCodes directory if it doesn't exist
+    if (!fs.existsSync(qrCodeDir)){
+        fs.mkdirSync(qrCodeDir);
+    }
+    
+    // Generate QR code
+    QRCode.toFile(path.join(qrCodeDir, `${messageId}.png`), audioURL, {
+      color: {
+        dark: '#000000',
+        light: '#ffffff'
+      }
+    }, async function (err) {
+      if (err) throw err
+      console.log('QR code generated and saved to qr.png');
+    
+      // Upload the QR code file to S3
+      const qrCodeFile = fs.createReadStream(path.join(qrCodeDir, `${messageId}.png`));
+      const qrCodeUploadParams = {
+        Bucket: process.env.AWS_S3_BUCKET_NAME,
+        Key: `qrCodes/${messageId}.png`,
+        Body: qrCodeFile,
+        ContentType: 'image/png',
+      };
+    
+      const qrCodeUploadResult = await s3.upload(qrCodeUploadParams).promise();
+    
+      // Save the URL of the QR code to the message data
+      messageData.qr_code_url = qrCodeUploadResult.Location;
+    
+      book.messages.set(messageId, messageData);
+      await book.save();
+    });
 
   } else {
     console.log("No appropriateness response from OpenAI");
