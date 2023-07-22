@@ -173,7 +173,7 @@ async function checkAppropriateness(book, messageId, msg, audioURL) {
   });
 
     // Log the response from the OpenAI API call
-    console.log('Appropriateness response:', appropriatenessResponse);
+    console.log('Appropriateness response:', appropriatenessResponse.data);
 
   if (appropriatenessResponse) {
     const messageData = book.messages.get(messageId);
