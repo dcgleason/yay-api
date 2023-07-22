@@ -191,7 +191,7 @@ async function checkAppropriateness(book, messageId, msg, audioURL) {
           console.log('QR code generated and saved to qr.png');
 
           // Upload the QR code file to S3
-          const qrCodeFile = fs.createReadStream(path.join(__dirname, 'qrCodes', `${messageId}.png`));
+          const qrCodeFile = fs.createReadStream(path.join(__dirname, '..', '..', 'qrCodes', `${messageId}.png`));
           const qrCodeUploadParams = {
             Bucket: process.env.AWS_S3_BUCKET_NAME,
             Key: `qrCodes/${messageId}.png`,
