@@ -51,6 +51,7 @@
     "openai": "^3.2.1",
     "passport": "^0.6.0",
     "passport-local": "^1.0.0",
+    "path": "^0.12.7",
     "pdf-puppeteer": "^1.1.10",
     "pdfkit": "^0.13.0",
     "pdfmake": "^0.2.5",

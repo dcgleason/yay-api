@@ -12,6 +12,7 @@ const { Configuration, OpenAIApi } = require("openai");
 const QRCode = require('qrcode');
 const AWS = require('aws-sdk');
 const fs = require('fs');
+const path = require('path');
 
 
 
@@ -179,8 +180,8 @@ async function checkAppropriateness(book, messageId, msg, audioURL) {
     const messageData = book.messages.get(messageId);
     messageData.msg = appropriatenessResponse.data.choices[0].message.content.trim();
 
-          // Generate QR code
-        QRCode.toFile(`./qrCodes/${messageId}.png`, audioURL, {
+        // Generate QR code
+        QRCode.toFile(path.join(__dirname, 'qrCodes', `${messageId}.png`), audioURL, {
           color: {
             dark: '#000000',
             light: '#ffffff'
@@ -190,7 +191,7 @@ async function checkAppropriateness(book, messageId, msg, audioURL) {
           console.log('QR code generated and saved to qr.png');
 
           // Upload the QR code file to S3
-          const qrCodeFile = fs.createReadStream(`./qrCodes/${messageId}.png`);
+          const qrCodeFile = fs.createReadStream(path.join(__dirname, 'qrCodes', `${messageId}.png`));
           const qrCodeUploadParams = {
             Bucket: process.env.AWS_S3_BUCKET_NAME,
             Key: `qrCodes/${messageId}.png`,
@@ -206,6 +207,7 @@ async function checkAppropriateness(book, messageId, msg, audioURL) {
           book.messages.set(messageId, messageData);
           await book.save();
         });
+
   } else {
     console.log("No appropriateness response from OpenAI");
     console.log("approp response" + appropriatenessResponse.data.choices[0].message.content.trim());
