@@ -166,7 +166,7 @@ async function checkAppropriateness(book, messageId, msg, audioURL) {
   // Call OpenAI for appropriateness check
   const appropriatenessResponse = await openai.createChatCompletion({
     model: "gpt-4",
-    messages: [{ role: "user", content: `Please rate the appropriateness of the following letter (text) on a scale of 1 to 10, where 1 is highly inappropriate and 10 is highly appropriate: ${msg}. If you rate the letter as a 4 or above, please correct any spelling mistakes in the letter and return just the corrected letter.`}],
+    messages: [{ role: "user", content: `Please rate the appropriateness of the following letter (text) on a scale of 1 to 10, where 1 is highly inappropriate and 10 is highly appropriate: ${msg}. If you rate the letter as a 3 or above, please correct any spelling mistakes in the letter and return just the corrected letter. Only give me the letter with correct spelling. If the rating is below a 3, please return the letter as is with the label "inappropriate"`}],
     max_tokens: 900,
     n: 1,
     stop: null,
