@@ -21,17 +21,19 @@ const configuration = new Configuration({
   apiKey: process.env.OPENAI_API_KEY,
 });
 const openai = new OpenAIApi(configuration);
-const response = await openai.createCompletion({
-  model: "text-davinci-003",
-  prompt: `Generate one thoughtful idea for me to give ${recipient}, we are related via as ${relation}. ${recipient} is ${age}-year-old ${gender} and is interested in ${interests}. The occasion is for ${occasion} and my budget is ${budget}. Make the gift appropriate for ${recipient}'s age, gender, and pick only 1 of ${recipient}'s interests, unless you can nicely incorperate mnultiple interests into one gift idea. Make the gift as creative and as personal as possible. When presenting the gift idea, include the gift idea as "Give X" where X is the idea, then follow that with a brief description of X (your idea). If relevant, give 1-2 speific examples of the gift idea you generated. Additional information: ${additionalInfo}`,
+const response = await openai.createChatCompletion({
+  model: "gpt-4",
+  messages: [{ role: "user", content: `Generate one thoughtful idea for me to give ${recipient}, we are related via as ${relation}. ${recipient} is ${age}-year-old ${gender} and is interested in ${interests}. The occasion is for ${occasion} and my budget is ${budget}. Make the gift appropriate for ${recipient}'s age, gender, and pick only 1 of ${recipient}'s interests, unless you can nicely incorperate mnultiple interests into one gift idea. Make the gift as creative and as personal as possible. When presenting the gift idea, include the gift idea as "Give X" where X is the idea, then follow that with a brief description of X (your idea). If relevant, give 1-2 speific examples of the gift idea you generated. Additional information: ${additionalInfo}`,}],
+  max_tokens: 900,
+  n: 1,
   temperature: 0.5,
-  max_tokens: 230,
 });
 
-console.log("response" + response.data.choices[0].text);
-res.json({ message: response.data.choices[0].text });
+console.log("response" + response.data.choices[0].message.content.trim());
+res.json({ message: response.data.choices[0].message.content.trim() });
 
 
 });
 
 module.exports = router;
+
