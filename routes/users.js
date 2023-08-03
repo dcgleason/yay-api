@@ -82,8 +82,7 @@ router.put("/:id/prompts", async (req, res) => {
 });
 
 
-//update the user by addign the email and name
-
+//update the user by addign the email and name and intial contributors and prompts 
 router.put('/:userId/updateUser', async (req, res) => {
   try {
     // Find the user by userId
@@ -93,9 +92,13 @@ router.put('/:userId/updateUser', async (req, res) => {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    // Update the user's email and full name
+    // Update the user's full name, email, and recipient's name
     user.name = req.body.name;
     user.giftOwnerEmail = req.body.giftOwnerEmail;
+    user.recipinet = req.body.rec_name;
+    user.recipientFirst = req.body.rec_first_name;
+    user.prompts = req.body.prompts;
+    user.introNote = req.body.introNote;
 
     // Save the updated user
     await user.save();
@@ -106,6 +109,7 @@ router.put('/:userId/updateUser', async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 });
+
 
 
 

@@ -12,6 +12,11 @@ const messageSchema = new Schema({
   email: String,
 });
 
+const contributorSchema = new Schema({
+  emailAddresses: [{ value: String }],
+  phoneNumber: String,
+});
+
 
 const bookSchema = new Schema(
   {
@@ -27,6 +32,7 @@ const bookSchema = new Schema(
       type: Map,
       of: messageSchema,
     },
+    contributors: [contributorSchema], 
   },
   { timestamps: true }
 );
@@ -34,4 +40,3 @@ const bookSchema = new Schema(
 const Book = mongoose.model("Book", bookSchema);
 
 module.exports = Book;
-  

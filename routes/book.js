@@ -236,6 +236,8 @@ router.put('/:userId/firstUpdate', async (req, res) => {
     book.introNote = req.body.introNote;
     book.rec_name = req.body.rec_name;
     book.rec_first_name = req.body.rec_first_name;
+    book.contributors = req.body.contributors;
+
 
     // Save the updated book
     await book.save();
