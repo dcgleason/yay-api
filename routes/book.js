@@ -232,6 +232,7 @@ router.put('/:userId/firstUpdate', async (req, res) => {
       return res.status(404).json({ message: 'Book not found' });
     }
 
+    console.log('req.body.contribotrs :', req.body.contributors )
     // Update the book's welcome message, prompts, and recipient's full name
     book.introNote = req.body.introNote;
     book.rec_name = req.body.rec_name;
