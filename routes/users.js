@@ -82,6 +82,33 @@ router.put("/:id/prompts", async (req, res) => {
 });
 
 
+//update the user by addign the email and name
+
+router.put('/:userId/updateUser', async (req, res) => {
+  try {
+    // Find the user by userId
+    const user = await User.findById(req.params.userId);
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Update the user's email and full name
+    user.name = req.body.name;
+    user.giftOwnerEmail = req.body.giftOwnerEmail;
+
+    // Save the updated user
+    await user.save();
+
+    res.json({ message: 'User updated successfully' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+
+
 router.put("/:id/recipient", async (req, res) => {
   try {
     const user = await User.findOne({ _id: req.params.id });
@@ -118,7 +145,7 @@ router.post("/create", (req, res) => {
       const error = {
         userFound: false,
         error: true,
-        message: "error could not find user",
+        message: "error could not create user",
       };
     }
     console.log("created the following user in DB", createdUser);

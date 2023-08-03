@@ -220,6 +220,34 @@ async function checkAppropriateness(book, messageId, msg, audioURL) {
   }
 }
 
+//PUT route to update the book by adding the prompts, recipient name, and welcome message
+
+
+router.put('/:userId/firstUpdate', async (req, res) => {
+  try {
+    // Find the book by userId
+    const book = await Book.findOne({ userID: req.params.userId });
+
+    if (!book) {
+      return res.status(404).json({ message: 'Book not found' });
+    }
+
+    // Update the book's welcome message, prompts, and recipient's full name
+    book.introNote = req.body.introNote;
+    book.rec_name = req.body.rec_name;
+    book.rec_first_name = req.body.rec_first_name;
+
+    // Save the updated book
+    await book.save();
+
+    res.json({ message: 'Book updated successfully' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+
 // PUT route to update the front and back of a book
 router.put('/:userId/updateBook', async (req, res) => {
 
