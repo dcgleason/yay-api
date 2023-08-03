@@ -8,9 +8,7 @@ var bodyParser = require("body-parser");
 const cors = require("cors");
 
 const axios = require("axios");
-const stripe = require("stripe")(
-  "sk_test_51KtCf1LVDYVdzLHCA31MSSlOKhe7VQtXqJJiPnJK90sRLsmYU3R5MlTljmTe5AGZTNaKzKF0Fr8BC2fNOsTBgDP100TiYqCU9k"
-); //  secret key for test environment, to be replaced when we start taking orders
+const stripe = require("stripe")(process.env.STRIPE_SECRET); //  secret live
 const uri = "mongodb+srv://dcgleason:F1e2n3n4!!@yay-cluster01.lijs4.mongodb.net/?retryWrites=true&w=majority";
 
 // app.use((req, res, next) => {
@@ -27,9 +25,22 @@ const uri = "mongodb+srv://dcgleason:F1e2n3n4!!@yay-cluster01.lijs4.mongodb.net/
 //         res.header("Access-Control-Allow-Headers", "Accept, Content-Type, x-requested-with");
 //         next();
 //       });
+const allowedOrigins = ["https://www.usebundl.com", "https://www.console.givebundl.com","https://console.givebundl.com", "https://usebundl.com", "https://givebundl.com", "https://www.givebundl.com", "https://www.usebundle.co", "https://usebundle.co", "https://www.usebundl.com/", "https://usebundl.com/", "https://givebundl.com/", "https://www.givebundl.com/", "https://www.usebundle.co/", "https://usebundle.co/", "http://localhost:19006"];
 
-app.use(cors());
-    
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      // Allow requests with no origin (like mobile apps or curl requests)
+      if (!origin) return callback(null, true);
+      if (allowedOrigins.indexOf(origin) === -1) {
+        const msg = "The CORS policy for this site does not allow access from the specified origin.";
+        return callback(new Error(msg), false);
+      }
+      return callback(null, true);
+    },
+    credentials: true,
+  })
+);
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -55,10 +66,11 @@ app.set("view engine", "ejs");
 // });
 
 const corsOption = {
-  origin: 'http://localhost:3002',
+  origin:  true,
   credentials: true
 }
 app.use(cors(corsOption))
+
 
 /*
 IMPORT ROUTE CONTROLLERS: 
@@ -73,9 +85,11 @@ const lulu = require("./routes/lulu");
 const payment = require("./routes/stripe");
 const email = require("./routes/email");
 const userID = require("./routes/check");
-const contribution = require("./routes/contribution");
+const book = require("./routes/book");
 const login = require('./routes/login');
 const openai = require('./routes/openai');
+const sms = require('./routes/sms');
+const mobile = require('./routes/mobile');
 
 //initialization of variables
 const port = process.env.PORT || 3001;
@@ -115,8 +129,12 @@ app.use("/lulu", lulu); // for all requests that go to the print api
 app.use("/stripe", payment);
 app.use("/email", email);
 app.use("/unique", userID);
-app.use("/contribution", contribution);
+app.use("/book", book);
 app.use("/openai", openai);
+app.use("/sms", sms);
+app.use('/mobile', mobile);
+
+
 
 // app root route app.get
 app.get("/", (req, res) => {

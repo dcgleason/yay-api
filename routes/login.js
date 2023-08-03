@@ -2,6 +2,7 @@ const express = require("express");
 require("dotenv").config();
 const router = express.Router();
 const User = require("../models/User");
+const Book = require("../models/Book");
 const mongoose = require("mongoose");
 const session = require("express-session");
 var passport = require("passport");
@@ -10,6 +11,8 @@ var LocalStrategy = require("passport-local").Strategy;
 var connect = require("../server");
 const MongoStoreDB = require("connect-mongo");
 const cors = require("cors");
+const jwt = require('jsonwebtoken');
+
 
 
 /*
@@ -89,6 +92,7 @@ passport.use(
         const isValid = validPassword(password, user.hash, user.salt);
 
         if (isValid) {
+          // If the user is valid, return the user object including the giftOwnerID
           return cb(null, user);
         } else {
           return cb(null, false);
@@ -99,6 +103,8 @@ passport.use(
       });
   })
 );
+
+
 
 passport.serializeUser(function(user, done) {
   done(null, user.id);
@@ -116,7 +122,7 @@ passport.deserializeUser(function(id, done) {
  */
 
 const corsOptions = {
-  origin: "http://localhost:3002",
+  origin: ['https://www.usebundl.com',"https://www.console.givebundl.com","https://console.givebundl.com", 'http://localhost:3000', 'http://localhost:3001', 'https://wwww.usebundl.com/', "https://www.usebundl.com/"],
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   credentials: true
 }
@@ -128,63 +134,164 @@ router.get('/', (req, res) => {
 
 
 );
-// /signin route
-router.post('/signin', cors(corsOptions), passport.authenticate('local', { successRedirect: '/login/success', failureRedirect: '/login-failure' }), ( req, res) => {
 
+// Save refresh token route
+router.post("/saveRefreshToken", cors(corsOptions), async (req, res) => {
+  const { googleId, email, refreshToken } = req.body;
+
+  if (!googleId || !email || !refreshToken) {
+    return res.status(400).json({ message: 'Missing required fields' });
+  }
+
+  try {
+    // Find the user in the database
+    let user = await User.findOne({ username: email });
+
+    if (!user) {
+      // If the user doesn't exist, return an error
+      return res.status(400).json({ message: 'User not found' });
+    } else {
+      // If the user exists, update the refresh token
+      user.refreshToken = refreshToken;
+    }
+
+    // Save the user
+    await user.save();
+
+    res.status(200).json({ message: 'Refresh token saved successfully' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// Get refresh token route
+router.get("/getRefreshToken", cors(corsOptions), async (req, res) => {
+  const { userID } = req.query;
+
+  if (!userID) {
+    return res.status(400).json({ message: 'Missing userID' });
+  }
+
+  try {
+    // Find the user in the database
+    const user = await User.findById(userID);
+
+    if (!user) {
+      // If the user doesn't exist, return an error
+      return res.status(400).json({ message: 'User not found' });
+    } else {
+      // If the user exists, send the refresh token
+      console.log('refresh token: ', user.refreshToken)
+      res.status(200).json({ refreshToken: user.refreshToken });
+    }
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// /signin route
+router.post('/signin', cors(corsOptions), (req, res, next) => {
+  passport.authenticate('local', (err, user, info) => {
+    if (err) {
+      return next(err);
+    }
+    if (!user) {
+      return res.status(401).json({ message: 'Invalid username or password' });
+    }
+    req.logIn(user, err => {
+      if (err) {
+        return next(err);
+      }
+
+      // Define payload for JWT
+      const payload = { userId: user._id, username: user.username, name: user.name };
+
+      // Sign the JWT and send it in the response
+      jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '24h' }, (err, token) => {
+        if (err) {
+          console.error('Error signing token', err);
+          return res.status(500).json({ message: 'Error signing token' });
+        }
+
+        // Send token as JSON response
+        console.log('token', token)
+        res.json({ token });
+      });
+    });
+  })(req, res, next);
 });
 
 router.get("/success", cors(corsOptions), (req, res) => {
-
-    res.status(200).send(`
-    <!DOCTYPE html>
-    <html>
-    <head>
-      <title>Login Success</title>
-    </head>
-    <body>
-      <h1>Login Successful!</h1>
-    </body>
-    </html>
-  `);
-  console.log(req.session);
-  console.log(req.session);
+  if (req.user) {
+    res.json({ userId: req.user._id });
+  } else {
+    res.status(401).json({ message: "Not authenticated" });
+  }
 });
 
 // signup route
-router.post("/signup", (req, res, next) => {
+router.post("/signup", cors(corsOptions), async (req, res, next) => {
   console.log('inside /signup route');
   const saltHash = genPassword(req.body.password);
 
   const salt = saltHash.salt;
   const hash = saltHash.hash;
 
-// const db = mongoose.connection;
-// db.on('error', console.error.bind(console, 'connection error:'));
-// db.once('open', function() {
   console.log("Connected to MongoDB / inside /signup route");
   const newUser = new User({
     username: req.body.username,
+    name: req.body.firstName + " " + req.body.lastName,
     firstName: req.body.firstName,
     lastName: req.body.lastName,
     hash: hash,
     salt: salt,
+    prompts: ["", "", "", "", "" ],
+    introNote: "",
+    recipient: "",
+    recipientFirst: "",
   });
 
-  newUser.save().then((user) => {
-    console.log(user);
-  });
+  try {
+    // Save the new user to the database
+    const savedUser = await newUser.save();
+    console.log(savedUser);
 
-// });
-  res.redirect("/");
+    // Create a new book for the user
+    const newBook = new Book({
+      doc: {
+        front: 'front cover text', // front cover ID
+        back: 'back cover text', // back cover ID
+      },
+      rec_name: 'receiver name',
+      userID: savedUser._id, // Set the userID field to the ID of the user
+      messages: new Map(), // Initialize with an empty Map
+    });
+
+    // Save the new book to the database
+    const savedBook = await newBook.save();
+
+    // Send the user's ID as a response
+    res.json({ userId: savedUser._id });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
+  }
 });
 
 
 
 
-// Visiting this route logs the user out
-router.get("/logout", (req, res, next) => {
+router.get('/logout', function(req, res, next){
   req.logout();
-  res.redirect("/signin");
+  req.session.destroy(function (err) {
+    if (err) { 
+      return next(err); 
+    }
+    // The response should be redirected to '/signin' only after the session is destroyed.
+    res.redirect('/signin');
+  });
 });
 
 

@@ -16,22 +16,88 @@ const User = require("../models/User");
 router.get("/", (req, res) => {
   res.send("Users home page!!!");
 });
-
-//find user by id
+// Find user by id
 router.get("/:id", async (req, res) => {
-  User.findById(req.params.id, (err, user) => {
-    if (err) {
-      console.log(err.message);
-      const error = {
+  try {
+    const user = await User.findById(req.params.id)
+    if (!user) {
+      return res.status(404).json({
         userFound: false,
         error: true,
-        message: "error could not find user"
-      }
-      res.status(400).send(error);
-    } else {
-      res.send(user);
+        message: "User not found"
+      });
     }
-  });
+    res.json(user);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({
+      userFound: false,
+      error: true,
+      message: "Server error"
+    });
+  }
+});
+
+// Update user's lastEmailed attribute
+router.put("/:id/lastEmailed", async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id)
+    if (!user) {
+      return res.status(404).json({
+        userFound: false,
+        error: true,
+        message: "User not found"
+      });
+    }
+    console.log("user found in lastEmailed update route", user);
+    user.lastEmailed = req.body.lastEmailed;
+    await user.save();
+    res.json(user);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({
+      userFound: false,
+      error: true,
+      message: "Server error"
+    });
+  }
+});
+
+router.put("/:id/prompts", async (req, res) => {
+  try {
+    const user = await User.findOne({ _id: req.params.id });
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    user.prompts = req.body.prompts;
+    user.introNote = req.body.longMessage;
+    await user.save();
+
+    res.status(200).json({ message: "Prompts successfully updated" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Could not update prompts" });
+  }
+});
+
+
+router.put("/:id/recipient", async (req, res) => {
+  try {
+    const user = await User.findOne({ _id: req.params.id });
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    user.recipient = req.body.recipientFullName;
+    user.recipientFirst = req.body.recipientFirstName;
+    await user.save();
+
+    res.status(200).json({ message: "Recipient successfully updated" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Could not update recipient" });
+  }
 });
 
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

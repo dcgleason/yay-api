@@ -8,15 +8,15 @@ require("dotenv").config({ path: require("find-config")(".env") });
 //GET ROUTES
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-//find user by id
-router.get("/:id", async (req, res) => {
-  Gift.findById(req.params.id, (err, gift) => {
+// Find gift by giftOwnerID
+router.get("/byowner/:giftOwnerID", async (req, res) => {
+  Gift.findOne({ giftOwnerID: req.params.giftOwnerID }, (err, gift) => {
     if (err) {
       console.log(err.message);
       const error = {
-        userFound: false,
+        giftFound: false,
         error: true,
-        message: "error could not find user",
+        message: "error could not find gift",
       };
       res.status(400).send(error);
     } else {
@@ -29,9 +29,30 @@ router.get("/:id", async (req, res) => {
 //POST ROUTES
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-//gifts create route
+
+// gifts create route
 router.post("/create", (req, res) => {
-  Gift.create(req.body, (err, createdGift) => {
+
+  if (!req.body || !req.body.owner || !req.body.gift) {
+    return res.status(400).json({ error: "Invalid request format" });
+  }
+
+  const { owner, gift } = req.body;
+  
+  // Extract fields from the request body
+  const giftOwnerEmail = owner.ownerEmail;
+  const recipientName = gift.recipient;
+  const date = gift.date; // Extract the date field
+  
+  // Create a new gift object with the extracted fields
+  const newGift = {
+    giftOwnerEmail, 
+    recipientName,
+    date // Include the date field
+  };
+
+  // Create the new gift object in the database
+  Gift.create(newGift, (err, createdGift) => {
     if (err) {
       console.log(err.message);
       // handle error
@@ -48,7 +69,6 @@ router.post("/create", (req, res) => {
     res.send(createdGift);
   });
 });
-
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 //  PUT / UPDATE ROUTES
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

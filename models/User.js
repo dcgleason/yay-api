@@ -1,26 +1,28 @@
-
 const mongoose = require("mongoose");
 
 const Schema = mongoose.Schema;
-/**
- * each user can initiate a Gift <-- user can be placed inside of the gift schema as owner of the gift
- */
+
 const userSchema = new Schema(
   {
-    associatedGiftIDs: [String],
+    bookID: { type: Schema.Types.ObjectId, ref: 'Book' },
     username: String,
     hash: String,
     salt: String,
+    name: String,
     firstName: String,
     lastName: String,
     shippingAddress: String,
-    email: String,
+    giftOwnerEmail: String,
+    refreshToken: String,
+    lastEmailed: Date,
+    prompts: [String],
+    introNote: String,
+    recipinet: String,
+    recipientFirst: String,
   },
   { timestamps: true }
 );
 
-
 const User = mongoose.model("User", userSchema);
-
 
 module.exports = User;
