@@ -222,7 +222,6 @@ async function checkAppropriateness(book, messageId, msg, audioURL) {
 
 //PUT route to update the book by adding the prompts, recipient name, and welcome message
 
-
 router.put('/:userId/firstUpdate', async (req, res) => {
   try {
     // Find the book by userId
@@ -232,16 +231,36 @@ router.put('/:userId/firstUpdate', async (req, res) => {
       return res.status(404).json({ message: 'Book not found' });
     }
 
-    console.log('req.body.contribotrs :', req.body.contributors )
+    const deliveryDate = new Date(req.body.deliveryDate);
+    const physicalBook = req.body.physicalBook;
+
+    // Calculate the process start date
+    let processStartDate = new Date(deliveryDate);
+    processStartDate.setDate(processStartDate.getDate() - (physicalBook ? 14 : 7));
+
+    console.log('req.body.contributors :', req.body.contributors);
     // Update the book's welcome message, prompts, and recipient's full name
     book.introNote = req.body.introNote;
     book.rec_name = req.body.rec_name;
     book.rec_first_name = req.body.rec_first_name;
     book.contributors = req.body.contributors;
 
-
     // Save the updated book
     await book.save();
+
+    // Call the /start-email-process route to start the email process
+    const response = await axios.post('https://yay-api.herokuapp.com/book/email/start-email-process', {
+      userId: req.params.userId,
+      processStartDate: processStartDate.toISOString(),
+      physicalBook: physicalBook,
+      recipients: req.body.contributors,
+    });
+
+    if (response.status === 200) {
+      console.log('Email process scheduled successfully');
+    } else {
+      console.log('Failed to schedule email process:', response.data);
+    }
 
     res.json({ message: 'Book updated successfully' });
   } catch (err) {
@@ -249,6 +268,7 @@ router.put('/:userId/firstUpdate', async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 });
+
 
 
 // PUT route to update the front and back of a book
