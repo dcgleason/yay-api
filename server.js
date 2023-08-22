@@ -25,23 +25,24 @@ const uri = "mongodb+srv://dcgleason:F1e2n3n4!!@yay-cluster01.lijs4.mongodb.net/
 //         res.header("Access-Control-Allow-Headers", "Accept, Content-Type, x-requested-with");
 //         next();
 //       });
-const allowedOrigins = ["https://www.usebundl.com", "https://mobile.givebundl.com", , "https://www.mobile.givebundl.com", "https://www.console.givebundl.com","https://console.givebundl.com", "https://usebundl.com", "https://givebundl.com", "https://www.givebundl.com", "https://www.usebundle.co", "https://usebundle.co", "https://www.usebundl.com/", "https://usebundl.com/", "https://givebundl.com/", "https://www.givebundl.com/", "https://www.usebundle.co/", "https://usebundle.co/", "http://localhost:19006"];
+// const allowedOrigins = ["https://www.usebundl.com", "https://mobile.givebundl.com", , "https://www.mobile.givebundl.com", "https://www.console.givebundl.com","https://console.givebundl.com", "https://usebundl.com", "https://givebundl.com", "https://www.givebundl.com", "https://www.usebundle.co", "https://usebundle.co", "https://www.usebundl.com/", "https://usebundl.com/", "https://givebundl.com/", "https://www.givebundl.com/", "https://www.usebundle.co/", "https://usebundle.co/", "http://localhost:19006"];
 
-app.use(
-  cors({
-    origin: function (origin, callback) {
-      // Allow requests with no origin (like mobile apps or curl requests)
-      if (!origin) return callback(null, true);
-      if (allowedOrigins.indexOf(origin) === -1) {
-        const msg = "The CORS policy for this site does not allow access from the specified origin.";
-        return callback(new Error(msg), false);
-      }
-      return callback(null, true);
-    },
-    credentials: true,
-  })
-);
+// app.use(
+//   cors({
+//     origin: function (origin, callback) {
+//       // Allow requests with no origin (like mobile apps or curl requests)
+//       if (!origin) return callback(null, true);
+//       if (allowedOrigins.indexOf(origin) === -1) {
+//         const msg = "The CORS policy for this site does not allow access from the specified origin.";
+//         return callback(new Error(msg), false);
+//       }
+//       return callback(null, true);
+//     },
+//     credentials: true,
+//   })
+// );
 
+app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
