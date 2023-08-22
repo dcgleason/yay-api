@@ -23,8 +23,8 @@ const configuration = new Configuration({
 const openai = new OpenAIApi(configuration);
 const response = await openai.createChatCompletion({
   model: "gpt-4",
-  messages: [{ role: "user", content: `Create a marriage proposal idea that has elements of my unique love story (${meetStory}), alludes to my relationship and relationship milestones (${milestone}), memories (${memories}), is in my desired location (${location}), takes into consideration my budget ${budget}, timeline (${timeline}), and ideally my partners interets (${interests}) and includes the names of top reviewed venues, vendors we should go to in your recommendation / idea. Add a few tips for managing the proposal...(additionally, suggest including my partner's family in the proposal if feasible). Note any additional info (${additionalInfo})`}],
-  max_tokens: 250,
+  messages: [{ role: "user", content: `Create a marriage proposal idea that has elements of my unique love story (${meetStory}), alludes to my relationship and relationship milestones (${milestone}), memories (${memories}), is in my desired location (${location}), takes into consideration my budget ${budget}, timeline (${timeline}), and ideally my partners interets (${interests}) and includes the names of top reviewed venues, vendors we should go to in your recommendation / idea. Add a few tips for managing the proposal...(additionally, suggest including my partner's family in the proposal, using Bundl to do so). Note any additional info (${additionalInfo})`}],
+  max_tokens: 200,
   n: 1,
   temperature: 0.8,
 });
