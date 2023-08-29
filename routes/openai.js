@@ -36,7 +36,6 @@ res.json({ message: response.data.choices[0].message.content.trim() });
 
 });
 
-
 router.post('/create-playlist', async (req, res) => {
   const seedTracks = req.body.seed_tracks;
   const userGenrePreference = req.body.seed_genre;
@@ -56,6 +55,15 @@ router.post('/create-playlist', async (req, res) => {
     },
   });
   const token = tokenResponse.data.access_token;
+
+  // Get Spotify User ID
+  const userResponse = await axios.get('https://api.spotify.com/v1/me', {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  const yourSpotifyUserId = userResponse.data.id;
+
 
   // Get available genres
   const availableGenres = await axios.get('https://api.spotify.com/v1/recommendations/available-genre-seeds', {
