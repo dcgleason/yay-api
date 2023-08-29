@@ -69,7 +69,7 @@ router.post('/create-playlist', async (req, res) => {
     messages: [
       {
         role: 'user',
-        content: `Given the user's preference for ${userGenrePreference}, select the best matching genre from the available options and put them in the query string: ${availableGenres.data.genres}. Also, format the seed tracks (find the spotify ID, The base-62 identifier found at the end of the Spotify URI for an artist, track, album, playlist, etc, for each track) and appropriate seed genres into a query string for a Spotify API request, like this:  https://api.spotify.com/v1/recommendations?seed_tracks=${parsedSeedTracks}&seed_genres=${selectedGenre}&limit=10. Seed tracks: ${seedTracks} -- return only the query string - again use Spotify IDs for the query string.`
+        content: `Given the user's preference for ${userGenrePreference}, select the best matching genre from the available options and put them in the query string: ${availableGenres.data.genres}. Also, format the seed tracks (find the spotify ID, The base-62 identifier found at the end of the Spotify URI for an artist, track, album, playlist, etc, for each track) and appropriate seed genres into a query string for a Spotify API request, like this:  https://api.spotify.com/v1/recommendations?seed_tracks=SpotifyIDsinCSVform&seed_genres=SpotifyIDsinCSVform&limit=10. Seed tracks: ${seedTracks} -- return only the query string - again use Spotify IDs for the query string.`
       },
     ],
     max_tokens: 100,
