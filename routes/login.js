@@ -330,7 +330,7 @@ router.get('/auth/callback', (req, res) => {
       const refresh_token = body.refresh_token;
       console.log('Refresh Token:', refresh_token);
 
-      res.redirect('/');
+      res.redirect('www.givebundl.com');
     }
   });
 });
