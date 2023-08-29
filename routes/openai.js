@@ -64,36 +64,40 @@ router.post('/create-playlist', async (req, res) => {
   });
 
   // Use GPT-4 to pick the best genre and format query string
-  const gpt4Response = await openai.createChatCompletion({
-    model: 'gpt-4',
-    messages: [
-      {
-        role: 'user',
-        content: `Given the user's preference for ${userGenrePreference}, select the best matching genre from the available options and put them in the query string: ${availableGenres.data.genres}. Also, format the seed tracks (find the spotify ID, The base-62 identifier found at the end of the Spotify URI for an artist, track, album, playlist, etc, for each track) and appropriate seed genres into a query string for a Spotify API request, like this:  https://api.spotify.com/v1/recommendations?seed_tracks=SpotifyIDsinCSVform&seed_genres=SpotifyIDsinCSVform&limit=10. Seed tracks: ${seedTracks} -- return only the query string - again use Spotify IDs for the query string.`
-      },
-    ],
-    max_tokens: 100,
-  });
-
-  const queryString = gpt4Response.data.choices[0].message.content.trim()
-
-  // Get recommendations
-  const recommendations = await axios.get(queryString, {
-    headers: {
-      Authorization: `Bearer ${token}`,
+const gpt4Response = await openai.createChatCompletion({
+  model: 'gpt-4',
+  messages: [
+    {
+      role: 'user',
+      content: `Given the user's preference for ${userGenrePreference}, select the best matching genre from the available options and put them in the query string: ${availableGenres.data.genres}. Also, format the seed tracks and appropriate seed genres into a query string for a Spotify API request, like this:  https://api.spotify.com/v1/recommendations?seed_artists=4NHQUGzhtTLFvgF5SZesLK&seed_genres=classical%2Ccountry&seed_tracks=0c6xIDDpzE81m2q797ordA. Seed tracks: ${seedTracks} -- return only the final query URL string.`
     },
-  });
-
-  const trackIds = recommendations.data.tracks.map((track) => `spotify:track:${track.id}`);
-
-  const playlist = {
-    message: 'Playlist created',
-    selectedGenre,
-    trackIds
-  };
-
-  res.json({ playlist });
+  ],
+  max_tokens: 100,
 });
+
+// Extract the query string from the GPT-4 response
+const startIdx = gpt4Response.data.choices[0].message.content.indexOf("https://api.spotify.com/v1/recommendations?");
+let queryString = "";
+if (startIdx !== -1) {
+  queryString = gpt4Response.data.choices[0].message.content.substring(startIdx).split(' ')[0];
+}
+
+// Get recommendations
+const recommendations = await axios.get(queryString, {
+  headers: {
+    Authorization: `Bearer ${token}`,
+  },
+});
+
+const trackIds = recommendations.data.tracks.map((track) => `spotify:track:${track.id}`);
+
+const playlist = {
+  message: 'Playlist created',
+  selectedGenre,
+  trackIds
+};
+
+res.json({ playlist });
 
 module.exports = router;
 
