@@ -13,6 +13,7 @@ const MongoStoreDB = require("connect-mongo");
 const cors = require("cors");
 const jwt = require('jsonwebtoken');
 const request = require('request');
+const axios = require('axios');
 
 
 
@@ -328,6 +329,8 @@ router.post('/auth/token', async (req, res) => {
         'Content-Type': 'application/x-www-form-urlencoded'
       }
     });
+
+    console.log('response' + response)
 
     if (response.status === 200) {
       const access_token = response.data.access_token;
