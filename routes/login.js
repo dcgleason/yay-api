@@ -319,6 +319,7 @@ router.get('/auth/callback', (req, res) => {
 
 router.post('/auth/token', async (req, res) => {
   const code = req.body.code;
+  console.log('code is=' + code)
   const authData = `grant_type=authorization_code&code=${code}&redirect_uri=https://yay-api.herokuapp.com/login/auth/callback`;
   const authHeader = Buffer.from(`${process.env.SPOTIFY_CLIENT_ID}:${process.env.SPOTIFY_CLIENT_SECRET}`).toString('base64');
 
