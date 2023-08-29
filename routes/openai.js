@@ -99,7 +99,6 @@ console.log('trackIDs' + trackIds)
 
 const playlist = {
   message: 'Playlist created',
-  selectedGenre,
   trackIds
 };
 
