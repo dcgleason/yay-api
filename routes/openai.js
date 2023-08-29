@@ -82,6 +82,8 @@ if (startIdx !== -1) {
   queryString = gpt4Response.data.choices[0].message.content.substring(startIdx).split(' ')[0];
 }
 
+console.log('qeurySTring' + queryString)
+
 // Get recommendations
 const recommendations = await axios.get(queryString, {
   headers: {
@@ -89,7 +91,11 @@ const recommendations = await axios.get(queryString, {
   },
 });
 
+console.log("recs" + recommendations)
+
 const trackIds = recommendations.data.tracks.map((track) => `spotify:track:${track.id}`);
+
+console.log('trackIDs' + trackIds)
 
 const playlist = {
   message: 'Playlist created',
