@@ -327,10 +327,8 @@ router.get('/auth/callback', (req, res) => {
   request.post(authOptions, (error, response, body) => {
     if (!error && response.statusCode === 200) {
       access_token = body.access_token;
-      const refresh_token = body.refresh_token;
-      console.log('Refresh Token:', refresh_token);
-
-      res.redirect('www.givebundl.com');
+      // Redirect to your frontend route that will handle the token
+      res.redirect(`https://www.givebundl.com/playlist-generator?access_token=${access_token}`);
     }
   });
 });
