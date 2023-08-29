@@ -104,7 +104,7 @@ const playlist = {
 };
 
 res.json({ playlist });
-)
+})
 
 module.exports = router;
 
