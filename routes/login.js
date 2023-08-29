@@ -329,6 +329,7 @@ router.get('/auth/callback', (req, res) => {
       access_token = body.access_token;
       const refresh_token = body.refresh_token;
       console.log('Refresh Token:', refresh_token);
+
       res.redirect('/');
     }
   });
