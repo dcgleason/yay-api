@@ -315,37 +315,29 @@ router.get('/auth/callback', (req, res) => {
   res.redirect(`https://www.givebundl.com/playlist-generator?code=${code}`);
 });
 
+
 router.post('/auth/token', async (req, res) => {
   const code = req.body.code;
-  const authOptions = {
-    url: 'https://accounts.spotify.com/api/token',
-    form: {
-      code: code,
-      redirect_uri: 'https://yay-api.herokuapp.com/login/auth/callback',
-      grant_type: 'authorization_code'
-    },
-    headers: {
-      'Authorization': 'Basic ' + (Buffer.from(`${process.env.SPOTIFY_CLIENT_ID}:${process.env.SPOTIFY_CLIENT_SECRET}`).toString('base64')),
-      'Content-Type': 'application/x-www-form-urlencoded'
-    },
-    json: true
-  };
+  const authData = `grant_type=authorization_code&code=${code}&redirect_uri=https://yay-api.herokuapp.com/login/auth/callback`;
+  const authHeader = Buffer.from(`${process.env.SPOTIFY_CLIENT_ID}:${process.env.SPOTIFY_CLIENT_SECRET}`).toString('base64');
 
-  
-  request.post(authOptions, (error, response, body) => {
-    if (!error && response.statusCode === 200) {
-      const access_token = body.access_token;
-      res.json({
-        access_token: access_token
-      });
-      console.log('access token' + access_token)
-    } else {
-      console.log('error in request');
-          res.status(400).json({
-        error: 'Failed to exchange code for token'
-      });
+  try {
+    const response = await axios.post('https://accounts.spotify.com/api/token', authData, {
+      headers: {
+        'Authorization': `Basic ${authHeader}`,
+        'Content-Type': 'application/x-www-form-urlencoded'
+      }
+    });
+
+    if (response.status === 200) {
+      const access_token = response.data.access_token;
+      res.json({ access_token });
+      console.log('Access token:', access_token);
     }
-  });
+  } catch (error) {
+    console.log('Error in Axios request:', error);
+    res.status(400).json({ error: 'Failed to exchange code for token' });
+  }
 });
 
 module.exports = router;
