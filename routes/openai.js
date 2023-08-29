@@ -35,5 +35,64 @@ res.json({ message: response.data.choices[0].message.content.trim() });
 
 });
 
+router.post('/create-playlist', async (req, res) => {
+  const seedTracks = req.body.seed_tracks;
+  const userGenrePreference = req.body.seed_genre;
+
+  // Initialize OpenAI
+  const configuration = new Configuration({
+    apiKey: process.env.OPENAI_API_KEY,
+  });
+  const openai = new OpenAIApi(configuration);
+
+  // Get Spotify token
+  const auth = Buffer.from(`${process.env.SPOTIFY_CLIENT_ID}:${process.env.SPOTIFY_CLIENT_SECRET}`).toString('base64');
+  const tokenResponse = await axios.post('https://accounts.spotify.com/api/token', 'grant_type=client_credentials', {
+    headers: {
+      Authorization: `Basic ${auth}`,
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+  });
+  const token = tokenResponse.data.access_token;
+
+  // Get available genres
+  const availableGenres = await axios.get('https://api.spotify.com/v1/recommendations/available-genre-seeds', {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  // Use GPT-4 to pick the best genre and format query string
+  const gpt4Response = await openai.createChatCompletion({
+    model: 'gpt-4',
+    messages: [
+      {
+        role: 'user',
+        content: `Given the user's preference for ${userGenrePreference}, select the best matching genre from the available options and put them in the query string: ${availableGenres.data.genres}. Also, format the seed tracks (find the spotify ID, The base-62 identifier found at the end of the Spotify URI for an artist, track, album, playlist, etc, for each track) and appropriate seed genres into a query string for a Spotify API request, like this:  https://api.spotify.com/v1/recommendations?seed_tracks=${parsedSeedTracks}&seed_genres=${selectedGenre}&limit=10. Seed tracks: ${seedTracks} -- return only the query string - again use Spotify IDs for the query string.`
+      },
+    ],
+    max_tokens: 100,
+  });
+
+  const queryString = gpt4Response.data.choices[0].message.content.trim()
+
+  // Get recommendations
+  const recommendations = await axios.get(queryString, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  const trackIds = recommendations.data.tracks.map((track) => `spotify:track:${track.id}`);
+
+  const playlist = {
+    message: 'Playlist created',
+    selectedGenre,
+    trackIds
+  };
+
+  res.json({ playlist });
+});
+
 module.exports = router;
 
