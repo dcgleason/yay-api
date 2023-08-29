@@ -331,14 +331,17 @@ router.post('/auth/token', async (req, res) => {
     json: true
   };
 
+  
   request.post(authOptions, (error, response, body) => {
     if (!error && response.statusCode === 200) {
       const access_token = body.access_token;
       res.json({
         access_token: access_token
       });
+      console.log('access token' + access_token)
     } else {
-      res.status(400).json({
+      console.log('error in request');
+          res.status(400).json({
         error: 'Failed to exchange code for token'
       });
     }
