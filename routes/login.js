@@ -300,4 +300,46 @@ router.get("/login-failure", (req, res, next) => {
 });
 
 
+
+let access_token = '';
+
+router.get('/auth/login', (req, res) => {
+  const authUrl = 'https://accounts.spotify.com/authorize?client_id=your_client_id&response_type=code&redirect_uri= https://yay-api.herokuapp.com/login/auth/callback';
+  res.redirect(authUrl);
+});
+
+router.get('/auth/callback', (req, res) => {
+  const code = req.query.code;
+  const authOptions = {
+    url: 'https://accounts.spotify.com/api/token',
+    form: {
+      code: code,
+      redirect_uri: ' https://yay-api.herokuapp.com/login/auth/callback',
+      grant_type: 'authorization_code'
+    },
+    headers: {
+      'Authorization': 'Basic ' + (Buffer.from(`${SPOTIFY_CLIENT_ID}:${SPOTIFY_CLIENT_SECRET}`).toString('base64')),
+      'Content-Type': 'application/x-www-form-urlencoded'
+    },
+    json: true
+  };
+
+  request.post(authOptions, (error, response, body) => {
+    if (!error && response.statusCode === 200) {
+      access_token = body.access_token;
+      const refresh_token = body.refresh_token;
+      console.log('Refresh Token:', refresh_token);
+      res.redirect('/');
+    }
+  });
+});
+
+router.get('/auth/token', (req, res) => {
+  res.json({
+    access_token: access_token
+  });
+});
+
+
+
 module.exports = router;
