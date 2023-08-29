@@ -304,7 +304,7 @@ router.get("/login-failure", (req, res, next) => {
 let access_token = '';
 
 router.get('/auth/login', (req, res) => {
-  const authUrl = `https://accounts.spotify.com/authorize?client_id=${SPOTIFY_CLIENT_ID}&response_type=code&redirect_uri=https://yay-api.herokuapp.com/login/auth/callback`;
+  const authUrl = `https://accounts.spotify.com/authorize?client_id=${process.env.SPOTIFY_CLIENT_ID}&response_type=code&redirect_uri=https://yay-api.herokuapp.com/login/auth/callback`;
   res.redirect(authUrl);
 });
 
@@ -323,7 +323,7 @@ router.post('/auth/token', async (req, res) => {
       grant_type: 'authorization_code'
     },
     headers: {
-      'Authorization': 'Basic ' + (Buffer.from(`${SPOTIFY_CLIENT_ID}:${SPOTIFY_CLIENT_SECRET}`).toString('base64')),
+      'Authorization': 'Basic ' + (Buffer.from(`${process.env.SPOTIFY_CLIENT_ID}:${process.env.SPOTIFY_CLIENT_SECRET}`).toString('base64')),
       'Content-Type': 'application/x-www-form-urlencoded'
     },
     json: true
