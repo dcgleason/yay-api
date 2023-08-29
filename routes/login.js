@@ -330,7 +330,7 @@ router.post('/auth/token', async (req, res) => {
       }
     });
 
-    console.log('response' + response)
+    console.log('response' + response.data)
 
     if (response.status === 200) {
       const access_token = response.data.access_token;
