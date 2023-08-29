@@ -304,17 +304,22 @@ router.get("/login-failure", (req, res, next) => {
 let access_token = '';
 
 router.get('/auth/login', (req, res) => {
-  const authUrl = 'https://accounts.spotify.com/authorize?client_id=your_client_id&response_type=code&redirect_uri= https://yay-api.herokuapp.com/login/auth/callback';
+  const authUrl = `https://accounts.spotify.com/authorize?client_id=${SPOTIFY_CLIENT_ID}&response_type=code&redirect_uri=https://yay-api.herokuapp.com/login/auth/callback`;
   res.redirect(authUrl);
 });
 
 router.get('/auth/callback', (req, res) => {
   const code = req.query.code;
+  res.redirect(`https://www.givebundl.com/playlist-generator?code=${code}`);
+});
+
+router.post('/auth/token', async (req, res) => {
+  const code = req.body.code;
   const authOptions = {
     url: 'https://accounts.spotify.com/api/token',
     form: {
       code: code,
-      redirect_uri: ' https://yay-api.herokuapp.com/login/auth/callback',
+      redirect_uri: 'https://yay-api.herokuapp.com/login/auth/callback',
       grant_type: 'authorization_code'
     },
     headers: {
@@ -326,19 +331,16 @@ router.get('/auth/callback', (req, res) => {
 
   request.post(authOptions, (error, response, body) => {
     if (!error && response.statusCode === 200) {
-      access_token = body.access_token;
-      // Redirect to your frontend route that will handle the token
-      res.redirect(`https://www.givebundl.com/playlist-generator?access_token=${access_token}`);
+      const access_token = body.access_token;
+      res.json({
+        access_token: access_token
+      });
+    } else {
+      res.status(400).json({
+        error: 'Failed to exchange code for token'
+      });
     }
   });
 });
-
-router.get('/auth/token', (req, res) => {
-  res.json({
-    access_token: access_token
-  });
-});
-
-
 
 module.exports = router;
