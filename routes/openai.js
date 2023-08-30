@@ -169,9 +169,8 @@ router.post('/create-playlist', async (req, res) => {
 
   
   
-      const queryString = `https://api.spotify.com/v1/recommendations?&seed_genres=${seedGenres}&seed_tracks=${seedTracks}` +
-      "&limit=10" +
-      "&market=US";
+      const queryString = `https://api.spotify.com/v1/recommendations?limit=10&market=US&seed_genres=${encodeURIComponent(seedGenres)}&seed_tracks=${encodeURIComponent(seedTracks)}`;
+
       // "&target_acousticness=0.5" +
       // "&target_duration_ms=240000" +
       // "&target_energy=0.55" +
