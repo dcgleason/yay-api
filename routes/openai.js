@@ -84,10 +84,10 @@ router.post('/create-playlist', async (req, res) => {
       messages: [
         {
           role: 'user',
-          content: `Give me a comma separated list of gengres associated with the seeed tracks (${seedTracks} and add in the user genre preferences to that list (${userGenrePreference}) -- make these genres work with the spotify api (${availableGenres.data.genres}) . Then this curated list of gengres and seed tracks (as spotify IDs) and make the  query string for a Spotify API request, like this:  https://api.spotify.com/v1/recommendations?seed_artists=4NHQUGzhtTLFvgF5SZesLK&seed_genres=classical%2Ccountry&seed_tracks=0c6xIDDpzE81m2q797ordA. -- return only the final query URL string and include seed tracks (spotify IDs) and seed genre in the query string as both are required.`
+          content: `Give me a comma separated list of gengres associated with the seeed tracks (${seedTracks} and add in the user genre preferences to that list (${userGenrePreference}) -- make these genres work with the spotify api (${availableGenres.data.genres}) . Then this curated list (5 max values for genre) of gengres and seed tracks (as spotify IDs, 5 max spotifyIDs) and make the  query string for a Spotify API request, like this:  https://api.spotify.com/v1/recommendations?seed_artists=4NHQUGzhtTLFvgF5SZesLK&seed_genres=classical%2Ccountry&seed_tracks=0c6xIDDpzE81m2q797ordA. -- return only the final query URL string and include seed tracks (spotify IDs) and seed genre in the query string as both are required.`
         },
       ],
-      max_tokens: 100,
+      max_tokens: 600,
     });
 
     console.log("GPT-4 Response:", gpt4Response.data);
