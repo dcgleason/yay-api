@@ -214,6 +214,8 @@ router.post('/create-playlist', async (req, res) => {
     return res.status(401).json({ error: 'Failed to add tracks to playlist' });
   }
 
+  console.log('playlistID is ... ' + playlistId)
+
   res.json({ message: 'Playlist created', playlistId });
 });
 
