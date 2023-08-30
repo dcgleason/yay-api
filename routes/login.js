@@ -312,10 +312,15 @@ router.get('/auth/login', (req, res) => {
   res.redirect(authUrl);
 });
 
-
 router.get('/auth/callback', async (req, res) => {
   const code = req.query.code;
   const redirect_uri = 'https://yay-api.herokuapp.com/login/auth/callback'; // Make sure this matches
+
+  if (!code) {
+    console.log('No code provided');
+    return res.status(400).json({ error: 'No code provided' });
+  }
+
   const authData = {
     grant_type: 'authorization_code',
     code: code,
@@ -334,12 +339,20 @@ router.get('/auth/callback', async (req, res) => {
 
     if (response.status === 200) {
       const access_token = response.data.access_token;
-      // Redirect to your frontend app with the access token
-      res.redirect(`https://www.givebundl.com/playlist-generator?access_token=${access_token}`);
+      if (access_token) {
+        // Redirect to your frontend app with the access token
+        return res.redirect(`https://www.givebundl.com/playlist-generator?access_token=${access_token}`);
+      } else {
+        console.log('No access token received');
+        return res.status(400).json({ error: 'No access token received' });
+      }
+    } else {
+      console.log('Unexpected response status:', response.status);
+      return res.status(500).json({ error: 'Unexpected response from Spotify' });
     }
   } catch (error) {
     console.log('Error in Axios request:', error);
-    res.status(400).json({ error: 'Failed to exchange code for token' });
+    return res.status(400).json({ error: 'Failed to exchange code for token' });
   }
 });
 
