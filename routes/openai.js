@@ -154,6 +154,7 @@ router.post('/create-playlist', async (req, res) => {
       const seedGenres = genres.join(',');
       const seedTracks = songIDs.replace(/^,/, ''); 
 
+      console.log('seed tracks' +seedTracks)
   
   
       const queryString = `https://api.spotify.com/v1/recommendations?&seed_genres=${seedGenres}&seed_tracks=${seedTracks}` +
