@@ -169,16 +169,17 @@ router.post('/create-playlist', async (req, res) => {
   
   
       const queryString = `https://api.spotify.com/v1/recommendations?&seed_genres=${seedGenres}&seed_tracks=${seedTracks}` +
-      "&target_acousticness=0.5" +
-      "&target_duration_ms=240000" +
-      "&target_energy=0.55" +
-      "&target_instrumentalness=0.1" +
-      "&target_mode=1" +
-      "&min_popularity=60" +
-      "&target_popularity=80" +
-      "&target_valence=0.75" +
       "&limit=10" +
       "&market=US";
+      // "&target_acousticness=0.5" +
+      // "&target_duration_ms=240000" +
+      // "&target_energy=0.55" +
+      // "&target_instrumentalness=0.1" +
+      // "&target_mode=1" +
+      // "&min_popularity=60" +
+      // "&target_popularity=80" +
+      // "&target_valence=0.75" +
+     
       console.log('new query string is ' + queryString)
   
             try {
