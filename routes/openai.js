@@ -135,6 +135,7 @@ router.post('/create-playlist', async (req, res) => {
 
      // Remove newlines and escape characters
   const cleanedResponseContent = responseContent.replace(/\\n/g, '').replace(/\\"/g, '"');
+  console.log("cleanedResponseContent" + cleanedResponseContent)
 
   const startIdxTracks = cleanedResponseContent.indexOf('tracks: [');
   const startIdxArtists = cleanedResponseContent.indexOf('artists: [');
