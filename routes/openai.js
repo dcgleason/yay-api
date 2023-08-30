@@ -39,10 +39,11 @@ res.json({ message: response.data.choices[0].message.content.trim() });
 router.post('/create-playlist', async (req, res) => {
   const seedTracks = req.body.seed_tracks;
   const userGenrePreference = req.body.seed_genre;
+  const userAccessToken = req.body.access_token; // Get the user-specific access token from the request body
 
-  if (!seedTracks || !userGenrePreference) {
-    console.log('Missing seed_tracks or seed genre');
-    return res.status(400).json({ error: 'Missing seed_tracks or seed_genre' });
+  if (!seedTracks || !userGenrePreference || !userAccessToken) {
+    console.log('Missing seed_tracks, seed genre, or access token');
+    return res.status(400).json({ error: 'Missing seed_tracks, seed genre, or access token' });
   }
 
   // Initialize OpenAI
@@ -51,26 +52,11 @@ router.post('/create-playlist', async (req, res) => {
   });
   const openai = new OpenAIApi(configuration);
 
-  let token;
-  try {
-    const auth = Buffer.from(`${process.env.SPOTIFY_CLIENT_ID}:${process.env.SPOTIFY_CLIENT_SECRET}`).toString('base64');
-    const tokenResponse = await axios.post('https://accounts.spotify.com/api/token', 'grant_type=client_credentials', {
-      headers: {
-        Authorization: `Basic ${auth}`,
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-    });
-    token = tokenResponse.data.access_token;
-  } catch (error) {
-    console.error('Error getting Spotify token:', error);
-    return res.status(401).json({ error: 'Failed to get Spotify token' });
-  }
-
   let yourSpotifyUserId;
   try {
     const userResponse = await axios.get('https://api.spotify.com/v1/me', {
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${userAccessToken}`, // Use the user-specific access token here
       },
     });
     yourSpotifyUserId = userResponse.data.id;
