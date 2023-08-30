@@ -168,35 +168,22 @@ router.post('/create-playlist', async (req, res) => {
     
       console.log('seed tracks: ' + seedTracks);
       console.log('seed genres: ' + seedGenres);
-    
-
+  
   
   
       const queryString = `https://api.spotify.com/v1/recommendations?limit=10&market=US&seed_genres=${encodeURIComponent(seedGenres)}&seed_tracks=${encodeURIComponent(seedTracks)}`;
 
-      // "&target_acousticness=0.5" +
-      // "&target_duration_ms=240000" +
-      // "&target_energy=0.55" +
-      // "&target_instrumentalness=0.1" +
-      // "&target_mode=1" +
-      // "&min_popularity=60" +
-      // "&target_popularity=80" +
-      // "&target_valence=0.75" +
-     
-      console.log('new query string is ' + queryString)
-  
-            try {
-              console.log("Query String:", queryString);  // Debugging line
-              recommendations = await axios.get(queryString, {
-                headers: {
-                  Authorization: `Bearer ${userAccessToken}`,
-                },
-              });
-            } catch (error) {
-              console.error('Error getting recommendations:', error);
-              console.error('Error Details:', error.response.data);  // Debugging line
-              return res.status(401).json({ error: 'Failed to get recommendations' });
-            }
+      try {
+        console.log("Query String:", queryString);  // Debugging line
+        recommendations = await axios.get(queryString, {
+          headers: {
+            Authorization: `Bearer ${userAccessToken}`,
+          },
+        });
+      } catch (error) {
+        console.error('Error getting recommendations:', error);
+        return res.status(401).json({ error: 'Failed to get recommendations', details: error.response.data });
+      }
           
     } else {
       console.log("Arrays not found in GPT-4 response");
