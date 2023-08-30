@@ -42,6 +42,7 @@ router.post('/create-playlist', async (req, res) => {
     const userGenrePreference = req.body.seed_genre;
 
     if (!seedTracks || !userGenrePreference) {
+      console.log('Missing seed_tracsks or seed genre')
       return res.status(400).json({ error: 'Missing seed_tracks or seed_genre' });
     }
 
@@ -62,6 +63,7 @@ router.post('/create-playlist', async (req, res) => {
 
     const token = tokenResponse.data.access_token;
     if (!token) {
+      console.log('failed to get spotify token')
       return res.status(400).json({ error: 'Failed to get Spotify token' });
     }
 
@@ -74,6 +76,7 @@ router.post('/create-playlist', async (req, res) => {
 
     const yourSpotifyUserId = userResponse.data.id;
     if (!yourSpotifyUserId) {
+      console.log('failed to get spotify ID')
       return res.status(400).json({ error: 'Failed to get Spotify User ID' });
     }
 
@@ -125,6 +128,7 @@ router.post('/create-playlist', async (req, res) => {
 
   const playlistId = playlistResponse.data.id;
   if (!playlistId) {
+    console.log('failed to create playlist')
     return res.status(400).json({ error: 'Failed to create playlist' });
   }
 
@@ -147,7 +151,7 @@ router.post('/create-playlist', async (req, res) => {
   res.json({ playlist });
 
 } catch (error) {
-  console.error('Error:', error);
+  console.error('Error is :', error);
   res.status(500).json({ error: 'Internal Server Error' });
 }
 });
