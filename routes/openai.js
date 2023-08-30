@@ -69,7 +69,7 @@ router.post('/create-playlist', async (req, res) => {
   try {
     availableGenres = await axios.get('https://api.spotify.com/v1/recommendations/available-genre-seeds', {
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${userAccessToken}`,  // <-- Use userAccessToken
       },
     });
   } catch (error) {
