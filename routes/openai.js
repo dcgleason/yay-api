@@ -89,10 +89,15 @@ router.post('/create-playlist', async (req, res) => {
       ],
       max_tokens: 100,
     });
+
+    console.log("GPT-4 Response:", gpt4Response.data);
+
     const startIdx = gpt4Response.data.choices[0].message.content.indexOf("https://api.spotify.com/v1/recommendations?");
-    if (startIdx !== -1) {
-      queryString = gpt4Response.data.choices[0].message.content.substring(startIdx).split(' ')[0];
-    }
+      if (startIdx !== -1) {
+        queryString = gpt4Response.data.choices[0].message.content.substring(startIdx).split(' ')[0];
+      } else {
+        console.log("Query string not found in GPT-4 response");
+      }
   } catch (error) {
     console.error('Error with GPT-4:', error);
     return res.status(401).json({ error: 'Failed to get query string from GPT-4' });
