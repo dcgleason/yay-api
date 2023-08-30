@@ -37,32 +37,46 @@ res.json({ message: response.data.choices[0].message.content.trim() });
 });
 
 router.post('/create-playlist', async (req, res) => {
-  const seedTracks = req.body.seed_tracks;
-  const userGenrePreference = req.body.seed_genre;
+  try {
+    const seedTracks = req.body.seed_tracks;
+    const userGenrePreference = req.body.seed_genre;
 
-  // Initialize OpenAI
-  const configuration = new Configuration({
-    apiKey: process.env.OPENAI_API_KEY,
-  });
-  const openai = new OpenAIApi(configuration);
+    if (!seedTracks || !userGenrePreference) {
+      return res.status(400).json({ error: 'Missing seed_tracks or seed_genre' });
+    }
 
-  // Get Spotify token
-  const auth = Buffer.from(`${process.env.SPOTIFY_CLIENT_ID}:${process.env.SPOTIFY_CLIENT_SECRET}`).toString('base64');
-  const tokenResponse = await axios.post('https://accounts.spotify.com/api/token', 'grant_type=client_credentials', {
-    headers: {
-      Authorization: `Basic ${auth}`,
-      'Content-Type': 'application/x-www-form-urlencoded',
-    },
-  });
-  const token = tokenResponse.data.access_token;
+    // Initialize OpenAI
+    const configuration = new Configuration({
+      apiKey: process.env.OPENAI_API_KEY,
+    });
+    const openai = new OpenAIApi(configuration);
 
-  // Get Spotify User ID
-  const userResponse = await axios.get('https://api.spotify.com/v1/me', {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-  const yourSpotifyUserId = userResponse.data.id;
+    // Get Spotify token
+    const auth = Buffer.from(`${process.env.SPOTIFY_CLIENT_ID}:${process.env.SPOTIFY_CLIENT_SECRET}`).toString('base64');
+    const tokenResponse = await axios.post('https://accounts.spotify.com/api/token', 'grant_type=client_credentials', {
+      headers: {
+        Authorization: `Basic ${auth}`,
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+    });
+
+    const token = tokenResponse.data.access_token;
+    if (!token) {
+      return res.status(400).json({ error: 'Failed to get Spotify token' });
+    }
+
+    // Get Spotify User ID
+    const userResponse = await axios.get('https://api.spotify.com/v1/me', {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const yourSpotifyUserId = userResponse.data.id;
+    if (!yourSpotifyUserId) {
+      return res.status(400).json({ error: 'Failed to get Spotify User ID' });
+    }
+
 
 
   // Get available genres
@@ -110,6 +124,10 @@ router.post('/create-playlist', async (req, res) => {
   });
 
   const playlistId = playlistResponse.data.id;
+  if (!playlistId) {
+    return res.status(400).json({ error: 'Failed to create playlist' });
+  }
+
 
   // Add tracks to the new playlist
   await axios.post(`https://api.spotify.com/v1/playlists/${playlistId}/tracks`, {
@@ -122,11 +140,16 @@ router.post('/create-playlist', async (req, res) => {
 
   const playlist = {
     message: 'Playlist created',
-    playlistId,  // Send back the playlist ID
+    playlistId,
     trackIds
   };
 
   res.json({ playlist });
+
+} catch (error) {
+  console.error('Error:', error);
+  res.status(500).json({ error: 'Internal Server Error' });
+}
 });
 
 module.exports = router;
