@@ -36,6 +36,42 @@ res.json({ message: response.data.choices[0].message.content.trim() });
 
 });
 
+
+const getSpotifyIDs = async (songs, artists, accessToken) => {
+  const baseURL = 'https://api.spotify.com/v1/search';
+  const ids = [];
+
+  for (let i = 0; i < songs.length; i++) {
+    const song = songs[i];
+    const artist = artists[i];
+    const query = encodeURIComponent(`track:${song} artist:${artist}`);
+    const url = `${baseURL}?q=${query}&type=track&limit=1`;
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${accessToken}`
+      }
+    };
+
+    try {
+      const response = await axios.get(url, config);
+      if (response.data.tracks.items.length > 0) {
+        ids.push(response.data.tracks.items[0].id);
+      } else {
+        ids.push(null); // Or any placeholder if song isn't found
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  // Convert the array of IDs to a CSV string
+  const csvList = ids.join(',');
+
+  return csvList;
+};
+
+
 router.post('/create-playlist', async (req, res) => {
   const seedTracks = req.body.seed_tracks;
   const userGenrePreference = req.body.seed_genre;
@@ -77,14 +113,14 @@ router.post('/create-playlist', async (req, res) => {
     return res.status(401).json({ error: 'Failed to get available genres' });
   }
 
-  let queryString;
+
   try {
     const gpt4Response = await openai.createChatCompletion({
       model: 'gpt-4',
       messages: [
         {
           role: 'user',
-          content: `Make your reponse 250 characters or less....and return only the final query string with Spotify IDS instead of the seed tracks....here is the prep process first: give me a comma separated list of gengres associated with the seeed tracks (${seedTracks} and add in the user genre preferences to that list (${userGenrePreference}) -- make these genres work with the spotify api (${availableGenres.data.genres}) . Then this curated list (5 max values for genre) of gengres and seed tracks (as spotify IDs, 5 max spotifyIDs) and make the  query string for a Spotify API request, like this:  https://api.spotify.com/v1/recommendations?seed_artists=4NHQUGzhtTLFvgF5SZesLK&seed_genres=classical%2Ccountry&seed_tracks=0c6xIDDpzE81m2q797ordA. -- return only the final query URL string and include seed tracks (spotify IDs) and seed genre in the query string as both are required.`
+          content: `Output three arrays, like this tracks: ['contents'] and the other like artists: ['contents'] and the third like this genres: ['contents']. Given the user's seedTracks input preferences (${seedTracks}), clean up the input and give me an array of the user's track names and call the array tracks, and give me another array of the artists associated with the users inputted tracks and call it artists. For the genre's array make an array out of the genres associated with the ${seedTracks} and add in the ${userGenrePreference}. Return these three arrays. `
         },
       ],
       max_tokens: 200,
@@ -92,31 +128,58 @@ router.post('/create-playlist', async (req, res) => {
 
     console.log("GPT-4 Response:", gpt4Response.data);
     console.log("GPT-4 Message Content:", JSON.stringify(gpt4Response.data.choices[0].message, null, 2));
-    const startIdx = gpt4Response.data.choices[0].message.content.indexOf("https://api.spotify.com/v1/recommendations?");
-    if (startIdx !== -1) {
-      queryString = gpt4Response.data.choices[0].message.content.substring(startIdx).split(' ')[0];
-      queryString = queryString.replace(/\.$/, '');  // Remove period at the end if it exists
+  
+    const responseContent = gpt4Response.data.choices[0].message.content;
+    const startIdxTracks = responseContent.indexOf("tracks: [");
+    const startIdxArtists = responseContent.indexOf("artists: [");
+    const startIdxGenres = responseContent.indexOf("genres: [");
+  
+    if (startIdxTracks !== -1 && startIdxArtists !== -1 && startIdxGenres !== -1) {
+      const endIdxTracks = responseContent.indexOf("]", startIdxTracks);
+      const endIdxArtists = responseContent.indexOf("]", startIdxArtists);
+      const endIdxGenres = responseContent.indexOf("]", startIdxGenres);
+  
+      const tracksString = responseContent.substring(startIdxTracks + 9, endIdxTracks);
+      const artistsString = responseContent.substring(startIdxArtists + 10, endIdxArtists);
+      const genresString = responseContent.substring(startIdxGenres + 9, endIdxGenres);
+  
+      const tracks = tracksString.split(",").map(s => s.trim());
+      const artists = artistsString.split(",").map(s => s.trim());
+      const genres = genresString.split(",").map(s => s.trim());
+  
+      const songIDs = await getSpotifyIDs(tracks, artists, userAccessToken);
+  
+      // Create the query string for Spotify recommendations
+      const seedGenres = genres.join('%2C');
+      const seedTracks = songIDs.join('%2C');
+  
+      const queryString = `https://api.spotify.com/v1/recommendations?&seed_genres=${seedGenres}&seed_tracks=${seedTracks}`;
+
+      console.log('new query string is ' + queryString)
+  
+      let recommendations;
+            try {
+              console.log("Query String:", queryString);  // Debugging line
+              recommendations = await axios.get(queryString, {
+                headers: {
+                  Authorization: `Bearer ${userAccessToken}`,
+                },
+              });
+            } catch (error) {
+              console.error('Error getting recommendations:', error);
+              console.error('Error Details:', error.response.data);  // Debugging line
+              return res.status(401).json({ error: 'Failed to get recommendations' });
+            }
+          
     } else {
-      console.log("Query string not found in GPT-4 response");
+      console.log("Arrays not found in GPT-4 response");
     }
   } catch (error) {
     console.error('Error with GPT-4:', error);
-    return res.status(401).json({ error: 'Failed to get query string from GPT-4' });
-  }
-  let recommendations;
-  try {
-    console.log("Query String:", queryString);  // Debugging line
-    recommendations = await axios.get(queryString, {
-      headers: {
-        Authorization: `Bearer ${userAccessToken}`,
-      },
-    });
-  } catch (error) {
-    console.error('Error getting recommendations:', error);
-    console.error('Error Details:', error.response.data);  // Debugging line
-    return res.status(401).json({ error: 'Failed to get recommendations' });
+    return res.status(401).json({ error: 'Failed to get arrays from GPT-4' });
   }
 
+  
   let playlistId;
   try {
     const playlistResponse = await axios.post(`https://api.spotify.com/v1/users/${yourSpotifyUserId}/playlists`, {
