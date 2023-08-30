@@ -73,10 +73,9 @@ const getSpotifyIDs = async (songs, artists, accessToken) => {
 
 
 router.post('/create-playlist', async (req, res) => {
-  let seedTracks = req.body.seed_tracks;
-  console.log('seed tracks is ' + seedTracks)
-  let userGenrePreference = req.body.seed_genre;
-  let userAccessToken = req.body.access_token; // Get the user-specific access token from the request body
+  const seedTracks = req.body.seed_tracks;
+  const userGenrePreference = req.body.seed_genre;
+  const userAccessToken = req.body.access_token; // Get the user-specific access token from the request body
   let recommendations;
   let trackIds;
 
@@ -122,7 +121,7 @@ router.post('/create-playlist', async (req, res) => {
       messages: [
         {
           role: 'user',
-          content: `Give me three arrays in array format [] - don't give me code. Preface each array like "tracks:" for the tracks array,  "artists:" for the artists array and "genres:" for the genre's array, exactly. Generate the arrays from the users input (${seedTracks} and ${userGenrePreference}). Return these three arrays only. `
+          content: `Give me three arrays in array format [] - don't give me code. Preface each array like "tracks:" for the tracks array,  "artists:" for the artists array and "genres:" for the genre's array, be exact. Generate the arrays from the users input (${seedTracks} and ${userGenrePreference}). Return these three arrays only. `
         },
       ],
       max_tokens: 200,
@@ -132,20 +131,28 @@ router.post('/create-playlist', async (req, res) => {
     console.log("GPT-4 Message Content:", JSON.stringify(gpt4Response.data.choices[0].message, null, 2));
   
     const responseContent = gpt4Response.data.choices[0].message.content;
-
-    const tracksMatch = responseContent.match(/"tracks":\s*\[([^\]]+)\]/) || responseContent.match(/'tracks':\s*\[([^\]]+)\]/) || responseContent.match(/tracks:\s*\[([^\]]+)\]/);
-    const artistsMatch = responseContent.match(/"artists":\s*\[([^\]]+)\]/) || responseContent.match(/'artists':\s*\[([^\]]+)\]/) || responseContent.match(/artists:\s*\[([^\]]+)\]/);
-    const genresMatch = responseContent.match(/"genres":\s*\[([^\]]+)\]/) || responseContent.match(/'genres':\s*\[([^\]]+)\]/) || responseContent.match(/genres:\s*\[([^\]]+)\]/);
-    
-    const tracks = tracksMatch ? tracksMatch[1].split(",").map(s => s.trim().replace(/['"]/g, '')) : [];
-    const artists = artistsMatch ? artistsMatch[1].split(",").map(s => s.trim().replace(/['"]/g, '')) : [];
-    const genres = genresMatch ? genresMatch[1].split(",").map(s => s.trim().replace(/['"]/g, '')) : [];
-    
-    const songIDs = await getSpotifyIDs(tracks, artists, userAccessToken);
-    
-    // Create the query string for Spotify recommendations
-    const seedGenres = genres.join(',');
-    const seedTracks = songIDs.replace(/^,/, ''); 
+    const startIdxTracks = responseContent.indexOf("tracks: [");
+    const startIdxArtists = responseContent.indexOf("artists: [");
+    const startIdxGenres = responseContent.indexOf("genres: [");
+  
+    if (startIdxTracks !== -1 && startIdxArtists !== -1 && startIdxGenres !== -1) {
+      const endIdxTracks = responseContent.indexOf("]", startIdxTracks);
+      const endIdxArtists = responseContent.indexOf("]", startIdxArtists);
+      const endIdxGenres = responseContent.indexOf("]", startIdxGenres);
+  
+      const tracksString = responseContent.substring(startIdxTracks + 9, endIdxTracks);
+      const artistsString = responseContent.substring(startIdxArtists + 10, endIdxArtists);
+      const genresString = responseContent.substring(startIdxGenres + 9, endIdxGenres);
+  
+      const tracks = tracksString.split(",").map(s => s.trim());
+      const artists = artistsString.split(",").map(s => s.trim());
+      const genres = genresString.split(",").map(s => s.trim());
+  
+      const songIDs = await getSpotifyIDs(tracks, artists, userAccessToken);
+  
+      // Create the query string for Spotify recommendations
+      const seedGenres = genres.join(',');
+      const seedTracks = songIDs.replace(/^,/, ''); 
 
   
   
@@ -204,7 +211,9 @@ router.post('/create-playlist', async (req, res) => {
               return res.status(401).json({ error: 'Failed to get recommendations' });
             }
           
-
+    } else {
+      console.log("Arrays not found in GPT-4 response");
+    }
   } catch (error) {
     console.error('Error with GPT-4:', error);
     return res.status(401).json({ error: 'Failed to get arrays from GPT-4' });
