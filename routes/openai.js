@@ -74,6 +74,7 @@ const getSpotifyIDs = async (songs, artists, accessToken) => {
 
 router.post('/create-playlist', async (req, res) => {
   const seedTracks = req.body.seed_tracks;
+  console.log('seed tracks is ' + seedTracks)
   const userGenrePreference = req.body.seed_genre;
   const userAccessToken = req.body.access_token; // Get the user-specific access token from the request body
   let recommendations;
