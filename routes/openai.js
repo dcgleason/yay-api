@@ -141,6 +141,9 @@ router.post('/create-playlist', async (req, res) => {
   const startIdxArtists = cleanedResponseContent.indexOf('artists: [');
   const startIdxGenres = cleanedResponseContent.indexOf('genres: [');
 
+  console.log("Start index of tracks: ", startIdxTracks);
+    console.log("Start index of artists: ", startIdxArtists);
+    console.log("Start index of genres: ", startIdxGenres);
 
   
     if (startIdxTracks !== -1 && startIdxArtists !== -1 && startIdxGenres !== -1) {
