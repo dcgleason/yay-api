@@ -151,7 +151,7 @@ router.post('/create-playlist', async (req, res) => {
   
       // Create the query string for Spotify recommendations
       const seedGenres = genres.join('%2C');
-      const seedTracks = songIDs.join('%2C');
+      const seedTracks = songIDs;
   
       const queryString = `https://api.spotify.com/v1/recommendations?&seed_genres=${seedGenres}&seed_tracks=${seedTracks}`;
 
