@@ -14,6 +14,7 @@ const cors = require("cors");
 const jwt = require('jsonwebtoken');
 const request = require('request');
 const axios = require('axios');
+const querystring = require('querystring')
 
 
 
@@ -310,28 +311,34 @@ router.get('/auth/login', (req, res) => {
   const authUrl = `https://accounts.spotify.com/authorize?client_id=${process.env.SPOTIFY_CLIENT_ID}&response_type=code&redirect_uri=https://yay-api.herokuapp.com/login/auth/callback`;
   res.redirect(authUrl);
 });
-
+// Existing callback route
 router.get('/auth/callback', (req, res) => {
   const code = req.query.code;
   res.redirect(`https://www.givebundl.com/playlist-generator?code=${code}`);
 });
 
-
+// Token exchange route
 router.post('/auth/token', async (req, res) => {
   const code = req.body.code;
-  console.log('code is=' + code)
-  const authData = `grant_type=authorization_code&code=${code}&redirect_uri=https://yay-api.herokuapp.com/login/auth/callback`;
+  console.log('code is=' + code);
+
+  const authData = {
+    grant_type: 'authorization_code',
+    code: code,
+    redirect_uri: 'https://yay-api.herokuapp.com/login/auth/callback' // Make sure this matches
+  };
+
   const authHeader = Buffer.from(`${process.env.SPOTIFY_CLIENT_ID}:${process.env.SPOTIFY_CLIENT_SECRET}`).toString('base64');
 
   try {
-    const response = await axios.post('https://accounts.spotify.com/api/token', authData, {
+    const response = await axios.post('https://accounts.spotify.com/api/token', querystring.stringify(authData), {
       headers: {
         'Authorization': `Basic ${authHeader}`,
         'Content-Type': 'application/x-www-form-urlencoded'
       }
     });
 
-    console.log('response' + response.data)
+    console.log('response', response.data);
 
     if (response.status === 200) {
       const access_token = response.data.access_token;
@@ -343,5 +350,4 @@ router.post('/auth/token', async (req, res) => {
     res.status(400).json({ error: 'Failed to exchange code for token' });
   }
 });
-
 module.exports = router;

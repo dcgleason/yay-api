@@ -64,6 +64,7 @@
     "pg-format": "^1.0.4",
     "puppeteer": "^19.4.1",
     "qrcode": "^1.5.3",
+    "querystring": "^0.2.1",
     "request": "^2.88.2",
     "serialize-javascript": "^6.0.0",
     "stripe": "^8.219.0",
