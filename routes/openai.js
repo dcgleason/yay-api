@@ -120,7 +120,7 @@ router.post('/create-playlist', async (req, res) => {
       messages: [
         {
           role: 'user',
-          content: `Output three arrays, like this tracks: ['contents'] and the other like artists: ['contents'] and the third like this genres: ['contents']. Given the user's seedTracks input preferences (${seedTracks}), clean up the input and give me an array of the user's track names and call the array tracks, and give me another array of the artists associated with the users inputted tracks and call it artists. For the genre's array make an array out of the genres associated with the ${seedTracks} and add in the ${userGenrePreference}. Return these three arrays. `
+          content: `Give me three arrays - don't give me code. Preface each array like "tracks:" for the tracks array,  "artists:" for the artists array and "genres:" for the genre's array. Generate the arrays from the users input (${seedTracks} and ${userGenrePreference}). Return these three arrays only. `
         },
       ],
       max_tokens: 200,
