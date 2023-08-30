@@ -113,7 +113,7 @@ router.post('/create-playlist', async (req, res) => {
     return res.status(401).json({ error: 'Failed to get available genres' });
   }
 
-
+  let recommendations; 
   try {
     const gpt4Response = await openai.createChatCompletion({
       model: 'gpt-4',
