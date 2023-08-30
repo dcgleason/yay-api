@@ -311,10 +311,36 @@ router.get('/auth/login', (req, res) => {
   const authUrl = `https://accounts.spotify.com/authorize?client_id=${process.env.SPOTIFY_CLIENT_ID}&response_type=code&redirect_uri=https://yay-api.herokuapp.com/login/auth/callback`;
   res.redirect(authUrl);
 });
-// Existing callback route
-router.get('/auth/callback', (req, res) => {
+
+
+router.get('/auth/callback', async (req, res) => {
   const code = req.query.code;
-  res.redirect(`https://www.givebundl.com/playlist-generator?code=${code}`);
+  const redirect_uri = 'https://yay-api.herokuapp.com/login/auth/callback'; // Make sure this matches
+  const authData = {
+    grant_type: 'authorization_code',
+    code: code,
+    redirect_uri: redirect_uri
+  };
+
+  const authHeader = Buffer.from(`${process.env.SPOTIFY_CLIENT_ID}:${process.env.SPOTIFY_CLIENT_SECRET}`).toString('base64');
+
+  try {
+    const response = await axios.post('https://accounts.spotify.com/api/token', querystring.stringify(authData), {
+      headers: {
+        'Authorization': `Basic ${authHeader}`,
+        'Content-Type': 'application/x-www-form-urlencoded'
+      }
+    });
+
+    if (response.status === 200) {
+      const access_token = response.data.access_token;
+      // Redirect to your frontend app with the access token
+      res.redirect(`https://www.givebundl.com/playlist-generator?access_token=${access_token}`);
+    }
+  } catch (error) {
+    console.log('Error in Axios request:', error);
+    res.status(400).json({ error: 'Failed to exchange code for token' });
+  }
 });
 
 // Token exchange route
