@@ -102,7 +102,7 @@ router.post('/create-playlist', async (req, res) => {
   try {
     recommendations = await axios.get(queryString, {
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${userAccessToken}`,
       },
     });
   } catch (error) {
@@ -118,7 +118,7 @@ router.post('/create-playlist', async (req, res) => {
       public: false
     }, {
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${userAccessToken}`,
       },
     });
     playlistId = playlistResponse.data.id;
@@ -133,7 +133,7 @@ router.post('/create-playlist', async (req, res) => {
       uris: trackIds
     }, {
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${userAccessToken}`,
       },
     });
   } catch (error) {
