@@ -130,20 +130,27 @@ router.post('/create-playlist', async (req, res) => {
 
     console.log("GPT-4 Response:", gpt4Response.data);
     console.log("GPT-4 Message Content:", JSON.stringify(gpt4Response.data.choices[0].message, null, 2));
-  
+
     const responseContent = gpt4Response.data.choices[0].message.content;
-    const startIdxTracks = responseContent.indexOf("tracks: [");
-    const startIdxArtists = responseContent.indexOf("artists: [");
-    const startIdxGenres = responseContent.indexOf("genres: [");
+
+     // Remove newlines and escape characters
+  const cleanedResponseContent = responseContent.replace(/\\n/g, '').replace(/\\"/g, '"');
+
+  const startIdxTracks = cleanedResponseContent.indexOf('tracks: [');
+  const startIdxArtists = cleanedResponseContent.indexOf('artists: [');
+  const startIdxGenres = cleanedResponseContent.indexOf('genres: [');
+
+
   
     if (startIdxTracks !== -1 && startIdxArtists !== -1 && startIdxGenres !== -1) {
-      const endIdxTracks = responseContent.indexOf("]", startIdxTracks);
-      const endIdxArtists = responseContent.indexOf("]", startIdxArtists);
-      const endIdxGenres = responseContent.indexOf("]", startIdxGenres);
-  
-      const tracksString = responseContent.substring(startIdxTracks + 9, endIdxTracks);
-      const artistsString = responseContent.substring(startIdxArtists + 10, endIdxArtists);
-      const genresString = responseContent.substring(startIdxGenres + 9, endIdxGenres);
+      const endIdxTracks = cleanedResponseContent.indexOf("]", startIdxTracks);
+      const endIdxArtists = cleanedResponseContent.indexOf("]", startIdxArtists);
+      const endIdxGenres = cleanedResponseContent.indexOf("]", startIdxGenres);
+
+      const tracksString = cleanedResponseContent.substring(startIdxTracks + 9, endIdxTracks);
+      const artistsString = cleanedResponseContent.substring(startIdxArtists + 10, endIdxArtists);
+      const genresString = cleanedResponseContent.substring(startIdxGenres + 9, endIdxGenres);
+
   
       const tracks = tracksString.split(",").map(s => s.trim().replace(/['"]/g, ''));
       const artists = artistsString.split(",").map(s => s.trim().replace(/['"]/g, ''));
