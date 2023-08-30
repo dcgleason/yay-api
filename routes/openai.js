@@ -131,28 +131,20 @@ router.post('/create-playlist', async (req, res) => {
     console.log("GPT-4 Message Content:", JSON.stringify(gpt4Response.data.choices[0].message, null, 2));
   
     const responseContent = gpt4Response.data.choices[0].message.content;
-    const startIdxTracks = responseContent.indexOf("\"tracks:\": [");
-    const startIdxArtists = responseContent.indexOf("\"artists:\": [");
-    const startIdxGenres = responseContent.indexOf("\"genres:\": [");
-  
-    if (startIdxTracks !== -1 && startIdxArtists !== -1 && startIdxGenres !== -1) {
-      const endIdxTracks = responseContent.indexOf("]", startIdxTracks);
-      const endIdxArtists = responseContent.indexOf("]", startIdxArtists);
-      const endIdxGenres = responseContent.indexOf("]", startIdxGenres);
-  
-      const tracksString = responseContent.substring(startIdxTracks + 9, endIdxTracks);
-      const artistsString = responseContent.substring(startIdxArtists + 10, endIdxArtists);
-      const genresString = responseContent.substring(startIdxGenres + 9, endIdxGenres);
-  
-      const tracks = tracksString.split(",").map(s => s.trim());
-      const artists = artistsString.split(",").map(s => s.trim());
-      const genres = genresString.split(",").map(s => s.trim());
-  
-      const songIDs = await getSpotifyIDs(tracks, artists, userAccessToken);
-  
-      // Create the query string for Spotify recommendations
-      const seedGenres = genres.join(',');
-      const seedTracks = songIDs.replace(/^,/, ''); 
+
+    const tracksMatch = responseContent.match(/"tracks":\s*\[([^\]]+)\]/) || responseContent.match(/'tracks':\s*\[([^\]]+)\]/) || responseContent.match(/tracks:\s*\[([^\]]+)\]/);
+    const artistsMatch = responseContent.match(/"artists":\s*\[([^\]]+)\]/) || responseContent.match(/'artists':\s*\[([^\]]+)\]/) || responseContent.match(/artists:\s*\[([^\]]+)\]/);
+    const genresMatch = responseContent.match(/"genres":\s*\[([^\]]+)\]/) || responseContent.match(/'genres':\s*\[([^\]]+)\]/) || responseContent.match(/genres:\s*\[([^\]]+)\]/);
+    
+    const tracks = tracksMatch ? tracksMatch[1].split(",").map(s => s.trim().replace(/['"]/g, '')) : [];
+    const artists = artistsMatch ? artistsMatch[1].split(",").map(s => s.trim().replace(/['"]/g, '')) : [];
+    const genres = genresMatch ? genresMatch[1].split(",").map(s => s.trim().replace(/['"]/g, '')) : [];
+    
+    const songIDs = await getSpotifyIDs(tracks, artists, userAccessToken);
+    
+    // Create the query string for Spotify recommendations
+    const seedGenres = genres.join(',');
+    const seedTracks = songIDs.replace(/^,/, ''); 
 
   
   
