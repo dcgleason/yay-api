@@ -131,9 +131,9 @@ router.post('/create-playlist', async (req, res) => {
     console.log("GPT-4 Message Content:", JSON.stringify(gpt4Response.data.choices[0].message, null, 2));
   
     const responseContent = gpt4Response.data.choices[0].message.content;
-    const startIdxTracks = responseContent.indexOf("tracks: [");
-    const startIdxArtists = responseContent.indexOf("artists: [");
-    const startIdxGenres = responseContent.indexOf("genres: [");
+    const startIdxTracks = responseContent.indexOf("\"tracks:\": [");
+    const startIdxArtists = responseContent.indexOf("\"artists:\": [");
+    const startIdxGenres = responseContent.indexOf("\"genres:\": [");
   
     if (startIdxTracks !== -1 && startIdxArtists !== -1 && startIdxGenres !== -1) {
       const endIdxTracks = responseContent.indexOf("]", startIdxTracks);
