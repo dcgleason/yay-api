@@ -72,6 +72,7 @@ const getSpotifyIDs = async (songs, artists, accessToken) => {
 };
 
 
+
 router.post('/create-playlist', async (req, res) => {
   const seedTracks = req.body.seed_tracks;
   const userGenrePreference = req.body.seed_genre;
@@ -144,17 +145,20 @@ router.post('/create-playlist', async (req, res) => {
       const artistsString = responseContent.substring(startIdxArtists + 10, endIdxArtists);
       const genresString = responseContent.substring(startIdxGenres + 9, endIdxGenres);
   
-      const tracks = tracksString.split(",").map(s => s.trim());
-      const artists = artistsString.split(",").map(s => s.trim());
-      const genres = genresString.split(",").map(s => s.trim());
-  
+      const tracks = tracksString.split(",").map(s => s.trim().replace(/['"]/g, ''));
+      const artists = artistsString.split(",").map(s => s.trim().replace(/['"]/g, ''));
+      const genres = genresString.split(",").map(s => s.trim().replace(/['"]/g, ''));
+    
       const songIDs = await getSpotifyIDs(tracks, artists, userAccessToken);
-  
+    
       // Create the query string for Spotify recommendations
       const seedGenres = genres.join(',');
-      const seedTracks = songIDs.replace(/^,/, ''); 
+      const seedTracks = songIDs;  // No need to replace /^,/ as getSpotifyIDs returns a clean CSV
+    
+      console.log('seed tracks: ' + seedTracks);
+      console.log('seed genres: ' + seedGenres);
+    
 
-      console.log('seed tracks' +seedTracks)
   
   
       const queryString = `https://api.spotify.com/v1/recommendations?&seed_genres=${seedGenres}&seed_tracks=${seedTracks}` +
