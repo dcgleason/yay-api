@@ -55,6 +55,7 @@ const getSpotifyIDs = async (songs, artists, accessToken) => {
 
     try {
       const response = await axios.get(url, config);
+      console.log("Response Data:", response.data);  // Debug line
       if (response.data.tracks.items.length > 0) {
         ids.push(response.data.tracks.items[0].id);
       } else {
@@ -67,11 +68,10 @@ const getSpotifyIDs = async (songs, artists, accessToken) => {
 
   // Convert the array of IDs to a CSV string
   const csvList = ids.join(',');
+  console.log("CSV List of IDs:", csvList);  // Debug line
 
   return csvList;
 };
-
-
 
 router.post('/create-playlist', async (req, res) => {
   const seedTracks = req.body.seed_tracks;
@@ -170,9 +170,11 @@ router.post('/create-playlist', async (req, res) => {
       console.log('seed genres: ' + seedGenres);
   
   
-  
-      const queryString = `https://api.spotify.com/v1/recommendations?limit=10&market=US&seed_genres=${encodeURIComponent(seedGenres)}&seed_tracks=${encodeURIComponent(seedTracks)}`;
-
+      const seedGenresEncoded = seedGenres.split(',').map(encodeURIComponent).join(',');
+      const seedTracksEncoded = seedTracks.split(',').map(encodeURIComponent).join(',');
+      
+      const queryString = `https://api.spotify.com/v1/recommendations?limit=10&market=US&seed_genres=${seedGenresEncoded}&seed_tracks=${seedTracksEncoded}`;
+      
       try {
         console.log("Query String:", queryString);  // Debugging line
         recommendations = await axios.get(queryString, {
