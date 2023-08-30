@@ -84,7 +84,7 @@ router.post('/create-playlist', async (req, res) => {
       messages: [
         {
           role: 'user',
-          content: `First sort through the available genres in Spotify: ${availableGenres.data.genres}, and match the users genre preferences(${userGenrePreference}) to the closest available genre(s). Then take those matched available genre(s) closest to the user the user's genre preferences and format the seed tracks and matched seed genres into a query string for a Spotify API request, like this:  https://api.spotify.com/v1/recommendations?seed_artists=4NHQUGzhtTLFvgF5SZesLK&seed_genres=classical%2Ccountry&seed_tracks=0c6xIDDpzE81m2q797ordA. Include the seed tracks: ${seedTracks} and the matched genre(s) closest to ${userGenrePreference} -- return only the final query URL string and include seed tracks and seed genre in the query string as both are required.`
+          content: `Give me a comma separated list of gengres associated with the seeed tracks (${seedTracks} and add in the user genre preferences to that list (${userGenrePreference}) -- make these genres work with the spotify api (${availableGenres.data.genres}) . Then this curated list of gengres and seed tracks (as spotify IDs) and make the  query string for a Spotify API request, like this:  https://api.spotify.com/v1/recommendations?seed_artists=4NHQUGzhtTLFvgF5SZesLK&seed_genres=classical%2Ccountry&seed_tracks=0c6xIDDpzE81m2q797ordA. -- return only the final query URL string and include seed tracks (spotify IDs) and seed genre in the query string as both are required.`
         },
       ],
       max_tokens: 100,
