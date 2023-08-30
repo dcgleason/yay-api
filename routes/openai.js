@@ -203,9 +203,7 @@ router.post('/create-playlist', async (req, res) => {
               return res.status(401).json({ error: 'Failed to get recommendations' });
             }
           
-    } else {
-      console.log("Arrays not found in GPT-4 response");
-    }
+
   } catch (error) {
     console.error('Error with GPT-4:', error);
     return res.status(401).json({ error: 'Failed to get arrays from GPT-4' });
