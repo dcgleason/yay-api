@@ -153,8 +153,49 @@ router.post('/create-playlist', async (req, res) => {
       // Create the query string for Spotify recommendations
       const seedGenres = genres.join('%2C');
       const seedTracks = songIDs;
+
+
   
-      const queryString = `https://api.spotify.com/v1/recommendations?&seed_genres=${seedGenres}&seed_tracks=${seedTracks}`;
+  
+      const queryString = `https://api.spotify.com/v1/recommendations?&seed_genres=${seedGenres}&seed_tracks=${seedTracks}` +
+      "&min_acousticness=0.2" +
+        "&max_acousticness=0.8" +
+        "&target_acousticness=0.5" +
+        "&min_danceability=0.4" +
+        "&max_danceability=0.7" +
+        "&target_danceability=0.55" +
+        "&min_duration_ms=180000" +
+        "&max_duration_ms=300000" +
+        "&target_duration_ms=240000" +
+        "&min_energy=0.4" +
+        "&max_energy=0.7" +
+        "&target_energy=0.55" +
+        "&min_instrumentalness=0" +
+        "&max_instrumentalness=0.5" +
+        "&target_instrumentalness=0.1" +
+        "&min_key=0" +
+        "&max_key=11" +
+        "&min_liveness=0" +
+        "&max_liveness=0.2" +
+        "&target_liveness=0.1" +
+        "&min_loudness=-60" +
+        "&max_loudness=0" +
+        "&target_loudness=-10" +
+        "&min_mode=0" +
+        "&max_mode=1" +
+        "&target_mode=1" +
+        "&min_popularity=50" +
+        "&max_popularity=100" +
+        "&target_popularity=75" +
+        "&min_speechiness=0" +
+        "&max_speechiness=0.3" +
+        "&target_speechiness=0.1" +
+        "&min_tempo=70" +
+        "&max_tempo=110" +
+        "&target_tempo=90" +
+        "&min_valence=0.5" +
+        "&max_valence=1" +
+        "&target_valence=0.75";
 
       console.log('new query string is ' + queryString)
   
