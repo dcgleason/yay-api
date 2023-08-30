@@ -216,7 +216,7 @@ router.post('/create-playlist', async (req, res) => {
 
   console.log('playlistID is ... ' + playlistId)
 
-  res.json({ message: 'Playlist created', playlistId });
+  res.json({ playlistId });
 });
 
 module.exports = router;
