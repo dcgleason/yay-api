@@ -76,6 +76,7 @@ router.post('/create-playlist', async (req, res) => {
   const seedTracks = req.body.seed_tracks;
   const userGenrePreference = req.body.seed_genre;
   const userAccessToken = req.body.access_token; // Get the user-specific access token from the request body
+  let recommendations;
 
   if (!seedTracks || !userGenrePreference || !userAccessToken) {
     console.log('Missing seed_tracks, seed genre, or access token');
@@ -113,7 +114,6 @@ router.post('/create-playlist', async (req, res) => {
     return res.status(401).json({ error: 'Failed to get available genres' });
   }
 
-  let recommendations; 
   try {
     const gpt4Response = await openai.createChatCompletion({
       model: 'gpt-4',
@@ -157,7 +157,6 @@ router.post('/create-playlist', async (req, res) => {
 
       console.log('new query string is ' + queryString)
   
-      let recommendations;
             try {
               console.log("Query String:", queryString);  // Debugging line
               recommendations = await axios.get(queryString, {
@@ -198,7 +197,10 @@ router.post('/create-playlist', async (req, res) => {
   }
 
   try {
+
+    if (recommendations && recommendations.data) {  // Add this check
     const trackIds = recommendations.data.tracks.map((track) => `spotify:track:${track.id}`);
+    }
     await axios.post(`https://api.spotify.com/v1/playlists/${playlistId}/tracks`, {
       uris: trackIds
     }, {
