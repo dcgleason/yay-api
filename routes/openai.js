@@ -97,9 +97,9 @@ router.post('/create-playlist', async (req, res) => {
     console.error('Error with GPT-4:', error);
     return res.status(401).json({ error: 'Failed to get query string from GPT-4' });
   }
-
   let recommendations;
   try {
+    console.log("Query String:", queryString);  // Debugging line
     recommendations = await axios.get(queryString, {
       headers: {
         Authorization: `Bearer ${userAccessToken}`,
@@ -107,6 +107,7 @@ router.post('/create-playlist', async (req, res) => {
     });
   } catch (error) {
     console.error('Error getting recommendations:', error);
+    console.error('Error Details:', error.response.data);  // Debugging line
     return res.status(401).json({ error: 'Failed to get recommendations' });
   }
 
