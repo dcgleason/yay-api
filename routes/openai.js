@@ -112,6 +112,7 @@ router.post('/create-playlist', async (req, res) => {
   const userAccessToken = req.body.access_token; // Get the user-specific access token from the request body
   let recommendations;
   let trackIds;
+  let songs;
 
   if (!seedTracks || !userGenrePreference || !userAccessToken) {
     console.log('Missing seed_tracks, seed genre, or access token');
@@ -197,7 +198,8 @@ router.post('/create-playlist', async (req, res) => {
     
       // Create the query string for Spotify recommendations
      // const seedArtists = await getArtistSpotifyIDs(artists, userAccessToken);
-      const seedTracks = songIDs;  
+      const seedTracks = songIDs; 
+      songs = seedTracks; 
     
       console.log('seed tracks: ' + seedTracks);
   
@@ -247,9 +249,9 @@ router.post('/create-playlist', async (req, res) => {
 
   try {
 
-    songsArray = songID.split(',');
-    if (songsArray && songID) {  // Add this check
-      trackIds = songID.map((track) => `spotify:track:${track}`);
+    songsArray = songs.split(',');
+    if (songsArray && songs) {  // Add this check
+      trackIds = songsArray.map((track) => `spotify:track:${track}`);
     }
     await axios.post(`https://api.spotify.com/v1/playlists/${playlistId}/tracks`, {
       uris: trackIds
