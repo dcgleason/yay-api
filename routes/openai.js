@@ -113,6 +113,7 @@ router.post('/create-playlist', async (req, res) => {
   let recommendations;
   let trackIds;
   let songs;
+  const additionalInfo = req.body.additionalInfo
 
   if (!seedTracks || !userGenrePreference || !userAccessToken) {
     console.log('Missing seed_tracks, seed genre, or access token');
@@ -139,16 +140,16 @@ router.post('/create-playlist', async (req, res) => {
   }
 
   let availableGenres;
-  try {
-    availableGenres = await axios.get('https://api.spotify.com/v1/recommendations/available-genre-seeds', {
-      headers: {
-        Authorization: `Bearer ${userAccessToken}`,  // <-- Use userAccessToken
-      },
-    });
-  } catch (error) {
-    console.error('Error getting available genres:', error);
-    return res.status(401).json({ error: 'Failed to get available genres' });
-  }
+  // try {
+  //   availableGenres = await axios.get('https://api.spotify.com/v1/recommendations/available-genre-seeds', {
+  //     headers: {
+  //       Authorization: `Bearer ${userAccessToken}`,  // <-- Use userAccessToken
+  //     },
+  //   });
+  // } catch (error) {
+  //   console.error('Error getting available genres:', error);
+  //   return res.status(401).json({ error: 'Failed to get available genres' });
+  // }
 
   try {
     const gpt4Response = await openai.createChatCompletion({
@@ -156,7 +157,7 @@ router.post('/create-playlist', async (req, res) => {
       messages: [
         {
           role: 'user',
-          content: `Give me three arrays in array format [] - don't give me code. Preface each array like "tracks:" for the tracks array,  "artists:" for the artists array and "genres:" for the genre's array, be exact. Generate the arrays from the users input (${seedTracks} and ${userGenrePreference}) and add songs (make it so that the tracks and arists array each has 10 elements and only use the best of the tracks for a marriage proposal....make these songs that would be fitting to be played at a marraige proposal -- return these three arrays only `
+          content: `Give me three arrays in array format [] - don't give me code. Preface each array like "tracks:" for the tracks array,  "artists:" for the artists array and "genres:" for the genre's array, be exact. Generate the arrays from the users input (${seedTracks} and ${userGenrePreference}) and add songs that would fit well with the user inptu. Make it so that the tracks and arists array each has 10 elements and only use the best of the tracks for a marriage proposal....make these songs fitting to be played at a marraige proposal -- return these three arrays only. ${additionalInfo} `
         },
       ],
       max_tokens: 200,
