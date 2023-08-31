@@ -73,6 +73,38 @@ const getSpotifyIDs = async (songs, artists, accessToken) => {
   return csvList;
 };
 
+const getArtistSpotifyIDs = async (artists, accessToken) => {
+  const baseURL = 'https://api.spotify.com/v1/search';
+  const artistIds = [];
+
+  for (let i = 0; i < artists.length; i++) {
+    const artist = artists[i];
+    const query = encodeURIComponent(`artist:${artist}`);
+    const url = `${baseURL}?q=${query}&type=artist&limit=1`;
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${accessToken}`
+      }
+    };
+
+    try {
+      const response = await axios.get(url, config);
+      if (response.data.artists.items.length > 0) {
+        artistIds.push(response.data.artists.items[0].id);
+      } else {
+        artistIds.push(null); // Or any placeholder if artist isn't found
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  // Convert the array of IDs to a CSV string
+  const csvList = artistIds.join(',');
+  return csvList;
+};
+
 router.post('/create-playlist', async (req, res) => {
   const seedTracks = req.body.seed_tracks;
   const userGenrePreference = req.body.seed_genre;
@@ -163,17 +195,16 @@ router.post('/create-playlist', async (req, res) => {
       const songIDs = await getSpotifyIDs(tracks, artists, userAccessToken);
     
       // Create the query string for Spotify recommendations
-      const seedGenres = genres.join(',');
-      const seedTracks = songIDs;  // No need to replace /^,/ as getSpotifyIDs returns a clean CSV
+      const seedArtists = await getArtistSpotifyIDs(artists, userAccessToken);
+      const seedTracks = songIDs;  
     
       console.log('seed tracks: ' + seedTracks);
-      console.log('seed genres: ' + seedGenres);
   
   
-      const seedGenresEncoded = seedGenres.split(',').map(encodeURIComponent).join(',');
+      const seedArtistsEncoded = seedArtists.split(',').map(encodeURIComponent).join(',');
       const seedTracksEncoded = seedTracks.split(',').map(encodeURIComponent).join(',');
       
-      const queryString = `https://api.spotify.com/v1/recommendations?limit=10&market=US&seed_genres=${seedGenresEncoded}&seed_tracks=${seedTracksEncoded}`;
+      const queryString = `https://api.spotify.com/v1/recommendations?limit=10&market=US&seed_artists=${seedArtistsEncoded}&seed_tracks=${seedTracksEncoded}`;
       
       try {
         console.log("Query String:", queryString);  // Debugging line
