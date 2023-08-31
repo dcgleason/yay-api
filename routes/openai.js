@@ -205,7 +205,7 @@ router.post('/create-playlist', async (req, res) => {
       const seedArtistsEncoded = seedArtists.split(',').map(encodeURIComponent).join(',');
       const seedTracksEncoded = seedTracks.split(',').map(encodeURIComponent).join(',');
       
-      const queryString = `https://api.spotify.com/v1/recommendations?limit=10&market=US&seed_artists=${seedArtistsEncoded}&seed_tracks=${seedTracksEncoded}&min_popularity=80`;
+      const queryString = `https://api.spotify.com/v1/recommendations?limit=10&market=US&seed_artists=${seedArtistsEncoded}&seed_tracks=${seedTracksEncoded}&target_acousticness=.7&target_danceability=.5&min_popularity=80&max_valence=.8`;
       
       try {
         console.log("Query String:", queryString);  // Debugging line
