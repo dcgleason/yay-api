@@ -154,7 +154,7 @@ router.post('/create-playlist', async (req, res) => {
       messages: [
         {
           role: 'user',
-          content: `Give me three arrays in array format [] - don't give me code. Preface each array like "tracks:" for the tracks array,  "artists:" for the artists array and "genres:" for the genre's array, be exact. Generate the arrays from the users input (${seedTracks} and ${userGenrePreference}) and add a few songs and genres (max 4) that would be fitting for a marraige proposal -- return these three arrays only. `
+          content: `Give me three arrays in array format [] - don't give me code. Preface each array like "tracks:" for the tracks array,  "artists:" for the artists array and "genres:" for the genre's array, be exact. Generate the arrays from the users input (${seedTracks} and ${userGenrePreference}) and add a few songs and genres (make it so that each array as 4 total trakcs / artists / genres , only add tracks / artists / genres if they user added less than 4 themselves, and only use the 4 best of the tracks / artists / genres for a marriage proposal if they user added more than 4) that would be fitting for a marraige proposal -- return these three arrays only, each with 4 tracks / artists / genres. `
         },
       ],
       max_tokens: 200,
