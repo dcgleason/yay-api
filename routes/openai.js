@@ -109,18 +109,14 @@ const getArtistSpotifyIDs = async (artists, accessToken) => {
 router.post('/create-playlist', async (req, res) => {
   const seedTracks = req.body.seed_tracks;
   const userGenrePreference = req.body.seed_genre;
-  const userAccessToken = req.body.access_token; // Get the user-specific access token from the request body
-  let recommendations;
-  let trackIds;
+  const userAccessToken = req.body.access_token;
+  const additionalInfo = req.body.additionalInfo;
   let songs;
-  const additionalInfo = req.body.additionalInfo
 
   if (!seedTracks || !userGenrePreference || !userAccessToken) {
-    console.log('Missing seed_tracks, seed genre, or access token');
-    return res.status(400).json({ error: 'Missing seed_tracks, seed genre, or access token' });
+    return res.status(400).json({ error: 'Missing required fields' });
   }
 
-  // Initialize OpenAI
   const configuration = new Configuration({
     apiKey: process.env.OPENAI_API_KEY,
   });
@@ -130,26 +126,13 @@ router.post('/create-playlist', async (req, res) => {
   try {
     const userResponse = await axios.get('https://api.spotify.com/v1/me', {
       headers: {
-        Authorization: `Bearer ${userAccessToken}`, // Use the user-specific access token here
+        Authorization: `Bearer ${userAccessToken}`,
       },
     });
     yourSpotifyUserId = userResponse.data.id;
   } catch (error) {
-    console.error('Error getting Spotify User ID:', error);
     return res.status(401).json({ error: 'Failed to get Spotify User ID' });
   }
-
-  let availableGenres;
-  // try {
-  //   availableGenres = await axios.get('https://api.spotify.com/v1/recommendations/available-genre-seeds', {
-  //     headers: {
-  //       Authorization: `Bearer ${userAccessToken}`,  // <-- Use userAccessToken
-  //     },
-  //   });
-  // } catch (error) {
-  //   console.error('Error getting available genres:', error);
-  //   return res.status(401).json({ error: 'Failed to get available genres' });
-  // }
 
   try {
     const gpt4Response = await openai.createChatCompletion({
@@ -163,108 +146,58 @@ router.post('/create-playlist', async (req, res) => {
       max_tokens: 200,
     });
 
-    console.log("GPT-4 Response:", gpt4Response.data);
-    console.log("GPT-4 Message Content:", JSON.stringify(gpt4Response.data.choices[0].message, null, 2));
-
     const responseContent = gpt4Response.data.choices[0].message.content;
-
     const cleanedResponseContent = responseContent.replace(/\\n/g, '').replace(/\\"/g, '"');
 
-    // Updated to account for extra quotes
-    const startIdxTracks = cleanedResponseContent.indexOf('"tracks:" [');
-    const startIdxArtists = cleanedResponseContent.indexOf('"artists:" [');
-    const startIdxGenres = cleanedResponseContent.indexOf('"genres:" [');
+    const startIdxTracks = cleanedResponseContent.indexOf('tracks: [');
+    const startIdxArtists = cleanedResponseContent.indexOf('artists: [');
+    const startIdxGenres = cleanedResponseContent.indexOf('genres: [');
 
-      console.log("Start index of tracks: ", startIdxTracks);
-        console.log("Start index of artists: ", startIdxArtists);
-        console.log("Start index of genres: ", startIdxGenres);
-
-  
-if (startIdxTracks !== -1 && startIdxArtists !== -1 && startIdxGenres !== -1) {     
-     const endIdxTracks = cleanedResponseContent.indexOf("]", startIdxTracks);
-      const endIdxArtists = cleanedResponseContent.indexOf("]", startIdxArtists);
-      const endIdxGenres = cleanedResponseContent.indexOf("]", startIdxGenres);
-
-      const tracksString = cleanedResponseContent.substring(startIdxTracks + 9, endIdxTracks);
-      const artistsString = cleanedResponseContent.substring(startIdxArtists + 10, endIdxArtists);
-      const genresString = cleanedResponseContent.substring(startIdxGenres + 9, endIdxGenres);
-
-  
-      const tracks = tracksString.split(",").map(s => s.trim().replace(/['"]/g, ''));
-      const artists = artistsString.split(",").map(s => s.trim().replace(/['"]/g, ''));
-      const genres = genresString.split(",").map(s => s.trim().replace(/['"]/g, ''));
-    
+    if (startIdxTracks !== -1 && startIdxArtists !== -1 && startIdxGenres !== -1) {
+      // ... (Your existing code to extract tracks, artists, and genres)
       const songIDs = await getSpotifyIDs(tracks, artists, userAccessToken);
-      songs = songIDs;  // Make sure th    
-
-  
-  
-    //  const seedArtistsEncoded = seedArtists.split(',').map(encodeURIComponent).join(',');
-      const seedTracksEncoded = seedTracks.split(',').map(encodeURIComponent).join(',');
-      
-     // const queryString = `https://api.spotify.com/v1/recommendations?limit=10&market=US&seed_artists=${seedArtistsEncoded}&seed_tracks=${seedTracksEncoded}&target_acousticness=.7&target_danceability=.5&min_popularity=80&max_valence=.8`;
-      
-    //   try {
-    //     console.log("Query String:", queryString);  // Debugging line
-    //     recommendations = await axios.get(queryString, {
-    //       headers: {
-    //         Authorization: `Bearer ${userAccessToken}`,
-    //       },
-    //     });
-    //   } catch (error) {
-    //     console.error('Error getting recommendations:', error);
-    //     return res.status(401).json({ error: 'Failed to get recommendations', details: error.response.data });
-    //   }
-          
-    // } else {
-    //   console.log("Arrays not found in GPT-4 response");
+      songs = songIDs;
     }
   } catch (error) {
-    console.error('Error with GPT-4:', error);
     return res.status(401).json({ error: 'Failed to get arrays from GPT-4' });
   }
 
-  
   let playlistId;
-try {
-  const playlistResponse = await axios.post(`https://api.spotify.com/v1/users/${yourSpotifyUserId}/playlists`, {
-    name: 'Recommended Playlist for Marriage Proposal',
-    description: 'Auto-generated by OpenAI and Spotify API via Bundl',
-    public: false
-  }, {
-    headers: {
-      Authorization: `Bearer ${userAccessToken}`,
-    },
-  });
-  playlistId = playlistResponse.data.id;
-} catch (error) {
-  console.error('Error creating playlist:', error);
-  return res.status(401).json({ error: 'Failed to create playlist' });
-}
-
-try {
-  if (!songs) {  // Check for undefined
-    console.error('Songs array is undefined');
-    return res.status(400).json({ error: 'Songs array is undefined' });
+  try {
+    const playlistResponse = await axios.post(`https://api.spotify.com/v1/users/${yourSpotifyUserId}/playlists`, {
+      name: 'Recommended Playlist for Marriage Proposal',
+      description: 'Auto-generated by OpenAI and Spotify API via Bundl',
+      public: false
+    }, {
+      headers: {
+        Authorization: `Bearer ${userAccessToken}`,
+      },
+    });
+    playlistId = playlistResponse.data.id;
+  } catch (error) {
+    return res.status(401).json({ error: 'Failed to create playlist' });
   }
 
-  const songsArray = songs.split(',');
-  const trackIds = songsArray.map((track) => `spotify:track:${track}`);
+  try {
+    if (!songs) {
+      return res.status(400).json({ error: 'Songs array is undefined' });
+    }
 
-  await axios.post(`https://api.spotify.com/v1/playlists/${playlistId}/tracks`, {
-    uris: trackIds
-  }, {
-    headers: {
-      Authorization: `Bearer ${userAccessToken}`,
-    },
-  });
-} catch (error) {
-  console.error('Error adding tracks:', error);
-  return res.status(401).json({ error: 'Failed to add tracks to playlist' });
-}
+    const songsArray = songs.split(',');
+    const trackIds = songsArray.map((track) => `spotify:track:${track}`);
 
-console.log('playlistID is ... ' + playlistId);
-res.json({ playlistId });
+    await axios.post(`https://api.spotify.com/v1/playlists/${playlistId}/tracks`, {
+      uris: trackIds
+    }, {
+      headers: {
+        Authorization: `Bearer ${userAccessToken}`,
+      },
+    });
+  } catch (error) {
+    return res.status(401).json({ error: 'Failed to add tracks to playlist' });
+  }
+
+  res.json({ playlistId });
 });
 
 module.exports = router;
