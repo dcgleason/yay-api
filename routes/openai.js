@@ -155,7 +155,7 @@ router.post('/create-playlist', async (req, res) => {
       messages: [
         {
           role: 'user',
-          content: `Give me three arrays in array format [] - don't give me code. Preface each array like "tracks:" for the tracks array,  "artists:" for the artists array and "genres:" for the genre's array, be exact. Generate the arrays from the users input (${seedTracks} and ${userGenrePreference}) and add a few songs (make it so that each array, except for the artist array, which should have only one element, as 4 total track / genres -- only add tracks to the tracks array if they user added less than 4 tracks themselves, and only use the 4 best of the tracks for a marriage proposal if they user added more than 4)that would be fitting for a marraige proposal -- return these three arrays only, 4 elements in the tracks / genre array and one element in the arist array. `
+          content: `Give me three arrays in array format [] - don't give me code. Preface each array like "tracks:" for the tracks array,  "artists:" for the artists array and "genres:" for the genre's array, be exact. Generate the arrays from the users input (${seedTracks} and ${userGenrePreference}) and add songs (make it so that the tracks and arists array each has 10 elements and only use the best of the tracks for a marriage proposal....make these songs that would be fitting to be played at a marraige proposal -- return these three arrays only `
         },
       ],
       max_tokens: 200,
@@ -167,16 +167,16 @@ router.post('/create-playlist', async (req, res) => {
     const responseContent = gpt4Response.data.choices[0].message.content;
 
      // Remove newlines and escape characters
-  const cleanedResponseContent = responseContent.replace(/\\n/g, '').replace(/\\"/g, '"');
-  console.log("cleanedResponseContent" + cleanedResponseContent)
+      const cleanedResponseContent = responseContent.replace(/\\n/g, '').replace(/\\"/g, '"');
+      console.log("cleanedResponseContent" + cleanedResponseContent)
 
-  const startIdxTracks = cleanedResponseContent.indexOf('tracks: [');
-  const startIdxArtists = cleanedResponseContent.indexOf('artists: [');
-  const startIdxGenres = cleanedResponseContent.indexOf('genres: [');
+      const startIdxTracks = cleanedResponseContent.indexOf('tracks: [');
+      const startIdxArtists = cleanedResponseContent.indexOf('artists: [');
+      const startIdxGenres = cleanedResponseContent.indexOf('genres: [');
 
-  console.log("Start index of tracks: ", startIdxTracks);
-    console.log("Start index of artists: ", startIdxArtists);
-    console.log("Start index of genres: ", startIdxGenres);
+      console.log("Start index of tracks: ", startIdxTracks);
+        console.log("Start index of artists: ", startIdxArtists);
+        console.log("Start index of genres: ", startIdxGenres);
 
   
     if (startIdxTracks !== -1 && startIdxArtists !== -1 && startIdxGenres !== -1) {
@@ -196,31 +196,31 @@ router.post('/create-playlist', async (req, res) => {
       const songIDs = await getSpotifyIDs(tracks, artists, userAccessToken);
     
       // Create the query string for Spotify recommendations
-      const seedArtists = await getArtistSpotifyIDs(artists, userAccessToken);
+     // const seedArtists = await getArtistSpotifyIDs(artists, userAccessToken);
       const seedTracks = songIDs;  
     
       console.log('seed tracks: ' + seedTracks);
   
   
-      const seedArtistsEncoded = seedArtists.split(',').map(encodeURIComponent).join(',');
+    //  const seedArtistsEncoded = seedArtists.split(',').map(encodeURIComponent).join(',');
       const seedTracksEncoded = seedTracks.split(',').map(encodeURIComponent).join(',');
       
-      const queryString = `https://api.spotify.com/v1/recommendations?limit=10&market=US&seed_artists=${seedArtistsEncoded}&seed_tracks=${seedTracksEncoded}&target_acousticness=.7&target_danceability=.5&min_popularity=80&max_valence=.8`;
+     // const queryString = `https://api.spotify.com/v1/recommendations?limit=10&market=US&seed_artists=${seedArtistsEncoded}&seed_tracks=${seedTracksEncoded}&target_acousticness=.7&target_danceability=.5&min_popularity=80&max_valence=.8`;
       
-      try {
-        console.log("Query String:", queryString);  // Debugging line
-        recommendations = await axios.get(queryString, {
-          headers: {
-            Authorization: `Bearer ${userAccessToken}`,
-          },
-        });
-      } catch (error) {
-        console.error('Error getting recommendations:', error);
-        return res.status(401).json({ error: 'Failed to get recommendations', details: error.response.data });
-      }
+    //   try {
+    //     console.log("Query String:", queryString);  // Debugging line
+    //     recommendations = await axios.get(queryString, {
+    //       headers: {
+    //         Authorization: `Bearer ${userAccessToken}`,
+    //       },
+    //     });
+    //   } catch (error) {
+    //     console.error('Error getting recommendations:', error);
+    //     return res.status(401).json({ error: 'Failed to get recommendations', details: error.response.data });
+    //   }
           
-    } else {
-      console.log("Arrays not found in GPT-4 response");
+    // } else {
+    //   console.log("Arrays not found in GPT-4 response");
     }
   } catch (error) {
     console.error('Error with GPT-4:', error);
@@ -247,8 +247,9 @@ router.post('/create-playlist', async (req, res) => {
 
   try {
 
-    if (recommendations && recommendations.data) {  // Add this check
-     trackIds = recommendations.data.tracks.map((track) => `spotify:track:${track.id}`);
+    songsArray = songID.split(',');
+    if (songsArray && songID) {  // Add this check
+      trackIds = songID.map((track) => `spotify:track:${track}`);
     }
     await axios.post(`https://api.spotify.com/v1/playlists/${playlistId}/tracks`, {
       uris: trackIds
