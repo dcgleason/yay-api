@@ -66,9 +66,10 @@ const getSpotifyIDs = async (songs, artists, accessToken) => {
     }
   }
 
-  // Convert the array of IDs to a CSV string
-  const csvList = ids.join(',');
-  console.log("CSV List of IDs:", csvList);  // Debug line
+  const filteredIds = ids.filter(id => id !== null);
+  const csvList = filteredIds.join(',');
+  console.log("CSV List of IDs:", csvList);  
+
 
   return csvList;
 };
