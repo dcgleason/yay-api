@@ -154,6 +154,7 @@ router.post('/create-playlist', async (req, res) => {
     console.log("GPT-4 data fetched successfully");
     const responseContent = gpt4Response.data.choices[0].message.content;
     const cleanedResponseContent = responseContent.replace(/\\n/g, '').replace(/\\"/g, '"');
+    console.log('Cleaned up GPT response ' + cleanedResponseContent);
 
     const startIdxTracks = cleanedResponseContent.indexOf('tracks: [');
     const startIdxArtists = cleanedResponseContent.indexOf('artists: [');
