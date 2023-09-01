@@ -27,23 +27,26 @@ router.post("/gift", async (req, res) => {
     messages: [
       {
         role: "user",
-        content: `Give me two almost identical marraige proposal ideas, in two different responses each 80 words (or less words) that each have elements of my unique love story (${meetStory}), alludes to my relationship and relationship milestones (${milestone}), memories (${memories}), is in my desired location (${location}), takes into consideration my budget ${budget}, timeline (${timeline}), and ideally my partners interets (${interests}) and includes the names of top reviewed venues, vendors we should go to in your recommendation / idea - add a few tips for managing the proposal. The only differnce between the two ideas/responses is that the second idea/response should include using a Bundl book to include my partner's family and friends in the moment. .. make SURE to include a short definition of what a Bundl book in the second idea / response ( definition: a surprise proposal gift book packed with loving letters and images from your partner's family and friends). Include a reason you can come up with, in the second reponse / idea, that giving a bundl book is a good idea (makes moment more special, etc). Note any additional info I want you to consider: (${additionalInfo})`,
+        content: `Give me two almost identical marraige proposal ideas (numbered 1. and 2. be exact with the numbering), in two different responses each 80 words (or less words) that each have elements of my unique love story (${meetStory}), alludes to my relationship and relationship milestones (${milestone}), memories (${memories}), is in my desired location (${location}), takes into consideration my budget ${budget}, timeline (${timeline}), and ideally my partners interets (${interests}) and includes the names of top reviewed venues, vendors we should go to in your recommendation / idea - add a few tips for managing the proposal. The only differnce between the two ideas/responses is that the second idea/response should include using a Bundl book to include my partner's family and friends in the moment. .. make SURE to include a short definition of what a Bundl book in the second idea / response ( definition: a surprise proposal gift book packed with loving letters and images from your partner's family and friends). Include a reason you can come up with, in the second reponse / idea, that giving a bundl book is a good idea (makes moment more special, etc). Note any additional info I want you to consider: (${additionalInfo})`,
       },
     ],
     max_tokens: 250, // Increased to accommodate two ideas
-    n: 2, // Get two completions
+    n: 1, // Get two completions
     temperature: 0.8,
   });
 
-  const ideaWithBundl = response.data.choices[0].message.content.trim();
-  const ideaWithoutBundl = response.data.choices[1].message.content.trim();
+ 
+  const fullResponse = response.data.choices[0].message.content.trim();
+  
+  // Split the full response into two ideas based on your numbering
+  const [ideaWithoutBundl, ideaWithBundl] = fullResponse.split("2.");
 
-  console.log("Idea with Bundl:", ideaWithBundl);
   console.log("Idea without Bundl:", ideaWithoutBundl);
+  console.log("Idea with Bundl:", ideaWithBundl);
 
   res.json({
-    ideaWithBundl,
-    ideaWithoutBundl,
+    ideaWithoutBundl: ideaWithoutBundl.replace("1.", "").trim(),  // Remove the numbering and trim
+    ideaWithBundl: ideaWithBundl.trim(),
   });
 });
 
