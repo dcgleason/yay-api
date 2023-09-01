@@ -8,34 +8,37 @@ router.get("/", (req, res) => {
 });
 
 router.post("/gift", async (req, res) => {
-    
-   var meetStory = req.body.meetStory 
-   var milestone = req.body.milestone
-   var memories = req.body.memories
-   var budget = req.body.budget
-   var interests = req.body.interests
-   var timeline = req.body.timeline
-   var location = req.body.location;
-   var additionalInfo = req.body.additionalInfo;
+  // ... (existing code for extracting request body)
 
-const configuration = new Configuration({
-  apiKey: process.env.OPENAI_API_KEY,
+  const configuration = new Configuration({
+    apiKey: process.env.OPENAI_API_KEY,
+  });
+  const openai = new OpenAIApi(configuration);
+
+  const response = await openai.createChatCompletion({
+    model: "gpt-4",
+    messages: [
+      {
+        role: "user",
+        content: `Give me two almost identical marraige proposal ideas, in two different responses each 100 words (or less words) that each have elements of my unique love story (${meetStory}), alludes to my relationship and relationship milestones (${milestone}), memories (${memories}), is in my desired location (${location}), takes into consideration my budget ${budget}, timeline (${timeline}), and ideally my partners interets (${interests}) and includes the names of top reviewed venues, vendors we should go to in your recommendation / idea - add a few tips for managing the proposal The only differnce between the two ideas is that the second idea should include using a Bundl book to include my partner's family and friends in the moment. .. make SURE to include a short definition of what a Bundl book in the second idea / response ( definition: a surprise proposal gift book packed with loving letters and images from your partner's family and friends). Include a reason you can come up with, in the second reponse / idea, that giving a bundl book is a good idea (makes moment more special, etc). Note any additional info I want you to consider: (${additionalInfo})`,
+      },
+    ],
+    max_tokens: 300, // Increased to accommodate two ideas
+    n: 2, // Get two completions
+    temperature: 0.8,
+  });
+
+  const ideaWithBundl = response.data.choices[0].message.content.trim();
+  const ideaWithoutBundl = response.data.choices[1].message.content.trim();
+
+  console.log("Idea with Bundl:", ideaWithBundl);
+  console.log("Idea without Bundl:", ideaWithoutBundl);
+
+  res.json({
+    ideaWithBundl,
+    ideaWithoutBundl,
+  });
 });
-const openai = new OpenAIApi(configuration);
-const response = await openai.createChatCompletion({
-  model: "gpt-4",
-  messages: [{ role: "user", content: `In an 100 word response (or less words), give me a great marriage proposal idea that has elements of my unique love story (${meetStory}), alludes to my relationship and relationship milestones (${milestone}), memories (${memories}), is in my desired location (${location}), takes into consideration my budget ${budget}, timeline (${timeline}), and ideally my partners interets (${interests}) and includes the names of top reviewed venues, vendors we should go to in your recommendation / idea. Add a few tips for managing the proposal...Additionally, make SURE to suggest including my partner's family in the proposal by using a Bundl book (a way for family and friends of the person who is being proposed to easily submit prompt-driven, loving notes and pictures remotely and have it all be compiled in a nice linen book) to enhance the moment and DEFINITELY also make sure to nicely bring up WHY including my partner's family via a Bundl book is a good idea -- i.e. the it makes the moment even more special AND Bundl ALSO has a guarantee that says ... your partner cries happy hears, or your money back, so there is basically no risk. Note any additional info (${additionalInfo})`}],
-  max_tokens: 150,
-  n: 1,
-  temperature: 0.8,
-});
-
-console.log("response" + response.data.choices[0].message.content.trim());
-res.json({ message: response.data.choices[0].message.content.trim() });
-
-
-});
-
 
 const getSpotifyIDs = async (songs, artists, accessToken) => {
   const baseURL = 'https://api.spotify.com/v1/search';
