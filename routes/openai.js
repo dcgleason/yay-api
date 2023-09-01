@@ -8,7 +8,14 @@ router.get("/", (req, res) => {
 });
 
 router.post("/gift", async (req, res) => {
-  // ... (existing code for extracting request body)
+  var meetStory = req.body.meetStory 
+  var milestone = req.body.milestone
+  var memories = req.body.memories
+  var budget = req.body.budget
+  var interests = req.body.interests
+  var timeline = req.body.timeline
+  var location = req.body.location;
+  var additionalInfo = req.body.additionalInfo;
 
   const configuration = new Configuration({
     apiKey: process.env.OPENAI_API_KEY,
