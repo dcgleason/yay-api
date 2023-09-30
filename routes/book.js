@@ -249,7 +249,7 @@ router.put('/:userId/firstUpdate', async (req, res) => {
     await book.save();
 
     // Call the /start-email-process route to start the email process
-    const response = await axios.post('https://yay-api.herokuapp.com/book/email/start-email-process', {
+    const response = await axios.post('https://yay-api.herokuapp.com/email/start-email-process', {
       userId: req.params.userId,
       processStartDate: processStartDate.toISOString(),
       physicalBook: physicalBook,

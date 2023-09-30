@@ -4,6 +4,7 @@ const router = express.Router()
 const nodemailer = require('nodemailer');
 const { google } = require('googleapis');
 const { spawn } = require('child_process');
+const amqp = require('amqplib/callback_api');
 const Book = require("../models/Book"); 
 const User = require("../models/User")
 // Create a Nodemailer transporter
@@ -35,6 +36,21 @@ const sendEmail = async (recipients, subject, text, userId, attachments) => {
 };
 
 
+
+const sendToQueue = (message) => {
+  amqp.connect('amqps://b-5b5885c9-d33b-41aa-94fc-faad831a859f.mq.us-east-1.amazonaws.com:5671', (error, connection) => {
+    if (error) throw error;
+    connection.createChannel((error, channel) => {
+      if (error) throw error;
+      const queue = 'emailQueue';
+      channel.assertQueue(queue, { durable: false });
+      channel.sendToQueue(queue, Buffer.from(JSON.stringify(message)));
+    });
+  });
+};
+
+
+
 router.post('/start-email-process', async (req, res) => {
   // Get the user ID and deliveryDate from the request
   let userId = req.body.userId;
@@ -63,13 +79,53 @@ router.post('/start-email-process', async (req, res) => {
   // Calculate the delay before starting the email process (in milliseconds)
   let delayBeforeStart = processStartDate - new Date();
 
-  // Schedule the emails
-  setTimeout(() => sendEmail(recipients, 'Email 1', 'This is the first email.', userId.toString()), delayBeforeStart);
-  setTimeout(() => sendEmail(recipients, 'Email 2', 'This is the second email.', userId.toString()), delayBeforeStart + 3 * 24 * 60 * 60 * 1000);
-  setTimeout(() => sendEmail(recipients, 'Email 3', 'This is the third email.', userId.toString()), delayBeforeStart + 5 * 24 * 60 * 60 * 1000);
-  setTimeout(() => sendEmail(recipients, 'Email 4', 'This is the fourth email.', userId.toString()), delayBeforeStart + 6 * 24 * 60 * 60 * 1000);
-  setTimeout(() => sendEmail(recipients, 'Email 5', 'This is the fifth email.', userId.toString()), delayBeforeStart + 7 * 24 * 60 * 60 * 1000);
 
+  const email1 = {
+    recipients,
+    subject: 'Email 1',
+    text: 'This is the first email.',
+    userId: userId.toString(),
+    delay: delayBeforeStart
+  };
+
+
+  const email2 = {
+    recipients,
+    subject: 'Email 2',
+    text: 'This is the second email.',
+    userId: userId.toString(),
+    delay: delayBeforeStart
+  };
+
+  const email3 = {
+    recipients,
+    subject: 'Email 3',
+    text: 'This is the third email.',
+    userId: userId.toString(),
+    delay: delayBeforeStart
+  };
+
+  const email4 = {
+    recipients,
+    subject: 'Email 4',
+    text: 'This is the fourth email.',
+    userId: userId.toString(),
+    delay: delayBeforeStart
+  };
+
+  const email5 = {
+    recipients,
+    subject: 'Email 5',
+    text: 'This is the fifth email.',
+    userId: userId.toString(),
+    delay: delayBeforeStart
+  };
+  // Schedule the emails
+  sendToQueue(email1);
+  sendToQueue(email2);
+  sendToQueue(email3);
+  sendToQueue(email4);
+  sendToQueue(email5);
   // ...rest of the code to run Python script...
 
   res.send('Email process scheduled');
