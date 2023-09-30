@@ -85,7 +85,9 @@ router.post('/start-email-process', async (req, res) => {
     subject: 'Email 1',
     text: 'This is the first email.',
     userId: userId.toString(),
-    delay: delayBeforeStart
+    delay: delayBeforeStart,
+    userName: user.name,  // additional user information
+    userEmail: user.email // additional user information
   };
 
 
@@ -94,7 +96,9 @@ router.post('/start-email-process', async (req, res) => {
     subject: 'Email 2',
     text: 'This is the second email.',
     userId: userId.toString(),
-    delay: delayBeforeStart
+    delay: delayBeforeStart,
+    userName: user.name,  // additional user information
+    userEmail: user.email // additional user information
   };
 
   const email3 = {
@@ -102,7 +106,9 @@ router.post('/start-email-process', async (req, res) => {
     subject: 'Email 3',
     text: 'This is the third email.',
     userId: userId.toString(),
-    delay: delayBeforeStart
+    delay: delayBeforeStart,
+    userName: user.name,  // additional user information
+    userEmail: user.email // additional user information
   };
 
   const email4 = {
@@ -110,7 +116,9 @@ router.post('/start-email-process', async (req, res) => {
     subject: 'Email 4',
     text: 'This is the fourth email.',
     userId: userId.toString(),
-    delay: delayBeforeStart
+    delay: delayBeforeStart,
+    userName: user.name,  // additional user information
+    userEmail: user.email // additional user information
   };
 
   const email5 = {
@@ -118,7 +126,9 @@ router.post('/start-email-process', async (req, res) => {
     subject: 'Email 5',
     text: 'This is the fifth email.',
     userId: userId.toString(),
-    delay: delayBeforeStart
+    delay: delayBeforeStart,
+    userName: user.name,  // additional user information
+    userEmail: user.email // additional user information
   };
   // Schedule the emails
   sendToQueue(email1);
