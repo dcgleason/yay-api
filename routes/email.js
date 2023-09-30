@@ -57,7 +57,8 @@ router.post('/start-email-process', async (req, res) => {
   let processStartDate = new Date(req.body.processStartDate);
   let physicalBook = req.body.physicalBook;
 
-
+  console.log("Server time:", new Date());
+  console.log("Process start date:", processStartDate);
 
   // Check if the process should have already started
   if (new Date() > processStartDate) {

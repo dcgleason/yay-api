@@ -238,6 +238,8 @@ router.put('/:userId/firstUpdate', async (req, res) => {
     let processStartDate = new Date(deliveryDate);
     processStartDate.setDate(processStartDate.getDate() - (physicalBook ? 14 : 7));
 
+    
+
     console.log('req.body.contributors :', req.body.contributors);
     // Update the book's welcome message, prompts, and recipient's full name
     book.introNote = req.body.introNote;
