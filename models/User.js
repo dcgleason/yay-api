@@ -17,7 +17,7 @@ const userSchema = new Schema(
     lastEmailed: Date,
     prompts: [String],
     introNote: String,
-    recipinet: String,
+    recipient: String,
     recipientFirst: String,
   },
   { timestamps: true }
